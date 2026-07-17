@@ -3762,6 +3762,7 @@ profileBgUrl: s.profileBgUrl,
 regexRules: s.regexRules,
 fontPresets: s.fontPresets,
 keepAliveEnabled: s.keepAliveEnabled,
+apiPresets: s.apiPresets,
 periodData: s.periodData,
 memSummaryPrompt: s.memSummaryPrompt,
 soulPersonality: (s.soulSections && s.soulSections.personality) ? s.soulSections.personality.content || '' : '',
@@ -8532,7 +8533,7 @@ const draft = s.apiDraft || {};
 const targetId = draft.id || s.activePresetId;
 const presets = s.apiPresets.map(p => {
   if (p.id === targetId) {
-    return { ...p, name: draft.name || p.name, url: draft.url || p.url, key: draft.key !== undefined ? draft.key : p.key, model: draft.model || p.model, apiType: draft.apiType || p.apiType };
+    return { ...p, name: draft.name || p.name, url: draft.url !== undefined ? draft.url : p.url, key: draft.key !== undefined ? draft.key : p.key, model: draft.model || p.model, apiType: draft.apiType || p.apiType };
   }
   return p;
 });
