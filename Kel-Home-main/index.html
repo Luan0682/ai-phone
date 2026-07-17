@@ -486,7 +486,7 @@ button:active {
 </sc-if>
 
 <div style="background:var(--bg-input, #FBFAF7);border:1px solid var(--border-input, #E7E3DA);border-radius:24px;padding:12px 16px 8px;box-shadow:0 -2px 12px rgba(43,38,30,.06),0 1px 4px rgba(43,38,30,.04);">
-<textarea value="{{ input }}" onInput="{{ inputChange }}" onCompositionStart="{{ onCompositionStart }}" onCompositionEnd="{{ onCompositionEnd }}" onKeyDown="{{ inputKey }}" placeholder="发送消息..." rows="1" style="display:block;width:100%;min-height:28px;max-height:calc(80vh - 180px);border:none;background:transparent;resize:none;outline:none;font-family:inherit;font-size:15px;line-height:1.6;color:#2B2620;padding:2px 4px 6px;font-weight:300;overflow-y:auto;" ref="{{ textareaRef }}"></textarea>
+<textarea value="{{ input }}" onInput="{{ inputChange }}" onKeyDown="{{ inputKey }}" placeholder="发送消息..." rows="1" style="display:block;width:100%;min-height:28px;max-height:calc(80vh - 180px);border:none;background:transparent;resize:none;outline:none;font-family:inherit;font-size:15px;line-height:1.6;color:#2B2620;padding:2px 4px 6px;font-weight:300;overflow-y:auto;" ref="{{ textareaRef }}"></textarea>
 <div style="display:flex;align-items:center;justify-content:space-between;">
 <div style="display:flex;align-items:center;gap:8px;">
 <button onClick="{{ openApiSheet }}" style="display:flex;align-items:center;gap:5px;background:#F2EFE8;border:none;border-radius:16px;padding:6px 12px;cursor:pointer;font-family:inherit;max-width:160px;">
@@ -497,7 +497,7 @@ button:active {
 <button onClick="{{ pickImage }}" style="width:24px;height:24px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" stroke="#6B665E" stroke-width="1.5"/><circle cx="8.5" cy="10" r="1.5" stroke="#6B665E" stroke-width="1.3"/><path d="M5 18l4.5-4 3 2.5L16 12l3 3" stroke="#6B665E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
-<button onClick="{{ send }}" style="width:36px;height:36px;border-radius:50%;background:#1A1815;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ hasInput ? 1 : 0.18 }};transform:scale({{ hasInput ? 1 : 0.88 }});transition:opacity .2s,transform .2s;">
+<button onClick="{{ send }}" style="width:36px;height:36px;border-radius:50%;background:#1A1815;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 7v10M13 5.5v13M17 9v6M21 11v2" stroke="#F5F3EE" stroke-width="1.8" stroke-linecap="round"/></svg>
 </button>
 </div>
@@ -3250,10 +3250,6 @@ this.setState({
   soundEnabled: idbData.soundEnabled !== undefined ? idbData.soundEnabled : this.state.soundEnabled,
   memoryCount: idbData.memoryCount || this.state.memoryCount,
   keepAliveEnabled: idbData.keepAliveEnabled !== undefined ? idbData.keepAliveEnabled : this.state.keepAliveEnabled,
-  periodData: idbData.periodData || this.state.periodData,
-  sexData: idbData.sexData || this.state.sexData,
-  checklistItems: idbData.checklistItems || this.state.checklistItems,
-  sexCustomTags: idbData.sexCustomTags || this.state.sexCustomTags,
 });
 }
 }
@@ -3772,13 +3768,13 @@ soulPersonality: (s.soulSections && s.soulSections.personality) ? s.soulSections
 soulRules: (s.soulSections && s.soulSections.rules) ? s.soulSections.rules.content || '' : '',
 soulAbout: (s.soulSections && s.soulSections.about) ? s.soulSections.about.content || '' : '',
 soulOther: (s.soulSections && s.soulSections.other) ? s.soulSections.other.content || '' : '',
-sexData: s.sexData || {},
-checklistItems: s.checklistItems || [],
-sexCustomTags: s.sexCustomTags || [],
 };
 // 优先写 IndexedDB（无容量限制）
 this._saveToIndexedDB(data);
-// 同时写 localStorage 作为快速读取缓存
+// 尝试同时写 localStorage（快速读取缓存）
+// 单独确保 periodData 写入
+try { localStorage.setItem('kel-period-data', JSON.stringify(s.periodData || {})); } catch(e) {}
+// 独立写入 periodData 防止主数据覆盖丢失
 try { localStorage.setItem('kel-period-data', JSON.stringify(s.periodData || {})); } catch(e) {}
 
 try {
@@ -3948,10 +3944,7 @@ _deleteChecklistItem(id) {
 
 _persistChecklist() {
   const data = { checklistItems: this.state.checklistItems };
-  // 同时写 localStorage（快速读）和 IndexedDB（容量无限）
-  try { localStorage.setItem('kel-checklist-data', JSON.stringify(data)); } catch(e) {}
-  // 合并进主 IndexedDB 存档
-  this.persist();
+  localStorage.setItem('kel-checklist-data', JSON.stringify(data));
 }
 
 _getChecklistRenderedItems() {
@@ -7621,7 +7614,6 @@ homeHeatmapCells: memHeatmapCells,
 navPeriod: () => self.setState({ tab: 'period' }),
 isBusy: s.isBusy,
 input: s.input,
-hasInput: !!(s.input && s.input.trim()) || !!(s.attachments && s.attachments.length > 0),
 editText: s.editText,
 hasAttachments: !!(s.attachments && s.attachments.length > 0),
 attachmentPreviews: s.attachments || [],
@@ -8436,24 +8428,13 @@ this.persist();
 
 newChat: () => self.newChat(),
 inputChange: (e) => {
-  // 直接同步更新，不节流——节流会导致：
-  // 1. 手机输入法语音转文字误判输入结束（中途 setState 打断 compositionend 时序）
-  // 2. 删字后 value 被异步覆盖成旧值，光标跳到末尾
-  if (!self._composing) {
-    self.setState({ input: e.target.value });
-  } else {
-    // 输入法合成期间只缓存，不触发 setState（防止光标乱跳）
-    self._composingVal = e.target.value;
-  }
-},
-onCompositionStart: () => {
-  self._composing = true;
-  self._composingVal = self.state.input;
-},
-onCompositionEnd: (e) => {
-  self._composing = false;
-  self.setState({ input: e.target.value });
-  self._composingVal = undefined;
+  const val = e.target.value;
+  // 缩短节流时间，避免卡语音输入
+  if (self._inputTimer) clearTimeout(self._inputTimer);
+  self._inputTimer = setTimeout(() => {
+    self.setState({ input: val });
+    self._inputTimer = null;
+  }, 10); // 从 30ms 改成 10ms
 },
 
 onMsgScroll: (e) => {
