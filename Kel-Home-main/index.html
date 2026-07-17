@@ -44,6 +44,45 @@ body { background:var(--bg-base, #d6d2c8); padding:env(safe-area-inset-top, 0) 0
 @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 .quote-block { background:rgba(26,24,21,.04); border-left:2px solid #B8B3A8; border-radius:0 6px 6px 0; padding:4px 10px; margin:4px 0; font-size:13px; color:#9A958B; }
 input, textarea { user-select:text; -webkit-user-select:text; }
+
+/* ── composer (uncontrolled, no IME/height JS) ── */
+.composer-textarea {
+  display:block;
+  width:100%;
+  border:none;
+  background:transparent;
+  resize:none;
+  outline:none;
+  font-family:inherit;
+  font-size:15px;
+  line-height:1.6;
+  color:#2B2620;
+  padding:2px 4px 6px;
+  font-weight:300;
+  /* pure CSS auto-grow; no JS height writes */
+  field-sizing:content;
+  min-height:28px;
+  max-height:50vh;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.composer-textarea::placeholder { color:#B8B3A8; }
+.composer-send {
+  width:36px;height:36px;border-radius:50%;
+  background:#1A1815;border:none;
+  display:flex;align-items:center;justify-content:center;
+  flex:none;
+  opacity:.3;pointer-events:none;
+  transition:opacity .15s;
+}
+.composer-box:has(.composer-textarea:not(:placeholder-shown)) .composer-send,
+.composer-box.has-att .composer-send {
+  opacity:1;pointer-events:auto;cursor:pointer;
+}
+.composer-box.is-busy .composer-send {
+  opacity:.3;pointer-events:none;
+}
+
 @keyframes heartbeat { 0%,100%{transform:scale(1)} 14%{transform:scale(1.3)} 28%{transform:scale(1)} 42%{transform:scale(1.2)} 56%{transform:scale(1)} }
 .shake { animation: shakeAnim .4s ease; }
 @keyframes shakeAnim { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(4px)} }
@@ -485,19 +524,20 @@ button:active {
 </div>
 </sc-if>
 
-<div style="background:var(--bg-input, #FBFAF7);border:1px solid var(--border-input, #E7E3DA);border-radius:24px;padding:12px 16px 8px;box-shadow:0 -2px 12px rgba(43,38,30,.06),0 1px 4px rgba(43,38,30,.04);">
-<textarea value="{{ input }}" onInput="{{ inputChange }}" onKeyDown="{{ inputKey }}" placeholder="发送消息..." rows="1" style="display:block;width:100%;min-height:28px;max-height:calc(80vh - 180px);border:none;background:transparent;resize:none;outline:none;font-family:inherit;font-size:15px;line-height:1.6;color:#2B2620;padding:2px 4px 6px;font-weight:300;overflow-y:auto;" ref="{{ textareaRef }}"></textarea>
+<div class="{{ composerBoxClass }}" style="background:var(--bg-input, #FBFAF7);border:1px solid var(--border-input, #E7E3DA);border-radius:24px;padding:12px 16px 8px;box-shadow:0 -2px 12px rgba(43,38,30,.06),0 1px 4px rgba(43,38,30,.04);">
+<textarea class="composer-textarea" id="kel-composer-input" placeholder="发送消息..." rows="1"></textarea>
 <div style="display:flex;align-items:center;justify-content:space-between;">
-<div style="display:flex;align-items:center;gap:8px;">
+<div style="display:flex;align-items:center;gap:8px;min-width:0;">
 <button onClick="{{ openApiSheet }}" style="display:flex;align-items:center;gap:5px;background:#F2EFE8;border:none;border-radius:16px;padding:6px 12px;cursor:pointer;font-family:inherit;max-width:160px;">
 <span style="font-size:12px;font-weight:500;color:#3A362F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ activeModel }}</span>
+<svg width="10" height="10" viewBox="0 0 24 24" fill="none" style="flex:none;opacity:.5;"><path d="M6 9l6 6 6-6" stroke="#3A362F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
 </div>
-<div style="display:flex;align-items:center;gap:14px;">
-<button onClick="{{ pickImage }}" style="width:24px;height:24px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" stroke="#6B665E" stroke-width="1.5"/><circle cx="8.5" cy="10" r="1.5" stroke="#6B665E" stroke-width="1.3"/><path d="M5 18l4.5-4 3 2.5L16 12l3 3" stroke="#6B665E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div style="display:flex;align-items:center;gap:12px;flex:none;">
+<button onClick="{{ pickImage }}" title="上传文件" style="width:28px;height:28px;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B665E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.41 17.41a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
 </button>
-<button onClick="{{ send }}" style="width:36px;height:36px;border-radius:50%;background:#1A1815;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<button class="composer-send" onClick="{{ send }}" title="发送">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 7v10M13 5.5v13M17 9v6M21 11v2" stroke="#F5F3EE" stroke-width="1.8" stroke-linecap="round"/></svg>
 </button>
 </div>
@@ -3656,26 +3696,97 @@ _resetTodosAtMidnight() {
   localStorage.setItem('kel-todo-last-reset', today);
 }
 
-textareaRef(el) {
-if (el && !el._listener) {
-el._listener = true;
-this._textareaEl = el;
-const adjust = () => {
-el.style.height = 'auto';
-const maxHeight = window.innerHeight * 0.8 - 180;
-el.style.height = Math.min(el.scrollHeight, maxHeight) + 'px';
-el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden';
-};
-el.addEventListener('input', adjust);
-setTimeout(adjust, 50);
+getComposerEl() {
+return document.getElementById('kel-composer-input');
+}
+
+clearComposer(focus) {
+const el = this.getComposerEl();
+if (el) {
+el.value = '';
+if (focus !== false) {
+try { el.focus({ preventScroll: true }); } catch (e) { try { el.focus(); } catch (_) {} }
+}
 }
 }
 
-resetTextarea() {
-if (this._textareaEl) {
-this._textareaEl.style.height = 'auto';
-this._textareaEl.style.height = '32px';
-this._textareaEl.style.overflowY = 'hidden';
+// ====== Chat - send only via button (Enter = newline, uncontrolled textarea) ======
+addUserMessage(text) {
+const hasImages = this.state.attachments && this.state.attachments.length > 0;
+const chatId = this.state.currentChatId;
+const chats = { ...this.state.chats };
+const chat = { ...chats[chatId] };
+const timestamp = getFixedTimestamp();
+let fullText = text || '';
+const quotedRef = this.state.quotedMsg ? this.state.quotedMsg : null;
+if (quotedRef) {
+  fullText = `> ${quotedRef.sender}：${quotedRef.text}\n\n${fullText}`;
+  this.setState({ quotedMsg: null });
+}
+const newMsg = {
+id: genId(),
+role: 'user',
+text: fullText,
+variants: [fullText],
+variantIdx: 0,
+timestamp: timestamp,
+quote: quotedRef ? { sender: quotedRef.sender, text: (quotedRef.text || '').slice(0, 80) } : null
+};
+
+// 处理图片附件 - preview用dataURL确保持久化
+if (hasImages) {
+  newMsg.images = this.state.attachments.map(att => ({
+    base64: att.base64,
+    mimeType: att.mimeType,
+    preview: att.preview || ('data:' + (att.mimeType||'image/jpeg') + ';base64,' + att.base64),
+    fileName: att.fileName
+  }));
+  // 兼容单图
+  newMsg.image = this.state.attachments[0].base64;
+  newMsg.imageMime = this.state.attachments[0].mimeType;
+  newMsg.imageUrl = this.state.attachments[0].preview || ('data:' + (this.state.attachments[0].mimeType||'image/jpeg') + ';base64,' + this.state.attachments[0].base64);
+}
+const msgs = [...chat.messages, newMsg];
+chat.messages = msgs;
+chat.lastTime = Date.now();
+if (msgs.filter(m => m.role === 'user').length === 1) {
+chat.title = (text || 'Image').slice(0, 30) + ((text || '').length > 30 ? '...' : '');
+}
+chats[chatId] = chat;
+this.setState({ attachments: [], chats });
+this.persist();
+this.scrollToBottom();
+return true;
+}
+
+async sendMessage() {
+// 发送按钮：把输入框内容加入消息后调 API
+if (this.state.isBusy) return;
+const preset = this.activePreset;
+if (!preset.key) { this.show('请先设置 API Key'); return; }
+
+const el = this.getComposerEl();
+const text = el ? (el.value || '').trim() : '';
+const hasImages = this.state.attachments && this.state.attachments.length > 0;
+if (!text && !hasImages) return;
+
+this.addUserMessage(text);
+this.clearComposer(true);
+
+const chatId = this.state.currentChatId;
+const finalMsgs = (this.state.chats[chatId] && this.state.chats[chatId].messages) || [];
+const lastMsg = finalMsgs[finalMsgs.length - 1];
+if (!lastMsg || lastMsg.role !== 'user') return;
+
+this.setState({ isBusy: true, pendingLines: [] });
+this.scrollToBottom();
+
+try {
+await this._callApi(chatId, finalMsgs);
+} catch(e) {
+this.setState({ isBusy: false });
+this.logError(e);
+this.show('Error: ' + e.message);
 }
 }
 
@@ -4408,136 +4519,6 @@ if (memorySummary) sys += '## Context Memory\n' + memorySummary + '\n\n';
 return sys.trim();
 }
 
-// ====== Chat - Enter sends as line, black button sends to API ======
-handleInputKey(e) {
-if (e.key === 'Enter' && !e.shiftKey) {
-e.preventDefault();
-const text = (this.state.input || '').trim();
-const hasImages = this.state.attachments && this.state.attachments.length > 0;
-// 没有文字也没有图片 → 不发送
-if (!text && !hasImages) return;
-if (this.state.isBusy) return;
-
-const chatId = this.state.currentChatId;
-const chats = { ...this.state.chats };
-const chat = { ...chats[chatId] };
-const timestamp = getFixedTimestamp();
-let fullText = text || '';
-const quotedRef = this.state.quotedMsg ? this.state.quotedMsg : null;
-if (quotedRef) {
-  fullText = `> ${quotedRef.sender}：${quotedRef.text}\n\n${fullText}`;
-  this.setState({ quotedMsg: null });
-}
-const newMsg = {
-id: genId(),
-role: 'user',
-text: fullText,
-variants: [fullText],
-variantIdx: 0,
-timestamp: timestamp,
-quote: quotedRef ? { sender: quotedRef.sender, text: (quotedRef.text || '').slice(0, 80) } : null
-};
-
-// 处理图片附件 - preview用dataURL确保持久化
-if (hasImages) {
-  newMsg.images = this.state.attachments.map(att => ({
-    base64: att.base64,
-    mimeType: att.mimeType,
-    preview: att.preview || ('data:' + (att.mimeType||'image/jpeg') + ';base64,' + att.base64),
-    fileName: att.fileName
-  }));
-  // 兼容单图
-  newMsg.image = this.state.attachments[0].base64;
-  newMsg.imageMime = this.state.attachments[0].mimeType;
-  newMsg.imageUrl = this.state.attachments[0].preview || ('data:' + (this.state.attachments[0].mimeType||'image/jpeg') + ';base64,' + this.state.attachments[0].base64);
-}
-const msgs = [...chat.messages, newMsg];
-chat.messages = msgs;
-chat.lastTime = Date.now();
-if (msgs.filter(m => m.role === 'user').length === 1) {
-chat.title = (text || 'Image').slice(0, 30) + ((text || '').length > 30 ? '...' : '');
-}
-chats[chatId] = chat;
-this.setState({ input: '', attachments: [], chats, pendingLines: [...this.state.pendingLines, text] });
-this.resetTextarea();
-this.persist();
-this.scrollToBottom();
-}
-}
-async sendMessage() {
-// Black button: send all pending lines to API
-if (this.state.isBusy) return;
-const preset = this.activePreset;
-if (!preset.key) { this.show('请先设置 API Key'); return; }
-
-const chat = this.currentChat;
-const msgs = chat.messages || [];
-if (msgs.length === 0) return;
-
-// Check if last message is from user
-const lastMsg = msgs[msgs.length - 1];
-if (!lastMsg || lastMsg.role !== 'user') {
-// If input has text, add it first
-const text = (this.state.input || '').trim();
-if (text) {
-this.handleInputKey({ key: 'Enter', shiftKey: false, preventDefault: () => {} });
-// Wait a tick then send
-setTimeout(() => this.sendMessage(), 50);
-return;
-}
-return;
-}
-
-// Also add any remaining input text as a message first
-const remainingText = (this.state.input || '').trim();
-if (remainingText) {
-const chatId = this.state.currentChatId;
-const chats = { ...this.state.chats };
-const chatCopy = { ...chats[chatId] };
-const timestamp = getFixedTimestamp();
-chatCopy.messages = [...chatCopy.messages, {
-role: 'user', text: remainingText, variants: [remainingText], variantIdx: 0, timestamp
-}];
-chatCopy.lastTime = Date.now();
-chats[chatId] = chatCopy;
-this.setState({ input: '', chats });
-this.resetTextarea();
-this.persist();
-}
-
-const chatId = this.state.currentChatId;
-const finalMsgs = this.state.chats[chatId].messages;
-
-// ---- 新增：确保最后一条用户消息包含图片数据 ----
-if (finalMsgs.length > 0) {
-  const last = finalMsgs[finalMsgs.length - 1];
-  if (last.role === 'user' && this.state.attachments && this.state.attachments.length > 0) {
-    last.images = this.state.attachments.map(att => ({
-      base64: att.base64,
-      mimeType: att.mimeType,
-      preview: att.preview,
-      fileName: att.fileName
-    }));
-    // 同时设置单图兼容字段
-    last.image = this.state.attachments[0].base64;
-    last.imageMime = this.state.attachments[0].mimeType;
-    last.imageUrl = this.state.attachments[0].preview;
-  }
-}
-// ---- 新增结束 ----
-
-this.setState({ isBusy: true, pendingLines: [] });
-this.scrollToBottom();
-
-try {
-await this._callApi(chatId, finalMsgs);
-} catch(e) {
-this.setState({ isBusy: false });
-this.logError(e);
-this.show('Error: ' + e.message);
-}
-}
-
 async _callApi(chatId, msgs) {
 const preset = this.activePreset;
 const sysPrompt = this.buildSystemPrompt();
@@ -4859,12 +4840,14 @@ newChat() {
 const id = genId();
 const chats = { ...this.state.chats };
 chats[id] = { id, title: '新对话', messages: [], lastTime: Date.now() };
-this.setState({ currentChatId: id, chats, drawer: false, tab: 'chat', input: '', attachments: [], pendingLines: [] });
+this.setState({ currentChatId: id, chats, drawer: false, tab: 'chat', attachments: [], pendingLines: [] });
+this.clearComposer(true);
 this.persist();
 }
 
 openChat(id) {
 this.setState({ currentChatId: id, drawer: false, tab: 'chat', sidebarOpen: false, pendingLines: [] });
+this.clearComposer(true);
 this.persist();
 this.scrollToBottom();
 setTimeout(() => this.scrollToBottom(), 200);
@@ -6526,7 +6509,12 @@ pick: () => { self.setState({ activePersonaId: p.id, personaDraft: { ...p } }); 
 const promptOptions = (s.prompts || []).map(p => ({
 name: p.name || 'Untitled',
 preview: (p.content || '').slice(0, 60),
-use: () => { self.setState({ input: p.content || '', sheet: null }); },
+use: () => {
+  const el = self.getComposerEl && self.getComposerEl();
+  if (el) el.value = p.content || '';
+  self.setState({ sheet: null });
+  setTimeout(() => { if (el) try { el.focus(); } catch(_){} }, 50);
+},
 edit: () => { self.setState({ promptEditId: p.id, promptEditName: p.name || '', promptEditContent: p.content || '' }); },
 del: (e) => { e.stopPropagation(); self.setState({ prompts: s.prompts.filter(x => x.id !== p.id) }); self.persist(); self.show('已删除'); }
 }));
@@ -7614,7 +7602,7 @@ openHeatmapSettings: () => {
 homeHeatmapCells: memHeatmapCells,
 navPeriod: () => self.setState({ tab: 'period' }),
 isBusy: s.isBusy,
-input: s.input,
+composerBoxClass: 'composer-box' + (s.isBusy ? ' is-busy' : '') + ((s.attachments && s.attachments.length) ? ' has-att' : ''),
 editText: s.editText,
 hasAttachments: !!(s.attachments && s.attachments.length > 0),
 attachmentPreviews: s.attachments || [],
@@ -8428,16 +8416,6 @@ this.persist();
 },
 
 newChat: () => self.newChat(),
-inputChange: (e) => {
-  const val = e.target.value;
-  // 缩短节流时间，避免卡语音输入
-  if (self._inputTimer) clearTimeout(self._inputTimer);
-  self._inputTimer = setTimeout(() => {
-    self.setState({ input: val });
-    self._inputTimer = null;
-  }, 10); // 从 30ms 改成 10ms
-},
-
 onMsgScroll: (e) => {
   const el = e.target;
   if (el.scrollTop < 80 && (self.state._visibleMsgCount || 50) < allMsgs.length) {
@@ -8446,13 +8424,11 @@ onMsgScroll: (e) => {
     requestAnimationFrame(() => { el.scrollTop = el.scrollHeight - prevH; });
   }
 },
-inputKey: (e) => self.handleInputKey(e),
 send: () => self.sendMessage(),
-textareaRef: (el) => self.textareaRef(el),
 pickImage: () => self.pickImageFile(),
 handleFileSelect: (e) => self.handleFile(e),
 handleImportFile: (e) => self.handleImportFile(e),
-removeAttachment: () => self.setState({ attachment: null }),
+removeAttachment: () => self.setState({ attachments: [] }),
 editTextChange: (e) => self.setState({ editText: e.target.value }),
 cancelEdit: () => self.setState({ editIdx: -1 }),
 saveEdit: () => {
@@ -8462,7 +8438,7 @@ if (!targetMsg) return;
 const chats = { ...s.chats }; const c = { ...chats[s.currentChatId] };
 c.messages = c.messages.map(m => m.id === targetMsg.id ? { ...m, text: s.editText, variants: [s.editText], variantIdx: 0 } : m);
 chats[s.currentChatId] = c;
-self.setState({ chats, editIdx: -1, input: '' });
+self.setState({ chats, editIdx: -1 });
 self.persist();
 self.show('已修改');
 },
