@@ -76,7 +76,8 @@ input, textarea { user-select:text; -webkit-user-select:text; }
   transition:opacity .15s;
 }
 .composer-box:has(.composer-textarea:not(:placeholder-shown)) .composer-send,
-.composer-box.has-att .composer-send {
+.composer-box.has-att .composer-send,
+.composer-box.has-pending .composer-send {
   opacity:1;pointer-events:auto;cursor:pointer;
 }
 .composer-box.is-busy .composer-send {
@@ -525,7 +526,7 @@ button:active {
 </sc-if>
 
 <div class="{{ composerBoxClass }}" style="background:var(--bg-input, #FBFAF7);border:1px solid var(--border-input, #E7E3DA);border-radius:24px;padding:12px 16px 8px;box-shadow:0 -2px 12px rgba(43,38,30,.06),0 1px 4px rgba(43,38,30,.04);">
-<textarea class="composer-textarea" id="kel-composer-input" placeholder="发送消息..." rows="1"></textarea>
+<textarea class="composer-textarea" id="kel-composer-input" placeholder="发送消息..." rows="1" onKeyDown="{{ composerKey }}"></textarea>
 <div style="display:flex;align-items:center;justify-content:space-between;">
 <div style="display:flex;align-items:center;gap:8px;min-width:0;">
 <button onClick="{{ openApiSheet }}" style="display:flex;align-items:center;gap:5px;background:#F2EFE8;border:none;border-radius:16px;padding:6px 12px;cursor:pointer;font-family:inherit;max-width:160px;">
@@ -3710,9 +3711,11 @@ try { el.focus({ preventScroll: true }); } catch (e) { try { el.focus(); } catch
 }
 }
 
-// ====== Chat - send only via button (Enter = newline, uncontrolled textarea) ======
+// ====== Chat - Enter queues a user bubble; send button calls API ======
+// textarea is uncontrolled (no value= binding). Enter ≠ IME confirm: only keydown + isComposing.
 addUserMessage(text) {
 const hasImages = this.state.attachments && this.state.attachments.length > 0;
+if (!(text || '').trim() && !hasImages) return false;
 const chatId = this.state.currentChatId;
 const chats = { ...this.state.chats };
 const chat = { ...chats[chatId] };
@@ -3750,17 +3753,36 @@ const msgs = [...chat.messages, newMsg];
 chat.messages = msgs;
 chat.lastTime = Date.now();
 if (msgs.filter(m => m.role === 'user').length === 1) {
-chat.title = (text || 'Image').slice(0, 30) + ((text || '').length > 30 ? '...' : '');
+chat.title = ((text || 'Image').slice(0, 30)) + ((text || '').length > 30 ? '...' : '');
 }
 chats[chatId] = chat;
-this.setState({ attachments: [], chats });
+this.setState({
+  attachments: [],
+  chats,
+  pendingLines: [...(this.state.pendingLines || []), text || '']
+});
 this.persist();
 this.scrollToBottom();
 return true;
 }
 
+// Enter → 立刻变成一条用户气泡（可连发多条）；不调 API
+// 只读 keydown，用 isComposing 挡输入法确认键，不绑 compositionstart/end/input
+handleComposerKey(e) {
+if (e.key !== 'Enter' || e.shiftKey) return;
+if (e.isComposing || e.keyCode === 229) return;
+e.preventDefault();
+if (this.state.isBusy) return;
+const el = this.getComposerEl();
+const text = el ? (el.value || '').trim() : '';
+const hasImages = this.state.attachments && this.state.attachments.length > 0;
+if (!text && !hasImages) return;
+this.addUserMessage(text);
+this.clearComposer(true);
+}
+
 async sendMessage() {
-// 发送按钮：把输入框内容加入消息后调 API
+// 黑色发送键：把剩余输入入队后，把所有 pending 用户消息一起送给 API
 if (this.state.isBusy) return;
 const preset = this.activePreset;
 if (!preset.key) { this.show('请先设置 API Key'); return; }
@@ -3768,10 +3790,10 @@ if (!preset.key) { this.show('请先设置 API Key'); return; }
 const el = this.getComposerEl();
 const text = el ? (el.value || '').trim() : '';
 const hasImages = this.state.attachments && this.state.attachments.length > 0;
-if (!text && !hasImages) return;
-
-this.addUserMessage(text);
-this.clearComposer(true);
+if (text || hasImages) {
+  this.addUserMessage(text);
+  this.clearComposer(true);
+}
 
 const chatId = this.state.currentChatId;
 const finalMsgs = (this.state.chats[chatId] && this.state.chats[chatId].messages) || [];
@@ -7602,7 +7624,7 @@ openHeatmapSettings: () => {
 homeHeatmapCells: memHeatmapCells,
 navPeriod: () => self.setState({ tab: 'period' }),
 isBusy: s.isBusy,
-composerBoxClass: 'composer-box' + (s.isBusy ? ' is-busy' : '') + ((s.attachments && s.attachments.length) ? ' has-att' : ''),
+composerBoxClass: 'composer-box' + (s.isBusy ? ' is-busy' : '') + ((s.attachments && s.attachments.length) ? ' has-att' : '') + ((s.pendingLines && s.pendingLines.length) ? ' has-pending' : ''),
 editText: s.editText,
 hasAttachments: !!(s.attachments && s.attachments.length > 0),
 attachmentPreviews: s.attachments || [],
@@ -8416,6 +8438,7 @@ this.persist();
 },
 
 newChat: () => self.newChat(),
+composerKey: (e) => self.handleComposerKey(e),
 onMsgScroll: (e) => {
   const el = e.target;
   if (el.scrollTop < 80 && (self.state._visibleMsgCount || 50) < allMsgs.length) {
