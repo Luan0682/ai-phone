@@ -126,3 +126,8 @@
 - 双协议 tools（OpenAI tool_calls / Anthropic tool_use）
 - save/update/delete_memory 执行后聊天插入记忆时间戳提示
 
+### 修复 MCP 空白（2026-07-18）
+- 根因：MCP 页面被错误嵌套在 Calendar(isPeriodPage) 内部，只有日历页时才渲染
+- 修复：关闭 period 页 sc-if 后再渲染独立 MCP 页
+- sc-if 开闭平衡 131/131
+
