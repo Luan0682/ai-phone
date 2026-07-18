@@ -286,22 +286,32 @@ button:active {
 
 <!-- header -->
 <div style="flex:none;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:9px;">
-<div style="display:flex;align-items:center;gap:8px;">
-<div onClick="{{ navChatList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;white-space:nowrap;">Chat</div>
-<button onClick="{{ openStyle }}" style="height:36px;display:flex;align-items:center;gap:6px;background:var(--bg-card, #FFF);border:none;border-radius:18px;padding:0 14px;cursor:pointer;font-family:inherit;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);min-width:0;max-width:160px;">
+<div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
+<button onClick="{{ navChatList }}" style="width:36px;height:36px;border:none;background:var(--bg-card, #FFF);border-radius:50%;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 6l-6 6 6 6" stroke="#3A362F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div style="display:flex;gap:4px;background:#F2EFE8;border-radius:18px;padding:3px;min-width:0;">
+<div onClick="{{ navChatDetailChat }}" style="text-align:center;padding:7px 12px;border-radius:16px;background:{{ chatDetailTabBgs.chat }};cursor:pointer;">
+<span style="font-size:12px;font-weight:500;color:{{ chatDetailTabFgs.chat }};">Chat</span>
+</div>
+<div onClick="{{ navChatDetailSoul }}" style="text-align:center;padding:7px 12px;border-radius:16px;background:{{ chatDetailTabBgs.soul }};cursor:pointer;">
+<span style="font-size:12px;font-weight:500;color:{{ chatDetailTabFgs.soul }};">Soul</span>
+</div>
+<div onClick="{{ navChatDetailSettings }}" style="text-align:center;padding:7px 12px;border-radius:16px;background:{{ chatDetailTabBgs.settings }};cursor:pointer;">
+<span style="font-size:12px;font-weight:500;color:{{ chatDetailTabFgs.settings }};">设置</span>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex:none;">
+<button onClick="{{ openStyle }}" style="height:36px;display:flex;align-items:center;gap:6px;background:var(--bg-card, #FFF);border:none;border-radius:18px;padding:0 14px;cursor:pointer;font-family:inherit;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);min-width:0;max-width:120px;">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
 <span style="font-size:13px;font-weight:600;color:var(--text-bold, #3A362F);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ activeStyle }}</span>
 </button>
 </div>
-
-<div style="display:flex;align-items:center;gap:8px;">
-<button onClick="{{ goSettings }}"
- style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="6" r="1.2" fill="var(--text-secondary, #48453E)"/><circle cx="12" cy="12" r="1.2" fill="var(--text-secondary, #48453E)"/><circle cx="12" cy="18" r="1.2" fill="var(--text-secondary, #48453E)"/></svg>
-</button>
-</div>
 </div>
 
+<!-- Chat messages + composer -->
+<sc-if value="{{ isChatDetailChat }}" hint-placeholder-val="{{ true }}">
 <!-- messages area -->
 <div style="flex:1;min-height:0;position:relative;">
 <div style="position:absolute;top:0;left:0;right:0;height:0px;pointer-events:none;"></div>
@@ -537,6 +547,49 @@ button:active {
 </button>
 </div>
 </sc-if>
+</sc-if>
+
+<!-- Chat detail Soul tab -->
+<sc-if value="{{ isChatDetailSoul }}" hint-placeholder-val="{{ false }}">
+<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 24px;">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
+<div onClick="{{ uploadAiAvatar }}" style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#DFF2EC;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #E7E3DA;">
+<sc-if value="{{ hasAiAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ aiAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
+<sc-if value="{{ !hasAiAvatar }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#9A958B" stroke-width="1.5"/><path d="M5 19.5c0-3.5 3.5-6.5 7-6.5s7 3 7 6.5" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></sc-if>
+</div>
+<div style="flex:1;">
+<div style="font-size:18px;font-weight:600;color:#68544B;">{{ soulName }}</div>
+<div style="font-size:11px;color:#9A958B;margin-top:2px;">{{ soulCharCount }} 字</div>
+</div>
+<button onClick="{{ saveSoulPage }}" style="border:none;background:#68544B;color:#FFF;border-radius:18px;padding:8px 16px;font-size:13px;font-family:inherit;cursor:pointer;">保存</button>
+</div>
+<sc-for list="{{ soulSections }}" as="sec" hint-placeholder-count="4">
+<div style="background:var(--bg-card, #FFF);border-radius:16px;border:1px solid var(--border-card, #EDE9E0);margin-bottom:8px;overflow:hidden;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+<div onClick="{{ sec.toggle }}" style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;">
+<span style="font-size:18px;">{{ sec.icon }}</span>
+<span style="flex:1;font-size:14px;font-weight:500;color:var(--text-primary, #1A1815);">{{ sec.title }}</span>
+<span style="font-size:11px;color:#B8B3A8;">{{ sec.charCount }}字</span>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="transform:rotate({{ sec.arrowRotate }}deg);transition:transform .2s;"><path d="M6 9l6 6 6-6" stroke="#B8B3A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<sc-if value="{{ sec.expanded }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 16px 14px;border-top:1px solid #F5F3EE;">
+<textarea value="{{ sec.content }}" onInput="{{ sec.onChange }}" placeholder="{{ sec.placeholder }}" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:10px 12px;font-size:13px;font-family:inherit;line-height:1.6;color:#1A1815;resize:vertical;min-height:100px;margin-top:12px;"></textarea>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<!-- Chat detail Settings blank -->
+<sc-if value="{{ isChatDetailSettings }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;">
+<div style="text-align:center;">
+<div style="font-size:16px;font-weight:500;color:#68544B;margin-bottom:8px;">聊天设置</div>
+<div style="font-size:13px;color:#9A958B;">页面预留，稍后填充</div>
+</div>
+</div>
+</sc-if>
 
 </div>
 </sc-if>
@@ -554,18 +607,23 @@ button:active {
 </button>
 </div>
 
-<!-- 胶囊 Tab -->
+<!-- 胶囊 Tab：Chats / Soul / Settings -->
 <div style="margin-bottom:12px;">
 <div style="display:flex;gap:4px;background:#F2EFE8;border-radius:18px;padding:3px;">
-<div style="flex:1;text-align:center;padding:7px 0;border-radius:16px;background:#68544B;">
-<span style="font-size:12px;font-weight:500;color:#FFFFFF;">Chats</span>
+<div onClick="{{ navChatSubTab }}" style="flex:1;text-align:center;padding:7px 0;border-radius:16px;background:{{ chatListTabBgs.chats }};cursor:pointer;">
+<span style="font-size:12px;font-weight:500;color:{{ chatListTabFgs.chats }};">Chats</span>
 </div>
-<div style="flex:1;text-align:center;padding:7px 0;border-radius:16px;">
-<span style="font-size:12px;font-weight:500;color:#9A958B;">Settings</span>
+<div onClick="{{ navSoulSubTab }}" style="flex:1;text-align:center;padding:7px 0;border-radius:16px;background:{{ chatListTabBgs.soul }};cursor:pointer;">
+<span style="font-size:12px;font-weight:500;color:{{ chatListTabFgs.soul }};">Soul</span>
+</div>
+<div onClick="{{ navSettingsSubTab }}" style="flex:1;text-align:center;padding:7px 0;border-radius:16px;background:{{ chatListTabBgs.settings }};cursor:pointer;">
+<span style="font-size:12px;font-weight:500;color:{{ chatListTabFgs.settings }};">设置</span>
 </div>
 </div>
 </div>
 
+<!-- Chats 内容 -->
+<sc-if value="{{ isChatSubTabChats }}" hint-placeholder-val="{{ true }}">
 <!-- 用户信息 + 搜索 -->
 <div style="margin-bottom:16px;">
 <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
@@ -649,6 +707,47 @@ button:active {
 </div>
 </div>
 </sc-for>
+</sc-if>
+
+<!-- Soul 内容（折叠栏） -->
+<sc-if value="{{ isChatSubTabSoul }}" hint-placeholder-val="{{ false }}">
+<div style="padding-bottom:24px;">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+<div onClick="{{ uploadAiAvatar }}" style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#DFF2EC;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #E7E3DA;">
+<sc-if value="{{ hasAiAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ aiAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
+<sc-if value="{{ !hasAiAvatar }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#9A958B" stroke-width="1.5"/><path d="M5 19.5c0-3.5 3.5-6.5 7-6.5s7 3 7 6.5" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></sc-if>
+</div>
+<div style="flex:1;">
+<div style="font-size:18px;font-weight:600;color:#68544B;">{{ soulName }}</div>
+<div style="font-size:11px;color:#9A958B;margin-top:2px;">{{ soulCharCount }} 字</div>
+</div>
+<button onClick="{{ saveSoulPage }}" style="border:none;background:#68544B;color:#FFF;border-radius:18px;padding:8px 16px;font-size:13px;font-family:inherit;cursor:pointer;">保存</button>
+</div>
+<sc-for list="{{ soulSections }}" as="sec" hint-placeholder-count="4">
+<div style="background:var(--bg-card, #FFF);border-radius:16px;border:1px solid var(--border-card, #EDE9E0);margin-bottom:8px;overflow:hidden;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+<div onClick="{{ sec.toggle }}" style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;">
+<span style="font-size:18px;">{{ sec.icon }}</span>
+<span style="flex:1;font-size:14px;font-weight:500;color:var(--text-primary, #1A1815);">{{ sec.title }}</span>
+<span style="font-size:11px;color:#B8B3A8;">{{ sec.charCount }}字</span>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="transform:rotate({{ sec.arrowRotate }}deg);transition:transform .2s;"><path d="M6 9l6 6 6-6" stroke="#B8B3A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<sc-if value="{{ sec.expanded }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 16px 14px;border-top:1px solid #F5F3EE;">
+<textarea value="{{ sec.content }}" onInput="{{ sec.onChange }}" placeholder="{{ sec.placeholder }}" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:10px 12px;font-size:13px;font-family:inherit;line-height:1.6;color:#1A1815;resize:vertical;min-height:100px;margin-top:12px;"></textarea>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<!-- Settings 内容 -->
+<sc-if value="{{ isChatSubTabSettings }}" hint-placeholder-val="{{ false }}">
+<div style="padding:40px 20px;text-align:center;">
+<div style="font-size:14px;color:#9A958B;margin-bottom:16px;">设置功能由独立页面提供</div>
+<button onClick="{{ navSettings }}" style="border:none;background:#68544B;color:#FFF;border-radius:18px;padding:10px 24px;font-size:14px;font-family:inherit;cursor:pointer;">打开设置页</button>
+</div>
+</sc-if>
 
 </div>
 </sc-if>
@@ -665,31 +764,34 @@ button:active {
     </div>
     <div style="font-size:13px;color:#9A958B;margin-bottom:20px;">点击名字编辑</div>
     <!-- 大数字计时 -->
-    <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;">
+    <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;margin-bottom:20px;">
       <span style="font-family:'Playfair Display','Bodoni Moda','Georgia',serif !important;font-size:72px;font-weight:300;color:#DFF2EC;letter-spacing:-0.04em;line-height:1;text-shadow:2px 2px 12px rgba(104,84,75,0.1);">{{ togetherDays }}</span>
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:1px;">
         <span style="font-size:16px;font-weight:400;color:#68544B;opacity:.7;">天</span>
         <span style="font-size:10px;color:#9A958B;">since 2026.06.30</span>
       </div>
     </div>
+    <!-- 音乐迷你卡片 -->
+    <div onClick="{{ navMusic }}" style="max-width:260px;margin:0 auto;background:rgba(255,255,255,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:20px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.04);border:1px solid rgba(255,255,255,0.4);">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1A1815,#3A362F);display:flex;align-items:center;justify-content:center;flex:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="17" r="2.5" stroke="#B8B3A8" stroke-width="1.2"/><path d="M11 17V5l10-2v12" stroke="#B8B3A8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="flex:1;min-width:0;text-align:left;">
+        <div style="font-size:13px;font-weight:500;color:#2B2620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ musicCurrentDisplay }}</div>
+        <div style="font-size:10px;color:#9A958B;margin-top:1px;">{{ musicCountDisplay }} · 点击进入</div>
+      </div>
+      <button onClick="{{ musicToggle }}" style="width:32px;height:32px;border:none;background:#1A1815;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">{{ musicPlayIcon }}</svg>
+      </button>
+    </div>
   </div>
 
   <!-- 中间留白 -->
   <div style="flex:1;"></div>
 
-  <!-- 底部：5个App卡片（苹果风格） -->
+  <!-- 底部：4个App卡片 -->
   <div style="padding:0 24px 100px;">
-    <div style="display:flex;gap:8px;justify-content:center;">
-      <!-- 聊天 -->
-      <div onClick="{{ navChatList }}" style="width:60px;height:60px;border-radius:16px;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span style="font-size:9px;color:#68544B;font-weight:500;">聊天</span>
-      </div>
-      <!-- 纪念日 -->
-      <div onClick="{{ openAnnivSheet }}" style="width:60px;height:60px;border-radius:16px;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 5v16l7-4 7 4V5a2 2 0 00-2-2H7a2 2 0 00-2 2z" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span style="font-size:9px;color:#68544B;font-weight:500;">纪念日</span>
-      </div>
+    <div style="display:flex;gap:12px;justify-content:center;">
       <!-- 日历 -->
       <div onClick="{{ navPeriod }}" style="width:60px;height:60px;border-radius:16px;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M3 10h18M8 2v4M16 2v4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -700,10 +802,15 @@ button:active {
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M8 7h8M8 11h5" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
         <span style="font-size:9px;color:#68544B;font-weight:500;">日记</span>
       </div>
-      <!-- 设置 -->
-      <div onClick="{{ navSettings }}" style="width:60px;height:60px;border-radius:16px;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <span style="font-size:9px;color:#68544B;font-weight:500;">设置</span>
+      <!-- 正则 -->
+      <div onClick="{{ openRegexEditor }}" style="width:60px;height:60px;border-radius:16px;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 7.2H21l-6 4.4 2.4 7.2L12 16.4l-5.4 4.4L9 13.6 3 9.2h6.6z" stroke="#68544B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span style="font-size:9px;color:#68544B;font-weight:500;">正则</span>
+      </div>
+      <!-- 音乐 -->
+      <div onClick="{{ navMusic }}" style="width:60px;height:60px;border-radius:16px;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="17" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M11 17V5l10-2v12" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="15" r="3" stroke="#68544B" stroke-width="1.5"/></svg>
+        <span style="font-size:9px;color:#68544B;font-weight:500;">音乐</span>
       </div>
     </div>
   </div>
@@ -2786,6 +2893,89 @@ button:active {
 </div>
 </sc-if>
 
+<!-- ========== MUSIC FULL PAGE ========== -->
+<sc-if value="{{ isMusicPage }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:#F5F3EE;display:flex;flex-direction:column;width:100%;">
+
+  <!-- 顶栏 -->
+  <div style="flex:none;padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;">
+    <button onClick="{{ navHome }}" style="width:36px;height:36px;border:none;background:rgba(26,24,21,.06);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M14 6l-6 6 6 6" stroke="#3A362F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <span style="font-size:16px;font-weight:500;color:#2B2620;">音乐</span>
+    <button onClick="{{ openMusicSettings }}" style="width:36px;height:36px;border:none;background:rgba(26,24,21,.06);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2.2" stroke="#3A362F" stroke-width="1.6"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#3A362F" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- 专辑封面区 -->
+  <div style="flex:none;display:flex;flex-direction:column;align-items:center;padding:10px 24px 0;">
+    <div style="width:200px;height:200px;border-radius:24px;background:linear-gradient(135deg,#1A1815,#3A362F);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(0,0,0,0.15);animation:{{ musicDiscAnim }};">
+      <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="rgba(255,255,255,.3)" stroke-width="1"/><path d="M9 18V5l12-2v13" stroke="rgba(255,255,255,.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div style="margin-top:20px;text-align:center;">
+      <div style="font-size:18px;font-weight:600;color:#2B2620;">{{ musicCurrentDisplay }}</div>
+      <div style="font-size:12px;color:#9A958B;margin-top:4px;">{{ musicCountDisplay }}</div>
+    </div>
+  </div>
+
+  <!-- 进度条 -->
+  <div style="flex:none;padding:24px 28px 0;">
+    <div style="height:4px;border-radius:2px;background:#E7E3DA;position:relative;cursor:pointer;">
+      <div style="width:{{ musicProgressPercent }};height:100%;border-radius:2px;background:#68544B;transition:width .3s;"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;">
+      <span style="font-size:10px;color:#B8B3A8;">{{ musicTimeCurrent }}</span>
+      <span style="font-size:10px;color:#B8B3A8;">{{ musicTimeTotal }}</span>
+    </div>
+  </div>
+
+  <!-- 控制按钮 -->
+  <div style="flex:none;display:flex;align-items:center;justify-content:center;gap:28px;padding:20px 24px 12px;">
+    <button onClick="{{ musicPrev }}" style="width:40px;height:40px;border:none;background:transparent;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.6;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 20L9 12l10-8v16z" stroke="#2B2620" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button onClick="{{ musicToggle }}" style="width:56px;height:56px;border:none;background:#1A1815;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">{{ musicPlayIcon }}</svg>
+    </button>
+    <button onClick="{{ musicNext }}" style="width:40px;height:40px;border:none;background:transparent;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.6;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 4l10 8-10 8V4z" stroke="#2B2620" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button onClick="{{ musicToggleLoop }}" style="width:40px;height:40px;border:none;background:transparent;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17 2l4 4-4 4M3 11V9a4 4 0 014-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 01-4 4H3" stroke="{{ musicLoopColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <!-- 播放列表 -->
+  <div style="flex:1;min-height:0;padding:4px 20px 100px;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <span style="font-size:12px;font-weight:600;color:#9A958B;letter-spacing:.3px;">播放列表</span>
+      <button onClick="{{ addMusicFiles }}" style="border:none;background:rgba(26,24,21,.06);border-radius:12px;padding:5px 10px;font-size:11px;font-family:inherit;color:#3A362F;cursor:pointer;display:flex;align-items:center;gap:4px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round"/></svg>
+        添加
+      </button>
+    </div>
+    <sc-for list="{{ musicTrackList }}" as="tk" hint-placeholder-count="3">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:12px;background:{{ tk.bg }};margin-bottom:2px;cursor:pointer;" onClick="{{ tk.play }}">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+        <span style="font-size:11px;color:{{ tk.numColor }};width:16px;text-align:center;">{{ tk.num }}</span>
+        <span style="font-size:13px;color:{{ tk.nameColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ tk.name }}</span>
+      </div>
+      <button onClick="{{ tk.del }}" style="border:none;background:transparent;cursor:pointer;opacity:.3;padding:4px;flex:none;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    </sc-for>
+    <sc-if value="{{ musicListEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="text-align:center;padding:30px 0;font-size:13px;color:#B8B3A8;">还没有音乐，点添加选择音频文件</div>
+    </sc-if>
+  </div>
+
+</div>
+</sc-if>
+
 <!-- hidden file inputs -->
 <input type="file" accept=".txt,.html,.htm,.md,.zip,.json,.csv,.xml,.pdf,.doc,.docx,image/*" style="display:none;" id="kelFileInput" onChange="{{ handleFileSelect }}">
 <input type="file" accept=".json" style="display:none;" id="kelImportInput" onChange="{{ handleImportFile }}">
@@ -2812,10 +3002,10 @@ button:active {
     </div>
     <span style="font-size:9px;color:#68544B;font-weight:500;">聊天</span>
   </button>
-  <!-- MCP -->
-  <button onClick="{{ navMCP }}" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:transparent;cursor:pointer;padding:4px 6px;min-width:40px;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="8" rx="2" stroke="{{ navMCPColor }}" stroke-width="1.8"/><rect x="2" y="14" width="20" height="8" rx="2" stroke="{{ navMCPColor }}" stroke-width="1.8"/><path d="M12 10v4" stroke="{{ navMCPColor }}" stroke-width="1.8"/></svg>
-    <span style="font-size:9px;color:{{ navMCPColor }};">MCP</span>
+  <!-- 音乐 -->
+  <button onClick="{{ navMusic }}" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:transparent;cursor:pointer;padding:4px 6px;min-width:40px;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="17" r="3" stroke="{{ navMusicColor }}" stroke-width="1.8"/><path d="M11 17V5l10-2v12" stroke="{{ navMusicColor }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="15" r="3" stroke="{{ navMusicColor }}" stroke-width="1.8"/></svg>
+    <span style="font-size:9px;color:{{ navMusicColor }};">音乐</span>
   </button>
   <!-- 设置 -->
   <button onClick="{{ navSettings }}" style="display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:transparent;cursor:pointer;padding:4px 6px;min-width:40px;">
@@ -3027,6 +3217,8 @@ memSubPage: '',
 memSubSearch: '',
 memSearchQuery: '',
 soulActiveTab: 'personality',
+chatListSubTab: 'chats',
+chatDetailTab: 'chat',
 petSectionOpen: false,
 soulSections: {
   personality: { expanded: false, content: saved.soulPersonality || '' },
@@ -4943,7 +5135,7 @@ this.persist();
 }
 
 openChat(id) {
-this.setState({ currentChatId: id, drawer: false, tab: 'chat', sidebarOpen: false, pendingLines: [] });
+this.setState({ currentChatId: id, drawer: false, tab: 'chat', sidebarOpen: false, pendingLines: [], chatDetailTab: 'chat' });
 this.clearComposer(true);
 this.persist();
 this.scrollToBottom();
@@ -7164,14 +7356,49 @@ isSettings: s.tab === 'settings',
 // ===== 底栏导航颜色 =====
 navHomeColor: s.tab === 'home' ? '#68544B' : '#9A958B',
 navMemColor: s.tab === 'memory' ? '#68544B' : '#9A958B',
-navMCPColor: s.tab === 'mcp' ? '#68544B' : '#9A958B',
+navMusicColor: s.tab === 'music' ? '#68544B' : '#9A958B',
 navSettingsColor: s.tab === 'settings' ? '#68544B' : '#9A958B',
 // ===== ChatList 页面数据 =====
+chatListSubTab: s.chatListSubTab || 'chats',
+isChatSubTabChats: (s.chatListSubTab || 'chats') === 'chats',
+isChatSubTabSoul: (s.chatListSubTab || 'chats') === 'soul',
+isChatSubTabSettings: (s.chatListSubTab || 'chats') === 'settings',
+chatListTabBgs: {
+  chats: (s.chatListSubTab || 'chats') === 'chats' ? '#68544B' : 'transparent',
+  soul: (s.chatListSubTab || 'chats') === 'soul' ? '#68544B' : 'transparent',
+  settings: (s.chatListSubTab || 'chats') === 'settings' ? '#68544B' : 'transparent'
+},
+chatListTabFgs: {
+  chats: (s.chatListSubTab || 'chats') === 'chats' ? '#FFFFFF' : '#9A958B',
+  soul: (s.chatListSubTab || 'chats') === 'soul' ? '#FFFFFF' : '#9A958B',
+  settings: (s.chatListSubTab || 'chats') === 'settings' ? '#FFFFFF' : '#9A958B'
+},
+navChatSubTab: () => self.setState({ chatListSubTab: 'chats' }),
+navSoulSubTab: () => self.setState({ chatListSubTab: 'soul' }),
+navSettingsSubTab: () => self.setState({ chatListSubTab: 'settings' }),
+// ===== Chat Detail tabs =====
+chatDetailTab: s.chatDetailTab || 'chat',
+isChatDetailChat: (s.chatDetailTab || 'chat') === 'chat',
+isChatDetailSoul: (s.chatDetailTab || 'chat') === 'soul',
+isChatDetailSettings: (s.chatDetailTab || 'chat') === 'settings',
+chatDetailTabBgs: {
+  chat: (s.chatDetailTab || 'chat') === 'chat' ? '#68544B' : 'transparent',
+  soul: (s.chatDetailTab || 'chat') === 'soul' ? '#68544B' : 'transparent',
+  settings: (s.chatDetailTab || 'chat') === 'settings' ? '#68544B' : 'transparent'
+},
+chatDetailTabFgs: {
+  chat: (s.chatDetailTab || 'chat') === 'chat' ? '#FFFFFF' : '#9A958B',
+  soul: (s.chatDetailTab || 'chat') === 'soul' ? '#FFFFFF' : '#9A958B',
+  settings: (s.chatDetailTab || 'chat') === 'settings' ? '#FFFFFF' : '#9A958B'
+},
+navChatDetailChat: () => self.setState({ chatDetailTab: 'chat' }),
+navChatDetailSoul: () => self.setState({ chatDetailTab: 'soul' }),
+navChatDetailSettings: () => self.setState({ chatDetailTab: 'settings' }),
 userName: '江吟',
 chatListCount: Object.values(s.chats).filter(c => c.messages && c.messages.length > 0).length + ' 段对话',
 hasPinnedChats: Object.values(s.chats).some(c => c.pinned),
-pinnedChats: Object.values(s.chats).filter(c => c.pinned && c.messages && c.messages.length > 0).sort((a,b) => (b.lastTime||0)-(a.lastTime||0)).map(c => ({ title: c.title || '新对话', preview: (() => { const last = (c.messages||[])[c.messages.length-1]; return last ? ((last.role==='user'?'你：':'Kel：') + ((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)) : ''; })(), timeLabel: c.lastTime ? (() => { const d=new Date(c.lastTime); const now=new Date(); if(d.toDateString()===now.toDateString()) return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); const diff=Math.floor((now-d)/(1000*60*60*24)); if(diff===1) return '昨天'; if(diff<7) return diff+'天前'; return (d.getMonth()+1)+'/'+d.getDate(); })() : '', open: () => { self.setState({ currentChatId: c.id, tab: 'chat' }); self.persist(); self.scrollToBottom(); }, longPress: (e) => { e.preventDefault(); const action=prompt('1=改名 2=取消置顶 3=删除',''); if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}} else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:false};self.setState({chats:ch});self.persist();self.show('已取消置顶');} else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);} } })),
-chatGroups: (() => { const groups=[]; const allChats=Object.values(s.chats).filter(c=>!c.pinned&&c.messages&&c.messages.length>0).sort((a,b)=>(b.lastTime||0)-(a.lastTime||0)); const now=new Date(); const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(); const weekAgo=todayStart-7*86400000; const recentChats=[]; const monthMap={}; for(const c of allChats){ const ts=c.lastTime||0; if(ts>=weekAgo){recentChats.push(c);} else { const d=new Date(ts); const key=d.getFullYear()+'年'+(d.getMonth()+1)+'月'; if(!monthMap[key])monthMap[key]=[]; monthMap[key].push(c); } } const mapChat=(c)=>({ title:c.title||'新对话', preview:(()=>{const last=(c.messages||[])[c.messages.length-1];return last?((last.role==='user'?'你：':'Kel：')+((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)):''})(), timeLabel:c.lastTime?(()=>{const d=new Date(c.lastTime);const now2=new Date();if(d.toDateString()===now2.toDateString())return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');const diff=Math.floor((now2-d)/(1000*60*60*24));if(diff===1)return'昨天';if(diff<7)return diff+'天前';return(d.getMonth()+1)+'/'+d.getDate();})():'', open:()=>{self.setState({currentChatId:c.id,tab:'chat'});self.persist();self.scrollToBottom();}, longPress:(e)=>{e.preventDefault();const action=prompt('1=改名 2=置顶 3=删除','');if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}}else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:true};self.setState({chats:ch});self.persist();self.show('已置顶');}else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);}} }); if(recentChats.length>0)groups.push({label:'近期',chats:recentChats.map(mapChat)}); for(const[key,chats2] of Object.entries(monthMap).sort((a,b)=>b[0].localeCompare(a[0]))){groups.push({label:key,chats:chats2.map(mapChat)});} return groups; })(),
+pinnedChats: Object.values(s.chats).filter(c => c.pinned && c.messages && c.messages.length > 0).sort((a,b) => (b.lastTime||0)-(a.lastTime||0)).map(c => ({ title: c.title || '新对话', preview: (() => { const last = (c.messages||[])[c.messages.length-1]; return last ? ((last.role==='user'?'你：':'Kel：') + ((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)) : ''; })(), timeLabel: c.lastTime ? (() => { const d=new Date(c.lastTime); const now=new Date(); if(d.toDateString()===now.toDateString()) return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); const diff=Math.floor((now-d)/(1000*60*60*24)); if(diff===1) return '昨天'; if(diff<7) return diff+'天前'; return (d.getMonth()+1)+'/'+d.getDate(); })() : '', open: () => { self.setState({ currentChatId: c.id, tab: 'chat', chatDetailTab: 'chat' }); self.persist(); self.scrollToBottom(); }, longPress: (e) => { e.preventDefault(); const action=prompt('1=改名 2=取消置顶 3=删除',''); if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}} else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:false};self.setState({chats:ch});self.persist();self.show('已取消置顶');} else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);} } })),
+chatGroups: (() => { const groups=[]; const allChats=Object.values(s.chats).filter(c=>!c.pinned&&c.messages&&c.messages.length>0).sort((a,b)=>(b.lastTime||0)-(a.lastTime||0)); const now=new Date(); const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(); const weekAgo=todayStart-7*86400000; const recentChats=[]; const monthMap={}; for(const c of allChats){ const ts=c.lastTime||0; if(ts>=weekAgo){recentChats.push(c);} else { const d=new Date(ts); const key=d.getFullYear()+'年'+(d.getMonth()+1)+'月'; if(!monthMap[key])monthMap[key]=[]; monthMap[key].push(c); } } const mapChat=(c)=>({ title:c.title||'新对话', preview:(()=>{const last=(c.messages||[])[c.messages.length-1];return last?((last.role==='user'?'你：':'Kel：')+((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)):''})(), timeLabel:c.lastTime?(()=>{const d=new Date(c.lastTime);const now2=new Date();if(d.toDateString()===now2.toDateString())return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');const diff=Math.floor((now2-d)/(1000*60*60*24));if(diff===1)return'昨天';if(diff<7)return diff+'天前';return(d.getMonth()+1)+'/'+d.getDate();})():'', open:()=>{self.setState({currentChatId:c.id,tab:'chat',chatDetailTab:'chat'});self.persist();self.scrollToBottom();}, longPress:(e)=>{e.preventDefault();const action=prompt('1=改名 2=置顶 3=删除','');if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}}else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:true};self.setState({chats:ch});self.persist();self.show('已置顶');}else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);}} }); if(recentChats.length>0)groups.push({label:'近期',chats:recentChats.map(mapChat)}); for(const[key,chats2] of Object.entries(monthMap).sort((a,b)=>b[0].localeCompare(a[0]))){groups.push({label:key,chats:chats2.map(mapChat)});} return groups; })(),
 // ===== Settings 页面 =====
 settingsSearchQuery: s.searchQuery || '',
 settingsSearchChange: (e) => { self.setState({ searchQuery: e.target.value }); self.searchChats(e.target.value); },
@@ -7204,10 +7431,12 @@ navHome: () => self.setState({ tab: 'home' }),
 navMemory: () => self.setState({ tab: 'memory', memSubPage: false }),
 navChatList: () => self.setState({ tab: 'chatlist' }),
 navMCP: () => self.setState({ tab: 'mcp' }),
+navMusic: () => self.setState({ tab: 'music' }),
 navSettings: () => self.setState({ tab: 'settings' }),
 isChat: s.tab === 'chat',
 isHome: s.tab === 'home',
 isMore: s.tab === 'more',
+isMusicPage: s.tab === 'music',
 isSoulPage: s.tab === 'soul',
 isPeriodPage: s.tab === 'period',
 // ===== Period/Calendar Data =====
@@ -8189,6 +8418,7 @@ regexSetOutput: () => self.setState({ regexEditTarget: 'output' }),
 regexSetInput: () => self.setState({ regexEditTarget: 'input' }),
 regexSetBoth: () => self.setState({ regexEditTarget: 'both' }),
 newRegex: () => self.openRegexEditor(null),
+openRegexEditor: () => self.openRegexEditor(null),
 saveRegex: () => self.saveRegexRule(),
 deleteRegex: () => { if (s.regexEditId) self.deleteRegexRule(s.regexEditId); },
 diaryMonthLabel: (() => { const m = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']; return m[s.diaryViewMonth] || ''; })(),
@@ -8631,7 +8861,7 @@ self.setState({ deleteConfirmType: '', deleteConfirmId: null });
 
 // ======== ACTIONS ========
 openChatSettings: () => self.setState({ tab: 'settings', plus: false, drawer: false }),
-goSettings: () => self.setState({ tab: 'settings' }),
+goSettings: () => self.setState({ chatDetailTab: 'settings' }),
 clearQuote: () => self.setState({ quotedMsg: null }),
 toggleProfile: () => self.setState(v => ({ profile: !v.profile, drawer: false })),
 closeImagePreview: () => self.setState({ imagePreviewOpen: false, imagePreviewUrl: '' }),
@@ -8645,6 +8875,7 @@ navWorldbook: () => self.setState({ tab: 'memory', drawer: false }),
 navMemory: () => self.setState({ tab: 'memory', drawer: false }),
 navMCP: () => self.setState({ tab: 'mcp', drawer: false }),
 navDiary: () => { const d=new Date(); const todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); self.setState({ tab:'diary', drawer:false, diarySelectedDate:todayStr, diaryWeekBase:null }); },
+navMusic: () => self.setState({ tab: 'music', drawer: false }),
 navRegex: () => self.setState({ tab: 'regex', drawer: false }),
 // ===== 导航函数 =====
 navHome: () => {
@@ -8977,6 +9208,7 @@ toggleKeepAlive: () => {
   }
 },
 toggleMusicPlayer: () => self.setState(v => ({ musicPlayerOpen: !v.musicPlayerOpen })),
+openMusicSettings: () => self.setState({ musicSettingsOpen: !s.musicSettingsOpen }),
 addMusicFiles: () => self._addMusicFile(),
 errorLogOpen: s.errorLogOpen,
 errorLogCount: (s.errorLogs || []).length + ' 条',
@@ -9036,6 +9268,9 @@ musicPlayerOpen: s.musicPlayerOpen,
 closeMusicPlayer: () => self.setState({ musicPlayerOpen: false }),
 musicCurrentDisplay: s.musicPlaying ? (s.musicCurrentName || '播放中') : '未播放',
 musicCountDisplay: (self._musicList || []).length + ' 首',
+musicProgressPercent: (() => { try { const a = self._musicAudio; if (!a || !a.duration || a.duration === 0) return '0%'; return Math.round((a.currentTime / a.duration) * 100) + '%'; } catch(e) { return '0%'; } })(),
+musicTimeCurrent: (() => { try { const a = self._musicAudio; if (!a || !a.currentTime) return '0:00'; const m = Math.floor(a.currentTime / 60); const s = Math.floor(a.currentTime % 60); return m + ':' + String(s).padStart(2,'0'); } catch(e) { return '0:00'; } })(),
+musicTimeTotal: (() => { try { const a = self._musicAudio; if (!a || !a.duration) return '0:00'; const m = Math.floor(a.duration / 60); const s = Math.floor(a.duration % 60); return m + ':' + String(s).padStart(2,'0'); } catch(e) { return '0:00'; } })(),
 musicDiscAnim: s.musicPlaying ? 'breathe 2s ease-in-out infinite' : 'none',
 musicPlayIcon: s.musicPlaying ? '<path d="M6 4h4v16H6V4ZM14 4h4v16h-4V4Z" fill="#F5F3EE"/>' : '<path d="M8 5v14l11-7L8 5Z" fill="#F5F3EE"/>',
 musicToggle: () => self._toggleMusic(),
