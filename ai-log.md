@@ -112,3 +112,10 @@
 - 详情编辑 sheet 已接真保存
 - 语法通过；准备 scp 部署
 
+### 导航重构：去掉底栏（2026-07-18）
+- Home 增加 Chats / Memory / MCP / Settings 卡片，样式与其他 App 卡一致
+- 删除整条底部导航栏
+- Memory 左上角英文 Memory 点击回 Home
+- Library 英文标题点击回记忆第一层 Hub
+- 分类/详情/回收站：英文标题作返回，无单独返回箭头按钮
+

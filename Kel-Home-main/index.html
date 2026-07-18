@@ -669,7 +669,7 @@ button:active {
   <div style="flex:1;"></div>
 
   <!-- 底部：App 卡片（仅图标，间距可调） -->
-  <div style="padding:0 20px 100px;">
+  <div style="padding:0 20px 40px;">
     <div style="display:flex;gap:{{ homeCardGap }}px;justify-content:center;align-items:center;flex-wrap:wrap;">
       <div onClick="{{ navPeriod }}" title="Calendar" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M3 10h18M8 2v4M16 2v4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -685,6 +685,18 @@ button:active {
       </div>
       <div onClick="{{ navTheme }}" title="Theme" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/></svg>
+      </div>
+      <div onClick="{{ navChatList }}" title="Chats" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div onClick="{{ navMemory }}" title="Memory" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#68544B" stroke-width="1.5"/><path d="M8 7h8M8 11h8" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div onClick="{{ navMCP }}" title="MCP" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="8" rx="2" stroke="#68544B" stroke-width="1.5"/><rect x="2" y="14" width="20" height="8" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M12 10v4" stroke="#68544B" stroke-width="1.5"/></svg>
+      </div>
+      <div onClick="{{ navSettings }}" title="Settings" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
     </div>
   </div>
@@ -1250,12 +1262,12 @@ button:active {
 
 <!-- ========== MEMORY PAGE (Soul Memory v2 shell) ========== -->
 <sc-if value="{{ isMemoryPage }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 100px;width:100%;background:#FFFFFF;color:#1A1A1A;--mem-bg:#FFFFFF;--mem-card:#F5F5F7;--mem-text:#1A1A1A;--mem-muted:#8E8E93;--mem-line:#EBEBEB;--mem-accent:#3A3A3C;">
+<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 40px;width:100%;background:#FFFFFF;color:#1A1A1A;--mem-bg:#FFFFFF;--mem-card:#F5F5F7;--mem-text:#1A1A1A;--mem-muted:#8E8E93;--mem-line:#EBEBEB;--mem-accent:#3A3A3C;">
 
 <!-- ===== HUB ===== -->
 <sc-if value="{{ isMemViewHub }}" hint-placeholder-val="{{ true }}">
 <div style="padding:20px 0 12px;display:flex;align-items:center;justify-content:space-between;">
-<div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:26px;font-weight:400;color:#1A1A1A;">Memory</div>
+<div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:26px;font-weight:400;color:#1A1A1A;cursor:pointer;">Memory</div>
 <span style="font-size:12px;color:#8E8E93;">{{ memHubTotalLabel }}</span>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
@@ -1302,12 +1314,7 @@ button:active {
 <!-- ===== LIBRARY ===== -->
 <sc-if value="{{ isMemViewLibrary }}" hint-placeholder-val="{{ false }}">
 <div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
-<div style="display:flex;align-items:center;gap:10px;">
-<button onClick="{{ memGoHub }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-<div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;">Library</div>
-</div>
+<div onClick="{{ memGoHub }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;cursor:pointer;">Library</div>
 <button onClick="{{ memOpenSettings }}" title="Settings" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#1A1A1A" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg>
 </button>
@@ -1345,14 +1352,9 @@ button:active {
 <!-- ===== TYPE LIST ===== -->
 <sc-if value="{{ isMemViewTypeList }}" hint-placeholder-val="{{ false }}">
 <div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
-<div style="display:flex;align-items:center;gap:10px;min-width:0;">
-<button onClick="{{ memGoLibrary }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-<div style="min-width:0;">
-<div style="font-size:16px;font-weight:600;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ memTypeListTitle }}</div>
+<div style="min-width:0;flex:1;padding-right:10px;">
+<div onClick="{{ memGoLibrary }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ memTypeListTitle }}</div>
 <div style="font-size:11px;color:#8E8E93;margin-top:2px;">{{ memTypeListCount }} 条</div>
-</div>
 </div>
 <button onClick="{{ memCycleSort }}" style="border:none;background:#F5F5F7;border-radius:14px;padding:8px 12px;font-size:11px;color:#3A3A3C;font-family:inherit;cursor:pointer;flex:none;">{{ memSortLabel }}</button>
 </div>
@@ -1374,11 +1376,8 @@ button:active {
 
 <!-- ===== DETAIL ===== -->
 <sc-if value="{{ isMemViewDetail }}" hint-placeholder-val="{{ false }}">
-<div style="padding:18px 0 12px;display:flex;align-items:center;gap:10px;">
-<button onClick="{{ memDetailBack }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-<div style="font-size:16px;font-weight:600;color:#1A1A1A;">详情</div>
+<div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
+<div onClick="{{ memDetailBack }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;cursor:pointer;">Detail</div>
 </div>
 <div style="background:#F5F5F7;border-radius:18px;padding:16px;margin-bottom:12px;">
 <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center;">
@@ -1420,14 +1419,9 @@ button:active {
 <!-- ===== RECYCLE ===== -->
 <sc-if value="{{ isMemViewRecycle }}" hint-placeholder-val="{{ false }}">
 <div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
-<div style="display:flex;align-items:center;gap:10px;">
-<button onClick="{{ memGoHub }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
 <div>
-<div style="font-size:16px;font-weight:600;color:#1A1A1A;">遗忘角落</div>
+<div onClick="{{ memGoHub }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;cursor:pointer;">Recycle</div>
 <div style="font-size:11px;color:#8E8E93;margin-top:2px;">回收站 · {{ memRecycleCount }}</div>
-</div>
 </div>
 </div>
 <sc-if value="{{ memRecycleHasItem }}" hint-placeholder-val="{{ false }}">
@@ -2667,28 +2661,6 @@ button:active {
 
 </div>
 
-<!-- 底部tab栏：仅图标，聊天页隐藏 -->
-<sc-if value="{{ !isChat }}" hint-placeholder-val="{{ true }}">
-<div style="position:fixed;bottom:16px;left:12px;right:12px;padding:10px 12px;background:rgba(255,248,240,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:28px;box-shadow:0 8px 32px rgba(0,0,0,0.08),0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:space-around;z-index:9999;">
-  <button onClick="{{ navHome }}" title="Home" style="display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;padding:6px;min-width:40px;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12l9-9 9 9" stroke="{{ navHomeColor }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9" stroke="{{ navHomeColor }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
-  <button onClick="{{ navMemory }}" title="Memory" style="display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;padding:6px;min-width:40px;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="{{ navMemColor }}" stroke-width="1.8" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="{{ navMemColor }}" stroke-width="1.8"/><path d="M8 7h8M8 11h8" stroke="{{ navMemColor }}" stroke-width="1.8" stroke-linecap="round"/></svg>
-  </button>
-  <button onClick="{{ navChatList }}" title="Chat" style="display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;padding:0;margin-top:-8px;">
-    <div style="width:54px;height:54px;border-radius:50%;background:#68544B;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(104,84,75,0.35);">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-  </button>
-  <button onClick="{{ navMCP }}" title="MCP" style="display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;padding:6px;min-width:40px;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="8" rx="2" stroke="{{ navMCPColor }}" stroke-width="1.8"/><rect x="2" y="14" width="20" height="8" rx="2" stroke="{{ navMCPColor }}" stroke-width="1.8"/><path d="M12 10v4" stroke="{{ navMCPColor }}" stroke-width="1.8"/></svg>
-  </button>
-  <button onClick="{{ navSettings }}" title="Settings" style="display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;padding:6px;min-width:40px;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="{{ navSettingsColor }}" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="{{ navSettingsColor }}" stroke-width="1.8" stroke-linecap="round"/></svg>
-  </button>
-</div>
-</sc-if>
 </x-dc>
 
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
