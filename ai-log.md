@@ -139,3 +139,52 @@
 - 导入后同步回收站/设置到 KelMemories
 - 子页底部 padding 从 100 收到 40（适配无底栏）
 
+## 2026-07-18 ~ 07-19 深夜工作
+
+### 记忆系统完全重写（灵魂记忆库）
+- Phase A：删旧记忆 UI，新建纯白三层壳（Hub/Library/Detail/Recycle/Settings）
+- Phase B：真 CRUD + 回收站 + 设置持久化 + 防 demo 写穿
+- Phase C：loadMemoriesForContext 替代旧 decay 注入；OpenAI+Anthropic 双协议 tools（save/update/delete_memory）；聊天记忆时间戳提示
+- Phase D：列表无限滚动、回收站便签本翻页+音效、token 估算细化、导出/导入对齐 v5.0
+
+### 回收站便签本重做
+- 改为整页便签本（一页 3~4 条按字数）
+- 书本翻页动画 + Web Audio 翻页音效
+- 便签纸线条 / 装订线 / 纸张阴影
+
+### 云备份到服务器
+- Settings：云备份上传 / 云备份列表恢复删除
+- 后端 /api/backup GET POST GET:id DELETE
+- 服务器 /home/app-data/backups，最多保留 20 份
+- 已测通（手机有一份真实备份）
+
+### 导航重构
+- 删除整条底部导航栏
+- Home 加 Chats/Memory/MCP/Settings 卡片（左对齐换行）
+- 所有子页左上角英文标题即返回；Memory Library 回 Hub
+- MCP 从 Calendar 嵌套中拆出（修复空白）
+
+### 聊天区域优化
+- 右上角更多弹层 → 聊天设置（独立页，线性返回）
+- 聊天设置可调：气泡间距/字体/内边距/最大宽度/字间距/边框间距/头像
+- 用户消息发给 AI 自带时间戳（tWithTs），去掉旧重复时间线
+- 设置里的字体/头像大小移入聊天设置
+
+### 其他
+- 纪念日/约定 UI 入口已移除；独立 Persona 页禁用
+- Style 并入 Soul 折叠栏
+- 音乐设置：音量 + 网易云 API/搜索/歌曲 ID；进度条实时刷新+seek
+- 主题卡片尺寸滑块、正则完整页
+- 轻清理：底栏颜色绑定、空 demo seed
+
+### 数据事故
+- 部署新记忆 UI 时手机端数据丢失（浏览器 persist 空状态覆盖）
+- 7/17 git 备份可恢复但用户拒绝（过时）
+- 已加防护：空迁移/空双写不再 clear；部署前备份提醒写入 memory
+
+### 状态
+- 本地最新 commit：a69a612
+- GitHub 比 origin 超前约 9 个 commit（用户手动上传）
+- 线上 kel-home.xyz 已部署最新
+- 下一步：Termux MCP 对接（用户自己搞）/ 更深残留清理
+
