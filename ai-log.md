@@ -131,3 +131,11 @@
 - 修复：关闭 period 页 sc-if 后再渲染独立 MCP 页
 - sc-if 开闭平衡 131/131
 
+### 记忆 Phase D 打磨（2026-07-18）
+- 列表：页面滚动触底自动加载更多 + 按钮兜底
+- 回收站：0.6s rotateY 翻页动效
+- estimateTokens 细化
+- 导出/导入含 memRecycle + memSettings，版本 5.0-soul-mem
+- 导入后同步回收站/设置到 KelMemories
+- 子页底部 padding 从 100 收到 40（适配无底栏）
+

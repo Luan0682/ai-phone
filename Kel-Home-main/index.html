@@ -717,7 +717,7 @@ button:active {
 
 <!-- ========== THEME PAGE ========== -->
 <sc-if value="{{ isThemePage }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 100px;width:100%;">
+<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 40px;width:100%;">
   <div style="padding:20px 0 16px;">
     <div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:26px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Theme</div>
   </div>
@@ -1272,7 +1272,7 @@ button:active {
 
 <!-- ========== MEMORY PAGE (Soul Memory v2 shell) ========== -->
 <sc-if value="{{ isMemoryPage }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 40px;width:100%;background:#FFFFFF;color:#1A1A1A;--mem-bg:#FFFFFF;--mem-card:#F5F5F7;--mem-text:#1A1A1A;--mem-muted:#8E8E93;--mem-line:#EBEBEB;--mem-accent:#3A3A3C;">
+<div class="sa" id="kel-mem-page-scroll" onScroll="{{ memPageScroll }}" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 40px;width:100%;background:#FFFFFF;color:#1A1A1A;--mem-bg:#FFFFFF;--mem-card:#F5F5F7;--mem-text:#1A1A1A;--mem-muted:#8E8E93;--mem-line:#EBEBEB;--mem-accent:#3A3A3C;">
 
 <!-- ===== HUB ===== -->
 <sc-if value="{{ isMemViewHub }}" hint-placeholder-val="{{ true }}">
@@ -1344,6 +1344,7 @@ button:active {
 </sc-for>
 </div>
 <div style="font-size:12px;font-weight:600;color:#8E8E93;margin-bottom:8px;">全部 · {{ memListVisibleCount }}</div>
+<div id="kel-mem-list-scroll" onScroll="{{ memListScroll }}" style="max-height:none;">
 <sc-for list="{{ memListVisible }}" as="m" hint-placeholder-count="5">
 <div onClick="{{ m.open }}" style="background:#F5F5F7;border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;">
 <div style="width:8px;height:8px;border-radius:50%;background:{{ m.moodColor }};flex:none;"></div>
@@ -1352,8 +1353,10 @@ button:active {
 </div>
 </sc-for>
 <sc-if value="{{ memListHasMore }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:12px 0 4px;font-size:11px;color:#B8B3A8;">上滑加载更多 · {{ memListLoadedLabel }}</div>
 <button onClick="{{ memLoadMore }}" style="width:100%;border:none;background:#F5F5F7;border-radius:14px;padding:12px;font-size:13px;color:#3A3A3C;font-family:inherit;cursor:pointer;margin-top:4px;">加载更多</button>
 </sc-if>
+</div>
 <sc-if value="{{ memListEmpty }}" hint-placeholder-val="{{ false }}">
 <div style="text-align:center;padding:30px 0;font-size:13px;color:#8E8E93;">没有匹配的记忆</div>
 </sc-if>
@@ -1435,13 +1438,17 @@ button:active {
 </div>
 </div>
 <sc-if value="{{ memRecycleHasItem }}" hint-placeholder-val="{{ false }}">
-<div style="background:#FBF7E8;border-radius:16px;padding:18px 16px;box-shadow:0 8px 24px rgba(0,0,0,.06);transform:rotate({{ memRecycleRotate }}deg);margin:12px 8px 18px;">
+<div style="perspective:1000px;margin:12px 4px 18px;">
+<div style="transform-style:preserve-3d;transition:transform .6s ease-in-out;transform:{{ memRecycleFlipTransform }};">
+<div style="background:#FBF7E8;border-radius:16px;padding:18px 16px;box-shadow:0 10px 28px rgba(0,0,0,.08), 0 1px 0 rgba(255,255,255,.6) inset;transform:rotate({{ memRecycleRotate }}deg);backface-visibility:hidden;">
 <div style="font-size:11px;color:#C84A3F;margin-bottom:8px;">{{ memRecycleActionLabel }}</div>
 <div style="font-size:14px;line-height:1.7;color:#5C5346;text-decoration:line-through;margin-bottom:10px;">{{ memRecycleContent }}</div>
 <div style="font-size:11px;color:#9A8F7A;margin-bottom:14px;">{{ memRecycleMeta }}</div>
 <div style="display:flex;gap:8px;">
 <button onClick="{{ memRecycleRestore }}" style="flex:1;border:none;background:#1A1A1A;color:#FFF;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">还原</button>
 <button onClick="{{ memRecyclePurge }}" style="flex:1;border:1px solid #E8DFC8;background:#FFF;color:#C84A3F;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">永久删除</button>
+</div>
+</div>
 </div>
 </div>
 <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
@@ -1953,7 +1960,7 @@ button:active {
 
 <!-- ========== REGEX PAGE ========== -->
 <sc-if value="{{ isRegexPage }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 100px;">
+<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 40px;">
 
 <div style="padding:20px 0 16px;display:flex;align-items:center;justify-content:space-between;">
 <div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Regex</div>
@@ -2889,12 +2896,16 @@ function memSummary(text, n) {
 function estimateTokens(text) {
   const s = String(text || '');
   if (!s) return 0;
-  // rough: CJK ~1.5 chars/token, latin ~4 chars/token
-  let cjk = 0, other = 0;
+  // refined heuristic: CJK ~1.2 chars/token, latin words ~0.75 token/word, punctuation lightly
+  let cjk = 0, latin = 0, other = 0;
   for (const ch of s) {
-    if (ch.charCodeAt(0) > 0x2E80) cjk++; else other++;
+    const c = ch.charCodeAt(0);
+    if (c > 0x2E80) cjk++;
+    else if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || (c >= 48 && c <= 57)) latin++;
+    else other++;
   }
-  return Math.ceil(cjk / 1.5 + other / 4);
+  const latinWords = Math.max(1, Math.ceil(latin / 4.2));
+  return Math.max(1, Math.ceil(cjk / 1.2 + latinWords * 0.85 + other * 0.3));
 }
 
 const DEFAULT_MEMORY_SYSTEM_PROMPT = `你是江吟的AI伴侣。以下情况必须立即调用 save_memory：
@@ -5820,9 +5831,18 @@ this.show('图片已删除');
     _doSelectiveExport() {
   const s = this.state;
   const checks = s.exportChecks || {};
-  const exportObj = { exportDate: new Date().toISOString(), version: '4.4-selective', selectedParts: Object.keys(checks).filter(k => checks[k]) };
+  const exportObj = { exportDate: new Date().toISOString(), version: '5.0-soul-mem-selective', selectedParts: Object.keys(checks).filter(k => checks[k]) };
   if (checks.chats) exportObj.chats = s.chats;
-  if (checks.memories) exportObj.memories = s.memories;
+  if (checks.memories) {
+    exportObj.memories = s.memories;
+    exportObj.memRecycle = s.memRecycle || [];
+    exportObj.memSettings = {
+      typeDisplayMap: s.memTypeDisplayMap || null,
+      moodColorMap: s.memMoodColorMap || null,
+      memorySystemPrompt: s.memSystemPrompt || '',
+      recycleMax: s.memRecycleMax || 100
+    };
+  }
   if (checks.personas) exportObj.personas = s.personas;
   if (checks.styles) exportObj.styles = s.styles;
   if (checks.prompts) exportObj.prompts = s.prompts;
@@ -5883,12 +5903,19 @@ for (const [id, chat] of Object.entries(s.chats)) {
 }
 const exportObj = {
 exportDate: new Date().toISOString(),
-version: '4.4',
+version: '5.0-soul-mem',
 chats: cleanChats,
 personas: s.personas,
 activePersonaId: s.activePersonaId,
 worldbooks: s.worldbooks,
 memories: s.memories,
+memRecycle: s.memRecycle || [],
+memSettings: {
+  typeDisplayMap: s.memTypeDisplayMap || null,
+  moodColorMap: s.memMoodColorMap || null,
+  memorySystemPrompt: s.memSystemPrompt || '',
+  recycleMax: s.memRecycleMax || 100
+},
 styles: s.styles,
 activeStyleId: s.activeStyleId,
 prompts: s.prompts,
@@ -6159,6 +6186,13 @@ if (data.worldbooks) {
   updates.memories = [...updates.memories, ...migratedWbs];
 }
 if (data.memories) updates.memories = data.memories; // 全替换
+if (data.memRecycle) updates.memRecycle = data.memRecycle;
+if (data.memSettings) {
+  if (data.memSettings.typeDisplayMap) updates.memTypeDisplayMap = data.memSettings.typeDisplayMap;
+  if (data.memSettings.moodColorMap) updates.memMoodColorMap = data.memSettings.moodColorMap;
+  if (typeof data.memSettings.memorySystemPrompt === 'string') updates.memSystemPrompt = data.memSettings.memorySystemPrompt;
+  if (data.memSettings.recycleMax != null) updates.memRecycleMax = data.memSettings.recycleMax;
+}
 // 导入后同步到 KelMemories 并标记已迁移
 try {
   updates.memMigrated = true;
@@ -6277,6 +6311,30 @@ if (data.keepAliveEnabled !== undefined) updates.keepAliveEnabled = data.keepAli
 this.setState(updates, () => {
 // 强制写入并验证
 this.persist();
+// Soul mem: restore recycle + settings into KelMemories after import
+try {
+  if (Array.isArray(this.state.memRecycle)) {
+    this._loadRecycleIntoState && this._loadRecycleIntoState();
+  }
+  // rewrite recycle bin store from imported array
+  (async () => {
+    try {
+      const list = this.state.memRecycle || [];
+      const db = await this._openKelMemoriesDB();
+      if (db.objectStoreNames.contains('recycle_bin')) {
+        const tx = db.transaction('recycle_bin', 'readwrite');
+        const store = tx.objectStore('recycle_bin');
+        store.clear();
+        for (const it of list) store.put(it);
+      }
+      if (this.state.memTypeDisplayMap) await this._memSetSetting('typeDisplayMap', this.state.memTypeDisplayMap);
+      if (this.state.memMoodColorMap) await this._memSetSetting('moodColorMap', this.state.memMoodColorMap);
+      if (typeof this.state.memSystemPrompt === 'string') await this._memSetSetting('memorySystemPrompt', this.state.memSystemPrompt);
+      if (this.state.memRecycleMax != null) await this._memSetSetting('recycleMax', this.state.memRecycleMax);
+    } catch (e) { console.warn('[Kel] import mem settings sync failed', e); }
+  })();
+} catch (e) {}
+
 // 二次确认写入成功
 setTimeout(() => {
 const verify = localStorage.getItem(STORAGE_KEY);
@@ -8871,6 +8929,23 @@ memListEmpty: (() => {
   return list.length === 0;
 })(),
 memLoadMore: () => self.setState({ memListLimit: (s.memListLimit || 20) + 20 }),
+memListLoadedLabel: Math.min((s.memListLimit || 20), (s.memories || []).length) + '/' + ((s.memories || []).length),
+memPageScroll: (e) => {
+  try {
+    if ((s.memView || 'hub') !== 'library') return;
+    const el = e.target;
+    if (!el) return;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 80) {
+      const filters = s.memMoodFilters || [];
+      let total = (s.memories || []).length;
+      if (filters.length) total = (s.memories || []).filter(m => filters.includes(m.mood || 'calm')).length;
+      const cur = s.memListLimit || 20;
+      if (cur < total) self.setState({ memListLimit: cur + 20 });
+    }
+  } catch (err) {}
+},
+memListScroll: () => {},
+
 memTypeListTitle: TYPE_DISPLAY_MAP[s.memSelectedType] || '分类',
 memTypeListCount: (s.memories || []).filter(m => (m.type || m.layer) === s.memSelectedType).length,
 memTypeListItems: (() => {
@@ -8974,15 +9049,26 @@ memRecycleMeta: (() => {
   const mood = item.mood || 'calm';
   return (TYPE_DISPLAY_MAP[item.type] || item.type || '') + ' · ' + ((MOOD_MAP[mood]||MOOD_MAP.calm).label) + ' · ' + memRelativeTime(item.deletedAt || item.timestamp);
 })(),
+memRecycleFlipTransform: s.memRecycleFlip ? 'rotateY(180deg)' : 'rotateY(0deg)',
 memRecyclePrev: () => {
   const n = (s.memRecycle || []).length;
   if (!n) return;
-  self.setState({ memRecyclePageIdx: Math.max(0, (s.memRecyclePageIdx || 0) - 1) });
+  const nextIdx = Math.max(0, (s.memRecyclePageIdx || 0) - 1);
+  if (nextIdx === (s.memRecyclePageIdx || 0)) return;
+  self.setState({ memRecycleFlip: true });
+  setTimeout(() => {
+    self.setState({ memRecyclePageIdx: nextIdx, memRecycleFlip: false });
+  }, 280);
 },
 memRecycleNext: () => {
   const n = (s.memRecycle || []).length;
   if (!n) return;
-  self.setState({ memRecyclePageIdx: Math.min(n - 1, (s.memRecyclePageIdx || 0) + 1) });
+  const nextIdx = Math.min(n - 1, (s.memRecyclePageIdx || 0) + 1);
+  if (nextIdx === (s.memRecyclePageIdx || 0)) return;
+  self.setState({ memRecycleFlip: true });
+  setTimeout(() => {
+    self.setState({ memRecyclePageIdx: nextIdx, memRecycleFlip: false });
+  }, 280);
 },
 memRecycleRestore: async () => {
   const list = s.memRecycle || [];
