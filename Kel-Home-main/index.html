@@ -915,6 +915,23 @@ button:active {
 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </div>
 <div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
+<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
+<div onClick="{{ cloudBackupNow }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+<div style="display:flex;align-items:center;gap:14px;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 18a4 4 0 010-8 5.5 5.5 0 0110.7-1.5A3.5 3.5 0 0119 18H7z" stroke="#68544B" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 14v-6M9.5 10.5L12 8l2.5 2.5" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">云备份到服务器</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ cloudBackupStatus }}</div></div>
+</div>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
+<div onClick="{{ openCloudBackupList }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+<div style="display:flex;align-items:center;gap:14px;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">云备份列表 / 恢复</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">从服务器恢复历史备份</div></div>
+</div>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
 <div onClick="{{ clearAllData }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
 <div style="display:flex;align-items:center;gap:14px;">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke="#C84A3F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#C84A3F" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -1429,31 +1446,67 @@ button:active {
 </div>
 </sc-if>
 
-<!-- ===== RECYCLE ===== -->
+<!-- ===== RECYCLE (notebook pages) ===== -->
+<style>
+@keyframes kelBookFlip {
+  0% { transform: rotateY(0deg); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+  45% { transform: rotateY(-92deg); box-shadow: -8px 8px 28px rgba(0,0,0,.12); }
+  100% { transform: rotateY(0deg); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+}
+.kel-notebook-flip { animation: kelBookFlip .62s ease-in-out; transform-origin: left center; }
+.kel-notebook-page {
+  background: linear-gradient(180deg, #FFFDF6 0%, #FBF3DF 100%);
+  border-radius: 4px 14px 14px 4px;
+  box-shadow: 6px 8px 0 rgba(0,0,0,.04), 0 12px 28px rgba(0,0,0,.08);
+  position: relative;
+  overflow: hidden;
+}
+.kel-notebook-page:before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 14px;
+  background: repeating-linear-gradient(180deg, #E8D9B8 0 2px, #F4E8C8 2px 8px);
+  border-right: 1px solid rgba(160,130,80,.25);
+}
+.kel-notebook-lines {
+  background-image: repeating-linear-gradient(transparent, transparent 27px, rgba(180,150,100,.12) 28px);
+  background-position: 0 8px;
+  min-height: 360px;
+  padding: 18px 18px 18px 28px;
+}
+</style>
 <sc-if value="{{ isMemViewRecycle }}" hint-placeholder-val="{{ false }}">
 <div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
 <div>
 <div onClick="{{ memGoHub }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;cursor:pointer;">Recycle</div>
-<div style="font-size:11px;color:#8E8E93;margin-top:2px;">回收站 · {{ memRecycleCount }}</div>
+<div style="font-size:11px;color:#8E8E93;margin-top:2px;">遗忘角落 · {{ memRecycleCount }} 条 · 第 {{ memRecycleBookPageLabel }}</div>
 </div>
 </div>
 <sc-if value="{{ memRecycleHasItem }}" hint-placeholder-val="{{ false }}">
-<div style="perspective:1000px;margin:12px 4px 18px;">
-<div style="transform-style:preserve-3d;transition:transform .6s ease-in-out;transform:{{ memRecycleFlipTransform }};">
-<div style="background:#FBF7E8;border-radius:16px;padding:18px 16px;box-shadow:0 10px 28px rgba(0,0,0,.08), 0 1px 0 rgba(255,255,255,.6) inset;transform:rotate({{ memRecycleRotate }}deg);backface-visibility:hidden;">
-<div style="font-size:11px;color:#C84A3F;margin-bottom:8px;">{{ memRecycleActionLabel }}</div>
-<div style="font-size:14px;line-height:1.7;color:#5C5346;text-decoration:line-through;margin-bottom:10px;">{{ memRecycleContent }}</div>
-<div style="font-size:11px;color:#9A8F7A;margin-bottom:14px;">{{ memRecycleMeta }}</div>
-<div style="display:flex;gap:8px;">
-<button onClick="{{ memRecycleRestore }}" style="flex:1;border:none;background:#1A1A1A;color:#FFF;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">还原</button>
-<button onClick="{{ memRecyclePurge }}" style="flex:1;border:1px solid #E8DFC8;background:#FFF;color:#C84A3F;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">永久删除</button>
+<div style="perspective:1400px;margin:8px 0 16px;">
+<div class="{{ memRecycleFlipClass }}" style="transform-style:preserve-3d;">
+<div class="kel-notebook-page">
+<div class="kel-notebook-lines">
+<div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:15px;color:#6B5B3E;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed rgba(140,110,60,.25);">便签本 · {{ memRecycleBookPageLabel }}</div>
+<sc-for list="{{ memRecyclePageEntries }}" as="re" hint-placeholder-count="3">
+<div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px dashed rgba(140,110,60,.15);">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+<span style="font-size:10px;color:{{ re.actionColor }};background:rgba(255,255,255,.7);border-radius:8px;padding:2px 8px;">{{ re.actionLabel }}</span>
+<span style="font-size:10px;color:#A89878;">{{ re.meta }}</span>
+</div>
+<div style="font-size:13.5px;line-height:1.75;color:#5C5346;text-decoration:line-through;text-decoration-color:rgba(120,90,50,.35);">{{ re.content }}</div>
+<div style="display:flex;gap:8px;margin-top:10px;">
+<button onClick="{{ re.restore }}" style="border:none;background:#1A1A1A;color:#FFF;border-radius:10px;padding:6px 12px;font-size:11px;font-family:inherit;cursor:pointer;">还原</button>
+<button onClick="{{ re.purge }}" style="border:1px solid #E8DFC8;background:#FFFDF8;color:#C84A3F;border-radius:10px;padding:6px 12px;font-size:11px;font-family:inherit;cursor:pointer;">永久删除</button>
+</div>
+</div>
+</sc-for>
 </div>
 </div>
 </div>
 </div>
-<div style="display:flex;align-items:center;justify-content:center;gap:16px;">
+<div style="display:flex;align-items:center;justify-content:center;gap:16px;padding-bottom:8px;">
 <button onClick="{{ memRecyclePrev }}" style="border:none;background:#F5F5F7;border-radius:12px;padding:10px 16px;font-size:12px;font-family:inherit;cursor:pointer;color:#1A1A1A;">上一页</button>
-<span style="font-size:12px;color:#8E8E93;">{{ memRecyclePageLabel }}</span>
+<span style="font-size:12px;color:#8E8E93;">{{ memRecycleBookPageLabel }}</span>
 <button onClick="{{ memRecycleNext }}" style="border:none;background:#F5F5F7;border-radius:12px;padding:10px 16px;font-size:12px;font-family:inherit;cursor:pointer;color:#1A1A1A;">下一页</button>
 </div>
 </sc-if>
@@ -2673,6 +2726,37 @@ button:active {
 </sc-if>
 
 <!-- hidden file inputs -->
+<!-- Cloud Backup List Sheet -->
+<sc-if value="{{ isCloudBackupList }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:270;">
+<div onClick="{{ closeCloudBackupList }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);"></div>
+<div class="sa" style="position:absolute;bottom:0;left:0;right:0;background:#F5F3EE;border-radius:16px 16px 0 0;padding:12px 16px 30px;max-height:80%;overflow-y:auto;">
+<div style="width:36px;height:4px;border-radius:2px;background:#D1CCC2;margin:0 auto 14px;"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+<span style="font-size:15px;font-weight:600;color:#1A1815;">云备份列表</span>
+<button onClick="{{ closeCloudBackupList }}" style="border:none;background:#ECEAE4;border-radius:12px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">关闭</button>
+</div>
+<sc-if value="{{ cloudBackupListEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:30px 0;color:#9A958B;font-size:13px;">还没有云备份</div>
+</sc-if>
+<sc-for list="{{ cloudBackupList }}" as="bk" hint-placeholder-count="3">
+<div style="background:#FFF;border:1px solid #EDE9E0;border-radius:14px;padding:12px 14px;margin-bottom:8px;">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+<div style="min-width:0;flex:1;">
+<div style="font-size:13px;font-weight:500;color:#1A1815;">{{ bk.label }}</div>
+<div style="font-size:11px;color:#9A958B;margin-top:3px;">{{ bk.meta }}</div>
+</div>
+<div style="display:flex;gap:6px;flex:none;">
+<button onClick="{{ bk.restore }}" style="border:none;background:#1A1815;color:#FFF;border-radius:10px;padding:7px 10px;font-size:11px;font-family:inherit;cursor:pointer;">恢复</button>
+<button onClick="{{ bk.remove }}" style="border:1px solid #EDE9E0;background:#FFF;color:#C84A3F;border-radius:10px;padding:7px 10px;font-size:11px;font-family:inherit;cursor:pointer;">删</button>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
 <input type="file" accept=".txt,.html,.htm,.md,.zip,.json,.csv,.xml,.pdf,.doc,.docx,image/*" style="display:none;" id="kelFileInput" onChange="{{ handleFileSelect }}">
 <input type="file" accept=".json" style="display:none;" id="kelImportInput" onChange="{{ handleImportFile }}">
 
@@ -2869,7 +2953,6 @@ const MOOD_MAP = {
   grieve: { label: '哀伤', color: '#6C757D' }
 };
 const MEM_TYPE_ORDER = ['core', 'long', 'short', 'consciousness', 'diary'];
-const MEM_DEMO_SEED = []; // disabled: never auto-write demo into user storage
 
 function memEnsureRelatedDate(m) {
   if (m.related_date) return m.related_date;
@@ -2891,6 +2974,69 @@ function memRelativeTime(ts) {
 function memSummary(text, n) {
   const s = (text || '').replace(/\s+/g, ' ').trim();
   return s.length > n ? s.slice(0, n) + '…' : s;
+}
+
+function buildRecycleNotebookPages(list, maxChars, maxItems) {
+  const items = Array.isArray(list) ? list : [];
+  const pages = [];
+  let page = [];
+  let used = 0;
+  const CHAR_BUDGET = maxChars || 420;
+  const ITEM_BUDGET = maxItems || 4;
+  for (const it of items) {
+    const text = String((it && it.content) || '');
+    const cost = Math.max(40, text.length + 24);
+    if (page.length && (page.length >= ITEM_BUDGET || used + cost > CHAR_BUDGET)) {
+      pages.push(page);
+      page = [];
+      used = 0;
+    }
+    page.push(it);
+    used += cost;
+  }
+  if (page.length) pages.push(page);
+  return pages;
+}
+
+function playPageFlipSound() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!window.__kelAudioCtx) window.__kelAudioCtx = new AC();
+    const ctx = window.__kelAudioCtx;
+    if (ctx.state === 'suspended') ctx.resume();
+    const now = ctx.currentTime;
+    // soft paper whoosh + soft thump
+    const bufferSize = Math.floor(ctx.sampleRate * 0.18);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      const env = Math.pow(1 - i / bufferSize, 2.2);
+      data[i] = (Math.random() * 2 - 1) * env * 0.35;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'bandpass';
+    filt.frequency.value = 1200;
+    filt.Q.value = 0.7;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.22, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    noise.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
+    noise.start(now); noise.stop(now + 0.2);
+    const osc = ctx.createOscillator();
+    const og = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(70, now + 0.08);
+    og.gain.setValueAtTime(0.0001, now);
+    og.gain.exponentialRampToValueAtTime(0.05, now + 0.01);
+    og.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+    osc.connect(og); og.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.12);
+  } catch (e) {}
 }
 
 function estimateTokens(text) {
@@ -4888,7 +5034,8 @@ async saveToRecycleBin(originalData, action) {
 
 async _loadRecycleIntoState() {
   const list = await this.loadRecycleBin();
-  this.setState({ memRecycle: list, memRecyclePageIdx: Math.min(this.state.memRecyclePageIdx || 0, Math.max(0, list.length - 1)) });
+  const pages = buildRecycleNotebookPages(list, 420, 4);
+  this.setState({ memRecycle: list, memRecyclePageIdx: Math.min(this.state.memRecyclePageIdx || 0, Math.max(0, pages.length - 1)) });
   return list;
 }
 
@@ -5880,6 +6027,169 @@ this.show('图片已删除');
   this.show('已导出 ' + parts + ' 项数据');
 }
 
+
+// ====== Cloud Backup (server) ======
+async _buildFullBackupObject() {
+  const s = this.state;
+  const cleanChats = {};
+  for (const [id, chat] of Object.entries(s.chats || {})) {
+    cleanChats[id] = {
+      ...chat,
+      messages: (chat.messages || []).map(m => {
+        const cleaned = { ...m };
+        delete cleaned.image;
+        delete cleaned.imageMime;
+        delete cleaned.imageUrl;
+        if (cleaned.file && cleaned.file.isImage) delete cleaned.file;
+        return cleaned;
+      })
+    };
+  }
+  return {
+    exportDate: new Date().toISOString(),
+    version: '5.0-soul-mem',
+    chats: cleanChats,
+    personas: s.personas,
+    activePersonaId: s.activePersonaId,
+    memories: s.memories,
+    memRecycle: s.memRecycle || [],
+    memSettings: {
+      typeDisplayMap: s.memTypeDisplayMap || null,
+      moodColorMap: s.memMoodColorMap || null,
+      memorySystemPrompt: s.memSystemPrompt || '',
+      recycleMax: s.memRecycleMax || 100
+    },
+    styles: s.styles,
+    activeStyleId: s.activeStyleId,
+    prompts: s.prompts,
+    apiPresets: s.apiPresets,
+    activePresetId: s.activePresetId,
+    diaries: s.diaries,
+    anniversaries: s.anniversaries,
+    pledges: s.pledges,
+    periodData: s.periodData,
+    sexData: s.sexData || JSON.parse(localStorage.getItem('_cl_data') || '{}'),
+    customCss: s.customCss,
+    customFont: s.customFont,
+    activeThemeId: s.activeThemeId,
+    customTheme: s.customTheme,
+    msgFontSize: s.msgFontSize,
+    localFontName: s.localFontName,
+    fontPresets: s.fontPresets,
+    regexRules: s.regexRules,
+    keepAliveEnabled: s.keepAliveEnabled,
+    avatarSize: s.avatarSize,
+    userNickname: s.userNickname,
+    aiNickname: s.aiNickname,
+    petEnabled: s.petEnabled,
+    petSizeIdx: s.petSizeIdx,
+    soundEnabled: s.soundEnabled,
+    memoryCount: s.memoryCount
+  };
+}
+
+async cloudBackupNow() {
+  if (this.state.cloudBackupBusy) return;
+  this.setState({ cloudBackupBusy: true, cloudBackupStatus: '备份中…' });
+  try {
+    const payload = await this._buildFullBackupObject();
+    const res = await fetch('/api/backup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ label: 'manual', data: payload })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+    this.setState({ cloudBackupStatus: '已备份 ' + (data.id || ''), cloudBackupBusy: false });
+    this.show('云备份成功');
+    try { await this.refreshCloudBackupList(); } catch (e) {}
+  } catch (e) {
+    this.setState({ cloudBackupStatus: '备份失败', cloudBackupBusy: false });
+    this.show('云备份失败: ' + e.message);
+  }
+}
+
+async refreshCloudBackupList() {
+  const res = await fetch('/api/backup');
+  const data = await res.json().catch(() => ([]));
+  if (!res.ok) throw new Error((data && data.error) || ('HTTP ' + res.status));
+  const list = Array.isArray(data) ? data : (data.items || []);
+  this.setState({ cloudBackupList: list });
+  return list;
+}
+
+async openCloudBackupList() {
+  this.setState({ cloudBackupListOpen: true });
+  try {
+    this.show('加载备份列表…');
+    await this.refreshCloudBackupList();
+  } catch (e) {
+    this.show('加载失败: ' + e.message);
+  }
+}
+
+closeCloudBackupList() {
+  this.setState({ cloudBackupListOpen: false });
+}
+
+async restoreCloudBackup(id) {
+  if (!id) return;
+  if (!confirm('恢复云备份会覆盖当前本地数据，确定？建议先再导出一份本地备份。')) return;
+  try {
+    const res = await fetch('/api/backup/' + encodeURIComponent(id));
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+    const payload = data.data || data;
+    // reuse import pipeline via synthetic event path: set file content logic
+    // simplest: write to a temp structure and call same updates as handleImportFile
+    const fake = { target: { files: [new Blob([JSON.stringify(payload)], { type: 'application/json' })] } };
+    // FileReader needs File-like; Blob works with FileReader in modern browsers
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        // piggyback existing import by dispatching through internal parse
+        const parsed = JSON.parse(reader.result);
+        // create a minimal file input simulation by calling import core
+        this._importBackupObject(parsed);
+      } catch (e) {
+        this.show('恢复失败: ' + e.message);
+      }
+    };
+    reader.readAsText(new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+  } catch (e) {
+    this.show('恢复失败: ' + e.message);
+  }
+}
+
+async deleteCloudBackup(id) {
+  if (!id) return;
+  if (!confirm('删除该云备份？')) return;
+  try {
+    const res = await fetch('/api/backup/' + encodeURIComponent(id), { method: 'DELETE' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+    this.show('已删除云备份');
+    await this.refreshCloudBackupList();
+  } catch (e) {
+    this.show('删除失败: ' + e.message);
+  }
+}
+
+_importBackupObject(data) {
+  // Delegate to existing handleImportFile logic by temporarily faking FileReader result path:
+  // We re-run the import body by constructing an event-like flow.
+  try {
+    const e = { target: { files: [] } };
+    // Directly invoke the onload body by copying: easiest is set a one-off flag method.
+    // Implement by calling the same code path used after JSON.parse in handleImportFile.
+    this.__pendingImportData = data;
+    // Trigger via synthetic: if handleImportFile expects file, use Blob File
+    const file = new File([JSON.stringify(data)], 'cloud-restore.json', { type: 'application/json' });
+    this.handleImportFile({ target: { files: [file] } });
+  } catch (err) {
+    this.show('导入失败: ' + err.message);
+  }
+}
 
 // ====== Export / Import ======
 async exportData() {
@@ -8081,11 +8391,7 @@ mcpShowAddForm: () => self._mcpShowAddForm(),
 mcpSaveCustomTool: () => self._mcpSaveCustomTool(),
 isSettings: s.tab === 'settings',
 // ===== 底栏导航颜色 =====
-navHomeColor: s.tab === 'home' ? '#68544B' : '#9A958B',
-navMemColor: s.tab === 'memory' ? '#68544B' : '#9A958B',
-navMCPColor: s.tab === 'mcp' ? '#68544B' : '#9A958B',
-navMusicColor: s.tab === 'music' ? '#68544B' : '#9A958B',
-navSettingsColor: s.tab === 'settings' ? '#68544B' : '#9A958B',
+
 homeCardGap: s.homeCardGap || 12,
 homeCardSize: s.homeCardSize || 56,
 homeCardGapChange: (e) => { const v = parseInt(e.target.value) || 12; self.setState({ homeCardGap: v }); self.persist(); },
@@ -9021,73 +9327,57 @@ memDetailTrash: async () => {
 },
 memRecycleHasItem: (s.memRecycle || []).length > 0,
 memRecycleEmpty: !(s.memRecycle && s.memRecycle.length),
-memRecycleRotate: ((s.memRecyclePageIdx || 0) % 2 === 0) ? '-1.2' : '1.4',
-memRecyclePageLabel: (() => {
-  const n = (s.memRecycle || []).length;
-  if (!n) return '0 / 0';
-  const i = Math.min(s.memRecyclePageIdx || 0, n - 1);
-  return (i + 1) + ' / ' + n;
+memRecycleCount: (s.memRecycle || []).length,
+memRecyclePages: buildRecycleNotebookPages(s.memRecycle || [], 420, 4),
+memRecycleBookPageLabel: (() => {
+  const pages = buildRecycleNotebookPages(s.memRecycle || [], 420, 4);
+  if (!pages.length) return '0 / 0';
+  const i = Math.min(s.memRecyclePageIdx || 0, pages.length - 1);
+  return (i + 1) + ' / ' + pages.length;
 })(),
-memRecycleContent: (() => {
-  const list = s.memRecycle || [];
-  if (!list.length) return '';
-  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
-  return (list[i] && list[i].content) || '';
+memRecycleFlipClass: s.memRecycleFlip ? 'kel-notebook-flip' : '',
+memRecyclePageEntries: (() => {
+  const pages = buildRecycleNotebookPages(s.memRecycle || [], 420, 4);
+  if (!pages.length) return [];
+  const i = Math.min(s.memRecyclePageIdx || 0, pages.length - 1);
+  return (pages[i] || []).map(item => {
+    const mood = item.mood || 'calm';
+    const typeLabel = TYPE_DISPLAY_MAP[item.type] || item.type || '';
+    const action = item.action || 'delete';
+    return {
+      content: item.content || '',
+      actionLabel: action === 'update' ? '已修改' : '已删除',
+      actionColor: action === 'update' ? '#C47B2B' : '#C84A3F',
+      meta: typeLabel + ' · ' + ((MOOD_MAP[mood] && MOOD_MAP[mood].label) || mood) + ' · ' + memRelativeTime(item.deletedAt || item.timestamp),
+      restore: async () => {
+        try { await self.restoreFromRecycleBin(item.id); }
+        catch (e) { self.show('还原失败: ' + e.message); }
+      },
+      purge: async () => {
+        if (!confirm('永久删除后无法恢复，确定？')) return;
+        try { await self.permanentlyDeleteFromRecycleBin(item.id); self.show('已永久删除'); }
+        catch (e) { self.show('删除失败: ' + e.message); }
+      }
+    };
+  });
 })(),
-memRecycleActionLabel: (() => {
-  const list = s.memRecycle || [];
-  if (!list.length) return '';
-  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
-  const a = (list[i] && list[i].action) || 'delete';
-  return a === 'update' ? '已修改' : '已删除';
-})(),
-memRecycleMeta: (() => {
-  const list = s.memRecycle || [];
-  if (!list.length) return '';
-  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
-  const item = list[i] || {};
-  const mood = item.mood || 'calm';
-  return (TYPE_DISPLAY_MAP[item.type] || item.type || '') + ' · ' + ((MOOD_MAP[mood]||MOOD_MAP.calm).label) + ' · ' + memRelativeTime(item.deletedAt || item.timestamp);
-})(),
-memRecycleFlipTransform: s.memRecycleFlip ? 'rotateY(180deg)' : 'rotateY(0deg)',
 memRecyclePrev: () => {
-  const n = (s.memRecycle || []).length;
-  if (!n) return;
+  const pages = buildRecycleNotebookPages(s.memRecycle || [], 420, 4);
+  if (!pages.length) return;
   const nextIdx = Math.max(0, (s.memRecyclePageIdx || 0) - 1);
   if (nextIdx === (s.memRecyclePageIdx || 0)) return;
+  playPageFlipSound();
   self.setState({ memRecycleFlip: true });
-  setTimeout(() => {
-    self.setState({ memRecyclePageIdx: nextIdx, memRecycleFlip: false });
-  }, 280);
+  setTimeout(() => self.setState({ memRecyclePageIdx: nextIdx, memRecycleFlip: false }), 320);
 },
 memRecycleNext: () => {
-  const n = (s.memRecycle || []).length;
-  if (!n) return;
-  const nextIdx = Math.min(n - 1, (s.memRecyclePageIdx || 0) + 1);
+  const pages = buildRecycleNotebookPages(s.memRecycle || [], 420, 4);
+  if (!pages.length) return;
+  const nextIdx = Math.min(pages.length - 1, (s.memRecyclePageIdx || 0) + 1);
   if (nextIdx === (s.memRecyclePageIdx || 0)) return;
+  playPageFlipSound();
   self.setState({ memRecycleFlip: true });
-  setTimeout(() => {
-    self.setState({ memRecyclePageIdx: nextIdx, memRecycleFlip: false });
-  }, 280);
-},
-memRecycleRestore: async () => {
-  const list = s.memRecycle || [];
-  if (!list.length) return;
-  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
-  const item = list[i];
-  if (!item) return;
-  try { await self.restoreFromRecycleBin(item.id); }
-  catch (e) { self.show('还原失败: ' + e.message); }
-},
-memRecyclePurge: async () => {
-  const list = s.memRecycle || [];
-  if (!list.length) return;
-  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
-  const item = list[i];
-  if (!item) return;
-  if (!confirm('永久删除后无法恢复，确定？')) return;
-  try { await self.permanentlyDeleteFromRecycleBin(item.id); self.show('已永久删除'); }
-  catch (e) { self.show('删除失败: ' + e.message); }
+  setTimeout(() => self.setState({ memRecyclePageIdx: nextIdx, memRecycleFlip: false }), 320);
 },
 memGoHub: () => self.setState({ memView: 'hub', memSelectedType: null, memSelectedId: null }),
 memGoLibrary: () => self.setState({ memView: 'library', memListLimit: 20 }),
@@ -10130,6 +10420,19 @@ self.setState({ memoryCount: next }); self.persist(); self.show('记忆读取: '
 },
 exportData: () => self.exportData(),
 importData: () => self.importData(),
+cloudBackupNow: () => self.cloudBackupNow(),
+openCloudBackupList: () => self.openCloudBackupList(),
+closeCloudBackupList: () => self.closeCloudBackupList(),
+cloudBackupStatus: s.cloudBackupStatus || '未备份',
+isCloudBackupList: !!s.cloudBackupListOpen,
+cloudBackupListEmpty: !(s.cloudBackupList && s.cloudBackupList.length),
+cloudBackupList: (s.cloudBackupList || []).map(bk => ({
+  label: bk.label || bk.id || 'backup',
+  meta: (bk.createdAt ? new Date(bk.createdAt).toLocaleString() : '') + (bk.bytes ? (' · ' + Math.round(bk.bytes/1024) + 'KB') : '') + (bk.chatCount != null ? (' · ' + bk.chatCount + ' chats') : ''),
+  restore: () => self.restoreCloudBackup(bk.id),
+  remove: () => self.deleteCloudBackup(bk.id)
+})),
+
 selectiveExportOpen: s.selectiveExportOpen || false,
 openSelectiveExport: () => self.setState({ selectiveExportOpen: true }),
 closeSelectiveExport: () => self.setState({ selectiveExportOpen: false }),

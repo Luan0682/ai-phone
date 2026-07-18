@@ -174,4 +174,109 @@ app.get('/api/music/play', async (req, res) => {
 // ── 健康检查 ───────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
 
+// ── 云备份 /api/backup ─────────────────────────────────────────
+// 数据目录：/home/app-data/backups/*.json
+const BACKUP_DIR = path.join(DATA, 'backups');
+if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
+
+function listBackups() {
+  return fs.readdirSync(BACKUP_DIR)
+    .filter(f => f.endsWith('.json'))
+    .map(f => {
+      const full = path.join(BACKUP_DIR, f);
+      const st = fs.statSync(full);
+      let meta = {};
+      try {
+        const raw = fs.readFileSync(full, 'utf8');
+        const obj = JSON.parse(raw);
+        meta = {
+          version: obj.version || '',
+          exportDate: obj.exportDate || '',
+          chatCount: obj.chats ? Object.keys(obj.chats).length : 0,
+          memoryCount: Array.isArray(obj.memories) ? obj.memories.length : 0
+        };
+      } catch (e) {}
+      return {
+        id: f.replace(/\.json$/, ''),
+        label: meta.exportDate || f,
+        createdAt: st.mtimeMs,
+        bytes: st.size,
+        ...meta
+      };
+    })
+    .sort((a, b) => b.createdAt - a.createdAt);
+}
+
+// GET /api/backup — 列表
+app.get('/api/backup', (req, res) => {
+  try {
+    res.json(listBackups());
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// POST /api/backup — 上传备份 { label?, data }
+app.post('/api/backup', (req, res) => {
+  try {
+    const data = req.body && (req.body.data || req.body);
+    if (!data || typeof data !== 'object') {
+      return res.status(400).json({ error: '缺少备份 data' });
+    }
+    const id = 'bk_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 6);
+    const payload = {
+      ...data,
+      _backupMeta: {
+        id,
+        label: (req.body && req.body.label) || 'manual',
+        savedAt: new Date().toISOString()
+      }
+    };
+    const file = path.join(BACKUP_DIR, id + '.json');
+    fs.writeFileSync(file, JSON.stringify(payload));
+    // 只保留最近 20 份
+    const all = listBackups();
+    if (all.length > 20) {
+      all.slice(20).forEach(b => {
+        try { fs.unlinkSync(path.join(BACKUP_DIR, b.id + '.json')); } catch (e) {}
+      });
+    }
+    res.json({
+      ok: true,
+      id,
+      bytes: fs.statSync(file).size,
+      chatCount: payload.chats ? Object.keys(payload.chats).length : 0,
+      memoryCount: Array.isArray(payload.memories) ? payload.memories.length : 0
+    });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// GET /api/backup/:id — 下载完整备份
+app.get('/api/backup/:id', (req, res) => {
+  try {
+    const id = String(req.params.id || '').replace(/[^a-zA-Z0-9_\-]/g, '');
+    const file = path.join(BACKUP_DIR, id + '.json');
+    if (!fs.existsSync(file)) return res.status(404).json({ error: '备份不存在' });
+    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    res.json({ id, data });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// DELETE /api/backup/:id
+app.delete('/api/backup/:id', (req, res) => {
+  try {
+    const id = String(req.params.id || '').replace(/[^a-zA-Z0-9_\-]/g, '');
+    const file = path.join(BACKUP_DIR, id + '.json');
+    if (!fs.existsSync(file)) return res.status(404).json({ error: '备份不存在' });
+    fs.unlinkSync(file);
+    res.json({ ok: true, id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.listen(PORT, () => console.log('kel-server running on port', PORT));
