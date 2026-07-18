@@ -95,3 +95,11 @@
 - Style 并入 Soul 折叠栏；音乐设置+网易云API+进度条实时刷新
 - 已 scp 部署 kel-home.xyz；GitHub 不急
 
+### 记忆库无损迁移（2026-07-18）
+- 改了：Kel-Home-main/index.html
+- 新建 IndexedDB 库 KelMemories：stores memories + settings
+- 启动检测 settings.migrated；未迁移则把旧 state/KelHomeData 记忆转新格式
+- 新字段：id/type/content/mood/intensity/weight/is_pinned/timestamp/session_id/is_archived/source_quote/related_date（并保留旧 UI 兼容字段）
+- 失败不删旧数据；Settings 显示状态+重试；成功一次性 toast
+- 语法通过；已 scp 部署 kel-home.xyz；GitHub 不急
+

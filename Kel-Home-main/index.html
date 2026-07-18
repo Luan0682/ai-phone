@@ -851,6 +851,22 @@ button:active {
 </div>
 </div>
 
+<!-- 记忆迁移状态 -->
+<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+<div style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;">
+<div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#68544B" stroke-width="1.5"/></svg>
+<div style="min-width:0;">
+<div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">记忆库迁移</div>
+<div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ memMigrationStatusLabel }}</div>
+</div>
+</div>
+<sc-if value="{{ memMigrationFailed }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ retryMemoryMigration }}" style="border:none;background:#68544B;color:#FFF;border-radius:14px;padding:8px 12px;font-size:12px;font-family:inherit;cursor:pointer;flex:none;">重试</button>
+</sc-if>
+</div>
+</div>
+
 <!-- 数据管理 -->
 <div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
 <div onClick="{{ exportData }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
@@ -2817,6 +2833,11 @@ thinkOpenMap: {},
 thinkModalOpen: false,
 thinkModalContent: '',
 memories: saved.memories || [],
+memMigrated: false,
+memMigrationFailed: false,
+memMigrationError: '',
+memMigrationCount: 0,
+memMigrationToast: '',
 memEditId: null,
 memEditName: '',
 memEditContent: '',
@@ -3190,6 +3211,9 @@ this.setState({
 }
 }
 } catch(e) { console.warn('[Kel] IndexedDB 主数据读取失败', e); }
+
+// 记忆库无损迁移（KelMemories）：settings.migrated 为 true 则跳过
+try { await this._runMemoryMigration(false); } catch (e) { console.warn('[Kel] memory migration hook failed', e); }
 
 // 启动时：如果 soulSections 全空但 persona 有内容，从 persona 同步一次
 const activePer = this.state.personas.find(p => p.id === this.state.activePersonaId) || this.state.personas[0];
@@ -3898,6 +3922,12 @@ soulOther: (s.soulSections && s.soulSections.other) ? s.soulSections.other.conte
 };
 // 优先写 IndexedDB（无容量限制）
 this._saveToIndexedDB(data);
+// 双写新记忆库（迁移完成后）
+try {
+  if (this.state.memMigrated && Array.isArray(s.memories)) {
+    this._memClearAndPutAll(s.memories.map(m => this._isMemoryNewSchema(m) ? m : this._convertOldMemoryToNew(m))).catch(() => {});
+  }
+} catch (e) {}
 // 尝试同时写 localStorage（快速读取缓存）
 // 单独确保 periodData 写入
 try { localStorage.setItem('kel-period-data', JSON.stringify(s.periodData || {})); } catch(e) {}
@@ -4223,6 +4253,323 @@ this.setState({ worldbooks }, () => { this.persist(); });
 this.show('已删除');
 }
 
+// ====== Memory IDB + Migration (KelMemories v1) ======
+// 注意：旧版记忆在 state.memories / KelHomeData.appdata 大包里，没有独立 memories 表。
+// 这里新建 KelMemories 库：objectStore "memories" + "settings"。
+// settings.migrated === true 时跳过迁移。
+
+_openKelMemoriesDB() {
+  return new Promise((resolve, reject) => {
+    try {
+      // 版本 1：首次创建；若以后改 schema 再 +1 走 onupgradeneeded
+      const req = indexedDB.open('KelMemories', 1);
+      req.onerror = () => reject(req.error || new Error('open KelMemories failed'));
+      req.onsuccess = () => resolve(req.result);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        // 新表 memories：新 schema 字段；旧库若已存在则保留（数据层迁移在 _runMemoryMigration 做）
+        if (!db.objectStoreNames.contains('memories')) {
+          const store = db.createObjectStore('memories', { keyPath: 'id' });
+          try { store.createIndex('type', 'type', { unique: false }); } catch (err) {}
+          try { store.createIndex('timestamp', 'timestamp', { unique: false }); } catch (err) {}
+          try { store.createIndex('is_pinned', 'is_pinned', { unique: false }); } catch (err) {}
+          try { store.createIndex('related_date', 'related_date', { unique: false }); } catch (err) {}
+        }
+        if (!db.objectStoreNames.contains('settings')) {
+          db.createObjectStore('settings', { keyPath: 'key' });
+        }
+      };
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+_memDateYMD(ts) {
+  try {
+    const d = ts ? new Date(ts) : new Date();
+    if (isNaN(d.getTime())) {
+      const n = new Date();
+      return n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0');
+    }
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  } catch (e) {
+    const n = new Date();
+    return n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0');
+  }
+}
+
+_mapOldMemoryType(old) {
+  // 1) 已是新格式
+  const t0 = (old && (old.type || old.layer || '')).toString().toLowerCase();
+  if (t0 === 'core' || t0 === 'long' || t0 === 'short') return t0;
+  // 2) 指令里的旧 type 映射
+  if (t0 === 'fact') return 'core';
+  if (t0 === 'preference') return 'short';
+  if (t0 === 'rule' || t0 === 'experience') return 'long';
+  // 3) 本项目旧 layer
+  if (t0 === 'consciousness') return 'short';
+  if (old && old.alwaysOn) return 'core';
+  if (old && old.pinned) return 'core';
+  return 'short';
+}
+
+_convertOldMemoryToNew(old) {
+  const now = Date.now();
+  const id = (old && old.id) ? old.id : (Date.now().toString(36) + Math.random().toString(36).slice(2, 8));
+  const content = (old && old.content != null) ? String(old.content) : '';
+  const timestamp = (old && (old.timestamp || old.createdAt || old.updatedAt)) || now;
+  const type = this._mapOldMemoryType(old || {});
+  const related = (old && (old.related_date || old.eventDate)) || this._memDateYMD(timestamp);
+  const weightRaw = (old && old.weight != null) ? Number(old.weight) : 0.5;
+  // 旧 weight 可能是 0~10，新规范默认 0.5；>1 时压到 0~1
+  let weight = isNaN(weightRaw) ? 0.5 : weightRaw;
+  if (weight > 1) weight = Math.min(1, weight / 10);
+  if (weight < 0) weight = 0;
+  const is_pinned = !!(old && (old.is_pinned != null ? old.is_pinned : (old.pinned || old.alwaysOn || type === 'core')));
+  const name = (old && old.name) ? old.name : (content.slice(0, 24) || '未命名记忆');
+  // 新字段 + 兼容旧 UI 字段（layer/name/createdAt…），保证现有记忆页不炸
+  return {
+    id: id,
+    type: type,
+    content: content,
+    mood: (old && old.mood) || 'calm',
+    intensity: (old && old.intensity != null) ? Number(old.intensity) || 3 : 3,
+    weight: weight,
+    is_pinned: is_pinned,
+    timestamp: timestamp,
+    session_id: (old && (old.session_id || old.sessionId)) || '',
+    is_archived: !!(old && (old.is_archived != null ? old.is_archived : old.archived)),
+    source_quote: (old && (old.source_quote || old.sourceQuote)) || '',
+    related_date: related,
+    // ---- 兼容旧逻辑 ----
+    name: name,
+    layer: type,
+    pinned: is_pinned,
+    alwaysOn: type === 'core' || !!(old && old.alwaysOn),
+    triggers: (old && old.triggers) || [],
+    position: (old && old.position) || 'before',
+    tag: (old && old.tag) || 'general',
+    eventDate: related,
+    createdAt: timestamp,
+    lastReferencedAt: (old && old.lastReferencedAt) || timestamp,
+    sourceType: (old && old.sourceType) || 'migrated',
+    surface_count: (old && old.surface_count) || 0,
+    last_surfaced_at: (old && old.last_surfaced_at) || 0,
+    updatedAt: now,
+    _schema: 2
+  };
+}
+
+async _memGetSetting(key) {
+  const db = await this._openKelMemoriesDB();
+  return await new Promise((resolve) => {
+    try {
+      const tx = db.transaction('settings', 'readonly');
+      const store = tx.objectStore('settings');
+      const req = store.get(key);
+      req.onsuccess = () => {
+        const row = req.result;
+        resolve(row ? row.value : undefined);
+      };
+      req.onerror = () => resolve(undefined);
+    } catch (e) {
+      resolve(undefined);
+    }
+  });
+}
+
+async _memSetSetting(key, value) {
+  const db = await this._openKelMemoriesDB();
+  return await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('settings', 'readwrite');
+      const store = tx.objectStore('settings');
+      const req = store.put({ key: key, value: value });
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => reject(req.error);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+async _memClearAndPutAll(list) {
+  const db = await this._openKelMemoriesDB();
+  return await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('memories', 'readwrite');
+      const store = tx.objectStore('memories');
+      const clearReq = store.clear();
+      clearReq.onerror = () => reject(clearReq.error);
+      clearReq.onsuccess = () => {
+        let i = 0;
+        const putNext = () => {
+          if (i >= list.length) return;
+          const req = store.put(list[i++]);
+          req.onerror = () => reject(req.error);
+          req.onsuccess = putNext;
+        };
+        putNext();
+      };
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+async _memLoadAllFromStore() {
+  const db = await this._openKelMemoriesDB();
+  return await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('memories', 'readonly');
+      const store = tx.objectStore('memories');
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+async _memPutOne(mem) {
+  const db = await this._openKelMemoriesDB();
+  return await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('memories', 'readwrite');
+      const store = tx.objectStore('memories');
+      const req = store.put(mem);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => reject(req.error);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+async _memDeleteOne(id) {
+  const db = await this._openKelMemoriesDB();
+  return await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('memories', 'readwrite');
+      const store = tx.objectStore('memories');
+      const req = store.delete(id);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => reject(req.error);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+_isMemoryNewSchema(m) {
+  return !!(m && m._schema === 2 && m.type && m.timestamp != null && ('is_pinned' in m));
+}
+
+async _runMemoryMigration(force) {
+  try {
+    await this._openKelMemoriesDB();
+    const already = await this._memGetSetting('migrated');
+    if (already === true && !force) {
+      // 已迁移：从新表读回（若表有数据则覆盖 state）
+      try {
+        const rows = await this._memLoadAllFromStore();
+        if (rows && rows.length > 0) {
+          this.setState({ memories: rows, memMigrated: true, memMigrationFailed: false, memMigrationError: '' });
+        } else {
+          this.setState({ memMigrated: true, memMigrationFailed: false, memMigrationError: '' });
+        }
+      } catch (e) {
+        this.setState({ memMigrated: true });
+      }
+      return { ok: true, skipped: true, count: (this.state.memories || []).length };
+    }
+
+    // 收集旧记忆：优先 state（含 localStorage + KelHomeData 合并结果），并尝试读新表已有行
+    let source = Array.isArray(this.state.memories) ? this.state.memories.slice() : [];
+    try {
+      const existingNew = await this._memLoadAllFromStore();
+      if (existingNew && existingNew.length && source.length === 0) source = existingNew;
+    } catch (e) {}
+
+    // 也尝试直接从 KelHomeData 主包再取一次，防止 state 尚未合并完
+    try {
+      const mainDb = await new Promise((resolve, reject) => {
+        const req = indexedDB.open('KelHomeData', 1);
+        req.onerror = () => reject(req.error);
+        req.onsuccess = () => resolve(req.result);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('appdata')) db.createObjectStore('appdata', { keyPath: 'id' });
+        };
+      });
+      const mainRow = await new Promise((resolve) => {
+        try {
+          const tx = mainDb.transaction('appdata', 'readonly');
+          const store = tx.objectStore('appdata');
+          const req = store.get('main');
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => resolve(null);
+        } catch (e) { resolve(null); }
+      });
+      const idbMems = mainRow && mainRow.data && Array.isArray(mainRow.data.memories) ? mainRow.data.memories : null;
+      if (idbMems && idbMems.length > source.length) source = idbMems;
+    } catch (e) {}
+
+    const converted = source.map(m => this._convertOldMemoryToNew(m));
+    // 写入新表（先 clear 再 put，等价于“删旧表重建”的数据层效果，且不碰主库 appdata）
+    await this._memClearAndPutAll(converted);
+    await this._memSetSetting('migrated', true);
+    await this._memSetSetting('migratedAt', Date.now());
+    await this._memSetSetting('migratedCount', converted.length);
+
+    // 一次性提示：settings 里记是否已展示
+    let toast = '';
+    const toastShown = await this._memGetSetting('migration_toast_shown');
+    if (!toastShown) {
+      toast = '已迁移 ' + converted.length + ' 条旧记忆';
+      await this._memSetSetting('migration_toast_shown', true);
+    }
+
+    this.setState({
+      memories: converted,
+      memMigrated: true,
+      memMigrationFailed: false,
+      memMigrationError: '',
+      memMigrationCount: converted.length,
+      memMigrationToast: toast
+    }, () => {
+      try { this.persist(); } catch (e) {}
+      if (toast) {
+        try { this.show(toast); } catch (e) {}
+      }
+    });
+    console.log('[Kel] memory migration done:', converted.length);
+    return { ok: true, count: converted.length };
+  } catch (err) {
+    console.error('[Kel] memory migration failed', err);
+    try { this.logError('memory migration: ' + (err && err.message ? err.message : String(err))); } catch (e) {}
+    // 失败：不删旧数据，只标记失败
+    this.setState({
+      memMigrated: false,
+      memMigrationFailed: true,
+      memMigrationError: (err && err.message) ? err.message : String(err)
+    });
+    try { this.show('迁移失败，请重试'); } catch (e) {}
+    return { ok: false, error: err };
+  }
+}
+
+async _retryMemoryMigration() {
+  this.show('正在重新迁移记忆…');
+  const r = await this._runMemoryMigration(true);
+  if (r && r.ok) this.show('记忆迁移完成（' + (r.count || 0) + ' 条）');
+  else this.show('数据迁移遇到问题，请联系支持');
+}
+
 // ====== Memory ======
 openMemoryEditor(id) {
 const mem = id ? this.state.memories.find(m => m.id === id) : null;
@@ -4245,25 +4592,41 @@ saveMemoryEditor() {
 const s = this.state;
 const triggers = s.memEditTriggers.split('\n').map(t => t.trim()).filter(Boolean);
 const layer = s.memEditLayer || 'short';
-const newMem = {
-id: s.memEditId || genId(),
-name: s.memEditName || '未命名记忆',
-content: s.memEditContent || '',
-triggers,
-alwaysOn: layer === 'core' ? true : s.memEditAlwaysOn,
-weight: parseFloat(s.memEditWeight) || 1,
-position: s.memEditPosition || 'before',
-layer: layer,
-tag: s.memEditTag || 'general',
-eventDate: s.memEditEventDate || '',
-pinned: layer === 'core',
-createdAt: (s.memories.find(m => m.id === s.memEditId) || {}).createdAt || Date.now(),
-lastReferencedAt: Date.now(),
-sourceType: (s.memories.find(m => m.id === s.memEditId) || {}).sourceType || 'manual',
-updatedAt: Date.now()
-};
+const prev = s.memories.find(m => m.id === s.memEditId) || {};
+const ts = prev.timestamp || prev.createdAt || Date.now();
+const related = s.memEditEventDate || prev.related_date || this._memDateYMD(ts);
+let weight = parseFloat(s.memEditWeight);
+if (isNaN(weight)) weight = (prev.weight != null ? prev.weight : 0.5);
+if (weight > 1) weight = Math.min(1, weight / 10);
+const newMem = this._convertOldMemoryToNew({
+  ...prev,
+  id: s.memEditId || genId(),
+  name: s.memEditName || '未命名记忆',
+  content: s.memEditContent || '',
+  triggers,
+  alwaysOn: layer === 'core' ? true : s.memEditAlwaysOn,
+  weight: weight,
+  position: s.memEditPosition || 'before',
+  layer: layer,
+  type: layer,
+  tag: s.memEditTag || 'general',
+  eventDate: related,
+  related_date: related,
+  pinned: layer === 'core' || !!prev.pinned,
+  is_pinned: layer === 'core' || !!prev.is_pinned || !!prev.pinned,
+  timestamp: ts,
+  createdAt: ts,
+  lastReferencedAt: Date.now(),
+  sourceType: prev.sourceType || 'manual',
+  mood: prev.mood || 'calm',
+  intensity: prev.intensity != null ? prev.intensity : 3,
+  session_id: prev.session_id || '',
+  is_archived: !!prev.is_archived,
+  source_quote: prev.source_quote || ''
+});
 let memories = [...s.memories.filter(m => m.id !== newMem.id), newMem];
 this.setState({ memories, sheet: null }, () => { this.persist(); });
+try { this._memPutOne(newMem); } catch (e) {}
 this.show('记忆已保存');
 }
 _saveSoulPage() {
@@ -5091,25 +5454,41 @@ if (data.worldbooks && data.worldbooks.length > 0) {
 }
 // 3. 记忆格式统一（补全新字段）
 if (data.memories) {
-  data.memories = data.memories.map(m => ({
-    id: m.id || genId(),
-    name: m.name || '未命名',
-    content: m.content || '',
-    triggers: m.triggers || [],
-    alwaysOn: m.alwaysOn || false,
-    weight: m.weight || 1,
-    position: m.position || 'before',
-    layer: m.layer || (m.alwaysOn ? 'core' : 'short'),
-    tag: m.tag || 'general',
-    eventDate: m.eventDate || '',
-    pinned: m.pinned || m.alwaysOn || false,
-    createdAt: m.createdAt || Date.now(),
-    lastReferencedAt: m.lastReferencedAt || Date.now(),
-    sourceType: m.sourceType || 'manual',
-    surface_count: m.surface_count || 0,
-    last_surfaced_at: m.last_surfaced_at || 0,
-    updatedAt: m.updatedAt || Date.now()
-  }));
+  // 导入时直接转成新 schema（并保留兼容字段）
+  data.memories = data.memories.map(m => {
+    try { return this._convertOldMemoryToNew(m); }
+    catch (e) {
+      return {
+        id: m.id || genId(),
+        type: m.layer || m.type || 'short',
+        content: m.content || '',
+        mood: 'calm',
+        intensity: 3,
+        weight: 0.5,
+        is_pinned: !!(m.pinned || m.alwaysOn),
+        timestamp: m.createdAt || Date.now(),
+        session_id: '',
+        is_archived: false,
+        source_quote: '',
+        related_date: m.eventDate || '',
+        name: m.name || '未命名',
+        layer: m.layer || m.type || 'short',
+        pinned: !!(m.pinned || m.alwaysOn),
+        alwaysOn: !!m.alwaysOn,
+        triggers: m.triggers || [],
+        position: m.position || 'before',
+        tag: m.tag || 'general',
+        eventDate: m.eventDate || '',
+        createdAt: m.createdAt || Date.now(),
+        lastReferencedAt: m.lastReferencedAt || Date.now(),
+        sourceType: m.sourceType || 'manual',
+        surface_count: m.surface_count || 0,
+        last_surfaced_at: m.last_surfaced_at || 0,
+        updatedAt: Date.now(),
+        _schema: 2
+      };
+    }
+  });
 }
 // 4. Persona 格式统一
 if (data.personas) {
@@ -5232,6 +5611,16 @@ if (data.worldbooks) {
   updates.memories = [...updates.memories, ...migratedWbs];
 }
 if (data.memories) updates.memories = data.memories; // 全替换
+// 导入后同步到 KelMemories 并标记已迁移
+try {
+  updates.memMigrated = true;
+  updates.memMigrationFailed = false;
+  setTimeout(() => {
+    try {
+      this._memClearAndPutAll(data.memories).then(() => this._memSetSetting('migrated', true));
+    } catch (e) {}
+  }, 0);
+} catch (e) {}
 if (data.personas) {
   updates.personas = data.personas;
   if (data.activePersonaId) updates.activePersonaId = data.activePersonaId;
@@ -7919,6 +8308,13 @@ memLongCount: s.memories.filter(m => m.layer === 'long').length,
 memShortCount: s.memories.filter(m => m.layer === 'short' || !m.layer).length,
 memConsCount: s.memories.filter(m => m.layer === 'consciousness').length,
 openMemorySettings: () => self.setState({ sheet: 'memSettings' }),
+memMigrated: !!s.memMigrated,
+memMigrationFailed: !!s.memMigrationFailed,
+memMigrationStatusLabel: s.memMigrationFailed
+  ? ('迁移失败：' + (s.memMigrationError || '请重试'))
+  : (s.memMigrated ? ('已迁移 · ' + ((s.memories || []).length) + ' 条') : '检测中 / 未完成'),
+retryMemoryMigration: () => self._retryMemoryMigration(),
+
 memSubPage: !!s.memSubPage,
 memSubTitle: memSubTitles[s.memSubPage] || '',
 memSubColor: memSubColors[s.memSubPage] || '#68544B',
