@@ -89,3 +89,9 @@
 - 语法：`node --check` 通过
 - 状态：已部署服务器 + force-with-lease 推到 GitHub master (46d2d91)
 
+### 待办全清 + Style 并入 Soul（2026-07-18）
+- 改了：Kel-Home-main/index.html
+- 纪念日/约定入口移除提示；独立 Persona 页禁用；新 Soul 页保留
+- Style 并入 Soul 折叠栏；音乐设置+网易云API+进度条实时刷新
+- 已 scp 部署 kel-home.xyz；GitHub 不急
+

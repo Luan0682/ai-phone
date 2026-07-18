@@ -239,10 +239,6 @@ button:active {
 <div style="flex:none;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:9px;">
 <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
 <div onClick="{{ navChatList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;white-space:nowrap;">Chat</div>
-<button onClick="{{ openStyle }}" style="height:36px;display:flex;align-items:center;gap:6px;background:var(--bg-card, #FFF);border:none;border-radius:18px;padding:0 14px;cursor:pointer;font-family:inherit;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);min-width:0;max-width:140px;">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-<span style="font-size:13px;font-weight:600;color:var(--text-bold, #3A362F);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ activeStyle }}</span>
-</button>
 </div>
 <div style="display:flex;align-items:center;gap:8px;flex:none;">
 <button onClick="{{ navChatDetailSoul }}" title="Soul" style="height:36px;border:none;background:{{ chatDetailTabBgs.soul }};color:{{ chatDetailTabFgs.soul }};border-radius:18px;padding:0 12px;font-size:12px;font-family:inherit;cursor:pointer;box-shadow:0 0 0 1px rgba(43,38,30,.05);">Soul</button>
@@ -1020,7 +1016,6 @@ button:active {
 </div>
 </sc-if>
 
-<!-- ========== SOUL/PERSONA PAGE (身心) ========== -->
 <!-- ========== DIARY PAGE ========== -->
 <sc-if value="{{ isDiaryPage }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;background:#FFF8F0;width:100%;">
@@ -2235,8 +2230,6 @@ button:active {
 </div>
 </sc-if>
 
-<!-- Anniversary Sheet -->
-<!-- Pledges Sheet -->
 <!-- Context menu -->
 <sc-if value="{{ contextMenuOpen }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;z-index:500;" onClick="{{ closeContextMenu }}">
@@ -2500,14 +2493,72 @@ button:active {
 
   <!-- 进度条 -->
   <div style="flex:none;padding:24px 28px 0;">
-    <div style="height:4px;border-radius:2px;background:#E7E3DA;position:relative;cursor:pointer;">
-      <div style="width:{{ musicProgressPercent }};height:100%;border-radius:2px;background:#68544B;transition:width .3s;"></div>
+    <div onClick="{{ musicSeek }}" style="height:4px;border-radius:2px;background:#E7E3DA;position:relative;cursor:pointer;">
+      <div style="width:{{ musicProgressPercent }};height:100%;border-radius:2px;background:#68544B;transition:width .15s linear;"></div>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:6px;">
       <span style="font-size:10px;color:#B8B3A8;">{{ musicTimeCurrent }}</span>
       <span style="font-size:10px;color:#B8B3A8;">{{ musicTimeTotal }}</span>
     </div>
   </div>
+
+  <!-- 音乐设置面板 -->
+  <sc-if value="{{ musicSettingsOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:none;margin:14px 16px 0;background:var(--bg-card,#FFF);border:1px solid var(--border-card,#EDE9E0);border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:14px;font-weight:600;color:#1A1815;">音乐设置</div>
+      <button onClick="{{ openMusicSettings }}" style="border:none;background:#F2EFE8;border-radius:12px;padding:4px 10px;font-size:11px;color:#6B665E;cursor:pointer;font-family:inherit;">收起</button>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:12px;color:#6B665E;">音量</span>
+        <span style="font-size:11px;color:#B8B3A8;">{{ musicVolumeLabel }}</span>
+      </div>
+      <input type="range" min="0" max="100" step="1" value="{{ musicVolumePercent }}" onInput="{{ musicVolumeChange }}" style="width:100%;accent-color:#68544B;">
+    </div>
+
+    <div style="height:1px;background:#ECE8DF;margin:0 0 14px;"></div>
+    <div style="font-size:12px;font-weight:600;color:#68544B;margin-bottom:8px;">网易云 API</div>
+    <div style="font-size:11px;color:#9A958B;line-height:1.5;margin-bottom:10px;">填写自建 NeteaseCloudMusicApi 地址，例如 https://your-api.example.com。不填只能用本地文件。</div>
+
+    <div style="margin-bottom:10px;">
+      <div style="font-size:11px;color:#B8B3A8;margin-bottom:5px;">API 地址</div>
+      <input value="{{ musicNeteaseApi }}" onInput="{{ musicNeteaseApiChange }}" placeholder="https://api.example.com" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
+    </div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;color:#B8B3A8;margin-bottom:5px;">Cookie（可选，解锁更高音质/登录曲库）</div>
+      <input value="{{ musicNeteaseCookie }}" onInput="{{ musicNeteaseCookieChange }}" placeholder="MUSIC_U=..." style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 11px;font-family:inherit;font-size:12px;color:#1A1815;">
+    </div>
+    <button onClick="{{ musicSaveNeteaseSettings }}" style="width:100%;border:none;background:#68544B;color:#FFF;border-radius:14px;padding:10px 14px;font-size:13px;font-family:inherit;cursor:pointer;margin-bottom:14px;">保存 API 设置</button>
+
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <input value="{{ musicSearchQuery }}" onInput="{{ musicSearchQueryChange }}" placeholder="搜索歌名 / 歌手" style="flex:1;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
+      <button onClick="{{ musicSearchNetease }}" style="border:none;background:#1A1815;color:#F5F3EE;border-radius:12px;padding:0 14px;font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap;">搜索</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <input value="{{ musicSongIdInput }}" onInput="{{ musicSongIdChange }}" placeholder="或直接输入歌曲 ID" style="flex:1;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
+      <button onClick="{{ musicAddById }}" style="border:none;background:#ECEAE4;color:#3A362F;border-radius:12px;padding:0 12px;font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap;">添加</button>
+    </div>
+
+    <sc-if value="{{ musicSearchHasResults }}" hint-placeholder-val="{{ false }}">
+    <div style="max-height:180px;overflow-y:auto;margin-top:6px;">
+      <sc-for list="{{ musicSearchResults }}" as="sr" hint-placeholder-count="3">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 4px;border-bottom:1px solid #F2EFE8;">
+        <div style="flex:1;min-width:0;padding-right:8px;">
+          <div style="font-size:13px;color:#1A1815;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ sr.name }}</div>
+          <div style="font-size:11px;color:#9A958B;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ sr.artist }} · {{ sr.album }}</div>
+        </div>
+        <button onClick="{{ sr.add }}" style="border:none;background:#DFF2EC;color:#68544B;border-radius:12px;padding:6px 10px;font-size:11px;font-family:inherit;cursor:pointer;flex:none;">加入</button>
+      </div>
+      </sc-for>
+    </div>
+    </sc-if>
+    <sc-if value="{{ musicSearchEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="text-align:center;padding:12px 0;font-size:12px;color:#B8B3A8;">没有搜索结果</div>
+    </sc-if>
+  </div>
+  </sc-if>
 
   <!-- 控制按钮 -->
   <div style="flex:none;display:flex;align-items:center;justify-content:center;gap:28px;padding:20px 24px 12px;">
@@ -2927,6 +2978,14 @@ musicPlayerOpen: false,
 musicLoop: false,
 musicCount: JSON.parse(localStorage.getItem('kel-music-list') || '[]').length,
 musicVolume: parseFloat(localStorage.getItem('kel-music-volume') || '0.5'),
+musicSettingsOpen: false,
+musicNeteaseApi: localStorage.getItem('kel-music-netease-api') || '',
+musicNeteaseCookie: localStorage.getItem('kel-music-netease-cookie') || '',
+musicSearchQuery: '',
+musicSongIdInput: '',
+musicSearchResults: [],
+musicSearchDone: false,
+musicTick: 0,
 selectiveExportOpen: false,
 exportChecks: { chats:true, memories:true, personas:true, styles:true, prompts:true, apiPresets:true, diaries:true, anniversaries:true, pledges:true, periodData:true, sexData:true, customCss:true, regexRules:true, avatars:true },
 errorLogs: JSON.parse(localStorage.getItem('kel-error-logs') || '[]'),
@@ -3265,6 +3324,36 @@ this._initKeepAlive = () => {
   this._keepAliveAudio.play().catch(() => {});
 };
 
+// 音乐进度刷新
+this._ensureMusicAudio = () => {
+  if (this._musicAudio) return this._musicAudio;
+  this._musicAudio = new Audio();
+  this._musicAudio.addEventListener('ended', () => {
+    if (this.state.musicLoop) this._playMusic(this._musicIdx);
+    else this._playMusic(this._musicIdx + 1);
+  });
+  this._musicAudio.addEventListener('timeupdate', () => {
+    if (this.state.tab === 'music') this.setState({ musicTick: Date.now() });
+  });
+  this._musicAudio.addEventListener('loadedmetadata', () => {
+    if (this.state.tab === 'music') this.setState({ musicTick: Date.now() });
+  });
+  return this._musicAudio;
+};
+this._startMusicProgressTick = () => {
+  if (this._musicProgressTimer) return;
+  this._musicProgressTimer = setInterval(() => {
+    if (!this._musicPlaying) return;
+    this.setState({ musicTick: Date.now() });
+  }, 500);
+};
+this._stopMusicProgressTick = () => {
+  if (this._musicProgressTimer) {
+    clearInterval(this._musicProgressTimer);
+    this._musicProgressTimer = null;
+  }
+};
+
 // 音乐播放器方法
 this._playMusic = async (idx) => {
   if (this._musicList.length === 0) return;
@@ -3272,48 +3361,113 @@ this._playMusic = async (idx) => {
   if (idx < 0) idx = this._musicList.length - 1;
   this._musicIdx = idx;
   const track = this._musicList[idx];
-  if (!this._musicAudio) {
-    this._musicAudio = new Audio();
-    this._musicAudio.addEventListener('ended', () => {
-  if (this.state.musicLoop) {
-    this._playMusic(this._musicIdx);
-  } else {
-    this._playMusic(this._musicIdx + 1);
-  }
-});
-
-  }
+  const audio = this._ensureMusicAudio();
   try {
-    // 从 IndexedDB 读取音频 blob
-    const db = await this._openMusicDB();
-    const tx = db.transaction('music', 'readonly');
-    const store = tx.objectStore('music');
-    const result = await new Promise((resolve, reject) => {
-      const req = store.get(track.id);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-    if (!result || !result.blob) {
-      this.show('音频数据丢失: ' + track.name);
-      return;
-    }
     // 释放旧的 URL
     if (this._currentMusicUrl) {
       URL.revokeObjectURL(this._currentMusicUrl);
+      this._currentMusicUrl = null;
     }
-    this._currentMusicUrl = URL.createObjectURL(result.blob);
-    this._musicAudio.src = this._currentMusicUrl;
-    this._musicAudio.volume = this._musicVolume;
-    await this._musicAudio.play();
+    let src = null;
+    if (track.source === 'netease' && track.url) {
+      src = track.url;
+    } else if (track.source === 'netease' && track.neteaseId) {
+      src = await this._fetchNeteaseUrl(track.neteaseId);
+      if (!src) { this.show('获取网易云播放地址失败'); return; }
+      track.url = src;
+    } else {
+      // 从 IndexedDB 读取音频 blob
+      const db = await this._openMusicDB();
+      const tx = db.transaction('music', 'readonly');
+      const store = tx.objectStore('music');
+      const result = await new Promise((resolve, reject) => {
+        const req = store.get(track.id);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      if (!result || !result.blob) {
+        this.show('音频数据丢失: ' + track.name);
+        return;
+      }
+      this._currentMusicUrl = URL.createObjectURL(result.blob);
+      src = this._currentMusicUrl;
+    }
+    audio.src = src;
+    audio.volume = this._musicVolume;
+    await audio.play();
     this._musicPlaying = true;
+    this._startMusicProgressTick();
     // 播放音乐时停止静音保活（音乐本身就能保活）
     if (this._keepAliveAudio) {
       this._keepAliveAudio.pause();
     }
-    this.setState({ musicPlaying: true, musicCurrentName: track.name, musicIdx: idx });
+    this.setState({ musicPlaying: true, musicCurrentName: track.name, musicIdx: idx, musicTick: Date.now() });
   } catch(err) {
     this.show('播放失败: ' + err.message);
   }
+};
+
+this._fetchNeteaseUrl = async (songId) => {
+  const base = (this.state.musicNeteaseApi || '').replace(/\/$/, '');
+  if (!base) { this.show('请先填写网易云 API 地址'); return null; }
+  const cookie = this.state.musicNeteaseCookie || '';
+  const q = cookie ? ('&cookie=' + encodeURIComponent(cookie)) : '';
+  try {
+    const res = await fetch(base + '/song/url/v1?id=' + encodeURIComponent(songId) + '&level=exhigh' + q);
+    const data = await res.json();
+    const url = data && data.data && data.data[0] && data.data[0].url;
+    return url || null;
+  } catch (e) {
+    this.show('网易云 API 请求失败: ' + e.message);
+    return null;
+  }
+};
+
+this._searchNetease = async () => {
+  const base = (this.state.musicNeteaseApi || '').replace(/\/$/, '');
+  const kw = (this.state.musicSearchQuery || '').trim();
+  if (!base) { this.show('请先填写网易云 API 地址'); return; }
+  if (!kw) { this.show('请输入搜索关键词'); return; }
+  const cookie = this.state.musicNeteaseCookie || '';
+  const q = cookie ? ('&cookie=' + encodeURIComponent(cookie)) : '';
+  try {
+    this.show('搜索中...');
+    const res = await fetch(base + '/cloudsearch?keywords=' + encodeURIComponent(kw) + '&limit=20' + q);
+    const data = await res.json();
+    const songs = (((data || {}).result || {}).songs) || [];
+    const results = songs.map(s => ({
+      id: String(s.id),
+      name: s.name || '未命名',
+      artist: ((s.ar || s.artists || []).map(a => a.name).filter(Boolean).join(' / ')) || '未知歌手',
+      album: (s.al && s.al.name) || (s.album && s.album.name) || ''
+    }));
+    this.setState({ musicSearchResults: results, musicSearchDone: true });
+    if (results.length === 0) this.show('没有找到歌曲');
+  } catch (e) {
+    this.setState({ musicSearchResults: [], musicSearchDone: true });
+    this.show('搜索失败: ' + e.message);
+  }
+};
+
+this._addNeteaseTrack = async (song) => {
+  if (!song || !song.id) return;
+  const exists = this._musicList.some(t => t.neteaseId === String(song.id));
+  if (exists) { this.show('已在列表中'); return; }
+  const url = await this._fetchNeteaseUrl(song.id);
+  if (!url) return;
+  const entry = {
+    id: 'ne_' + song.id,
+    name: song.name + (song.artist ? (' - ' + song.artist) : ''),
+    source: 'netease',
+    neteaseId: String(song.id),
+    url,
+    size: 0,
+    type: 'audio/mpeg'
+  };
+  this._musicList.push(entry);
+  localStorage.setItem('kel-music-meta', JSON.stringify(this._musicList));
+  this.setState({ musicCount: this._musicList.length });
+  this.show('已加入播放列表');
 };
 
 this._pauseMusic = () => {
@@ -3321,7 +3475,8 @@ this._pauseMusic = () => {
     this._musicAudio.pause();
   }
   this._musicPlaying = false;
-  this.setState({ musicPlaying: false });
+  this._stopMusicProgressTick();
+  this.setState({ musicPlaying: false, musicTick: Date.now() });
   // 暂停音乐后恢复静音保活
   if (this._keepAliveAudio && this.state.keepAliveEnabled) {
     this._keepAliveAudio.play().catch(() => {});
@@ -6874,7 +7029,7 @@ navHome: () => self.setState({ sidebarOpen: true }),
 closeSidebar: () => self.setState({ sidebarOpen: false }),
 navHomeSidebar: () => { self.setState({ tab: 'home', sidebarOpen: false }); },
 navChatListSidebar: () => { self.setState({ tab: 'chatlist', sidebarOpen: false }); },
-navSoulSidebar: () => { self.setState({ tab: 'soul', sidebarOpen: false }); },
+navSoulSidebar: () => { if (self.state.currentChatId) self.setState({ tab: 'chat', chatDetailTab: 'soul', sidebarOpen: false }); else self.setState({ tab: 'chatlist', sidebarOpen: false }); },
 navDiarySidebar: () => { const d=new Date(); const todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); self.setState({ tab:'diary', sidebarOpen:false, diarySelectedDate:todayStr, diaryWeekBase:null }); },
 navPeriodSidebar: () => { self.setState({ tab: 'period', sidebarOpen: false }); },
 navMemorySidebar: () => { self.setState({ tab: 'memory', sidebarOpen: false, memSubPage: '' }); },
@@ -7018,7 +7173,7 @@ isHome: s.tab === 'home',
 isMore: s.tab === 'more',
 isMusicPage: s.tab === 'music',
 isThemePage: s.tab === 'theme',
-isSoulPage: s.tab === 'soul',
+isSoulPage: false,
 isPeriodPage: s.tab === 'period',
 // ===== Period/Calendar Data =====
 periodCycleDay: (() => {
@@ -7448,7 +7603,7 @@ sexEditSave: ()=>{
 },
 
 periodTabTodo: () => self.setState({ periodSubTab: 'todo' }),
-periodTabAnniv: () => self.setState({ sheet: 'anniv' }),
+periodTabAnniv: () => self.show('纪念日功能已移除'),
 isTodoSubPage: s.tab === 'period' && s.periodSubTab === 'todo',
 todoBackToCalendar: () => self.setState({ periodSubTab: 'main' }),
 todoOpenAdd: () => self.setState({ todoEditOpen: true, todoEditId: null, todoEditBody: '', todoEditAt: '', todoEditIn: '', todoEditIsFixed: true }),
@@ -7573,81 +7728,119 @@ soulSections: [
   {
     icon: '',
     title: '人格',
-    expanded: s.soulSections.personality.expanded,
-    content: s.soulSections.personality.content,
+    expanded: !!(s.soulSections && s.soulSections.personality && s.soulSections.personality.expanded),
+    content: (s.soulSections && s.soulSections.personality && s.soulSections.personality.content) || '',
     placeholder: '你是谁？什么性格？怎么说话？',
-    charCount: s.soulSections.personality.content.length,
-    arrowRotate: s.soulSections.personality.expanded ? 180 : 0,
+    charCount: ((s.soulSections && s.soulSections.personality && s.soulSections.personality.content) || '').length,
+    arrowRotate: (s.soulSections && s.soulSections.personality && s.soulSections.personality.expanded) ? 180 : 0,
     toggle: () => {
       const ss = { ...s.soulSections };
-      ss.personality.expanded = !ss.personality.expanded;
+      if (!ss.personality || typeof ss.personality !== 'object') ss.personality = { expanded: false, content: '' };
+      ss.personality = { ...ss.personality, expanded: !ss.personality.expanded };
       self.setState({ soulSections: ss });
     },
     onChange: (e) => {
       const ss = { ...s.soulSections };
-      ss.personality.content = e.target.value;
+      if (!ss.personality || typeof ss.personality !== 'object') ss.personality = { expanded: false, content: '' };
+      ss.personality = { ...ss.personality, content: e.target.value };
       self.setState({ soulSections: ss });
     }
   },
   {
     icon: '',
     title: '规则',
-    expanded: s.soulSections.rules.expanded,
-    content: s.soulSections.rules.content,
+    expanded: !!(s.soulSections && s.soulSections.rules && s.soulSections.rules.expanded),
+    content: (s.soulSections && s.soulSections.rules && s.soulSections.rules.content) || '',
     placeholder: '对话规则、行为准则、底线',
-    charCount: s.soulSections.rules.content.length,
-    arrowRotate: s.soulSections.rules.expanded ? 180 : 0,
+    charCount: ((s.soulSections && s.soulSections.rules && s.soulSections.rules.content) || '').length,
+    arrowRotate: (s.soulSections && s.soulSections.rules && s.soulSections.rules.expanded) ? 180 : 0,
     toggle: () => {
       const ss = { ...s.soulSections };
-      ss.rules.expanded = !ss.rules.expanded;
+      if (!ss.rules || typeof ss.rules !== 'object') ss.rules = { expanded: false, content: '' };
+      ss.rules = { ...ss.rules, expanded: !ss.rules.expanded };
       self.setState({ soulSections: ss });
     },
     onChange: (e) => {
       const ss = { ...s.soulSections };
-      ss.rules.content = e.target.value;
+      if (!ss.rules || typeof ss.rules !== 'object') ss.rules = { expanded: false, content: '' };
+      ss.rules = { ...ss.rules, content: e.target.value };
       self.setState({ soulSections: ss });
     }
   },
   {
     icon: '',
     title: '关于江吟',
-    expanded: s.soulSections.about.expanded,
-    content: s.soulSections.about.content,
+    expanded: !!(s.soulSections && s.soulSections.about && s.soulSections.about.expanded),
+    content: (s.soulSections && s.soulSections.about && s.soulSections.about.content) || '',
     placeholder: '我的信息、偏好、习惯',
-    charCount: s.soulSections.about.content.length,
-    arrowRotate: s.soulSections.about.expanded ? 180 : 0,
+    charCount: ((s.soulSections && s.soulSections.about && s.soulSections.about.content) || '').length,
+    arrowRotate: (s.soulSections && s.soulSections.about && s.soulSections.about.expanded) ? 180 : 0,
     toggle: () => {
       const ss = { ...s.soulSections };
-      ss.about.expanded = !ss.about.expanded;
+      if (!ss.about || typeof ss.about !== 'object') ss.about = { expanded: false, content: '' };
+      ss.about = { ...ss.about, expanded: !ss.about.expanded };
       self.setState({ soulSections: ss });
     },
     onChange: (e) => {
       const ss = { ...s.soulSections };
-      ss.about.content = e.target.value;
+      if (!ss.about || typeof ss.about !== 'object') ss.about = { expanded: false, content: '' };
+      ss.about = { ...ss.about, content: e.target.value };
       self.setState({ soulSections: ss });
     }
   },
   {
     icon: '',
     title: '其他',
-    expanded: s.soulSections.other.expanded,
-    content: s.soulSections.other.content,
+    expanded: !!(s.soulSections && s.soulSections.other && s.soulSections.other.expanded),
+    content: (s.soulSections && s.soulSections.other && s.soulSections.other.content) || '',
     placeholder: '自定义补充内容',
-    charCount: s.soulSections.other.content.length,
-    arrowRotate: s.soulSections.other.expanded ? 180 : 0,
+    charCount: ((s.soulSections && s.soulSections.other && s.soulSections.other.content) || '').length,
+    arrowRotate: (s.soulSections && s.soulSections.other && s.soulSections.other.expanded) ? 180 : 0,
     toggle: () => {
       const ss = { ...s.soulSections };
-      ss.other.expanded = !ss.other.expanded;
+      if (!ss.other || typeof ss.other !== 'object') ss.other = { expanded: false, content: '' };
+      ss.other = { ...ss.other, expanded: !ss.other.expanded };
       self.setState({ soulSections: ss });
     },
     onChange: (e) => {
       const ss = { ...s.soulSections };
-      ss.other.content = e.target.value;
+      if (!ss.other || typeof ss.other !== 'object') ss.other = { expanded: false, content: '' };
+      ss.other = { ...ss.other, content: e.target.value };
       self.setState({ soulSections: ss });
+    }
+  },
+  {
+    icon: '',
+    title: 'Style',
+    expanded: !!s.styleSoulExpanded,
+    content: (s.styleDraft && s.styleDraft.content !== undefined) ? s.styleDraft.content : ((styleObj && styleObj.content) || ''),
+    placeholder: '语气、文风、回复习惯，会随聊天带进 system',
+    charCount: (((s.styleDraft && s.styleDraft.content !== undefined) ? s.styleDraft.content : ((styleObj && styleObj.content) || '')) || '').length,
+    arrowRotate: s.styleSoulExpanded ? 180 : 0,
+    toggle: () => {
+      const next = !s.styleSoulExpanded;
+      const draft = s.styleDraft || { ...(styleObj || {}) };
+      self.setState({ styleSoulExpanded: next, styleDraft: { ...draft } });
+    },
+    onChange: (e) => {
+      const draft = { ...(s.styleDraft || styleObj || {}), content: e.target.value };
+      if (!draft.title && styleObj) draft.title = styleObj.title;
+      self.setState({ styleDraft: draft });
     }
   }
 ],
-saveSoulPage: () => self._saveSoulPage(),
+saveSoulPage: () => {
+  self._saveSoulPage();
+  // 同步 Style 折叠栏内容
+  try {
+    const draft = self.state.styleDraft;
+    if (draft) {
+      const styles = self.state.styles.map(st => st.id === self.state.activeStyleId ? { ...st, title: draft.title || st.title, content: draft.content !== undefined ? draft.content : st.content } : st);
+      self.setState({ styles });
+      self.persist();
+    }
+  } catch (e) {}
+},
 isWorldbookPage: s.tab === 'worldbook',
 isMemoryPage: s.tab === 'memory',
 isDiaryPage: s.tab === 'diary',
@@ -7660,7 +7853,7 @@ currentTime: s.currentTime,
 togetherDays: (() => { const start = new Date('2026-06-30T00:00:00'); const diff = Date.now() - start.getTime(); return Math.max(0, Math.floor(diff / (1000*60*60*24))); })(),
 togetherHours: (() => { const start = new Date('2026-06-30T00:00:00'); const diff = Date.now() - start.getTime(); return Math.max(0, Math.floor((diff % (1000*60*60*24)) / (1000*60*60))); })(),
 togetherMins: (() => { const start = new Date('2026-06-30T00:00:00'); const diff = Date.now() - start.getTime(); return Math.max(0, Math.floor((diff % (1000*60*60)) / (1000*60))); })(),
-navSoul: () => self.setState({ tab: 'soul', drawer: false }),
+navSoul: () => { if (self.state.currentChatId) self.setState({ tab: 'chat', chatDetailTab: 'soul', drawer: false }); else self.setState({ tab: 'chatlist', drawer: false }); },
 // Home 页数据
 homeTotalMsgs: (() => { let count = 0; for (const c of Object.values(s.chats)) { count += (c.messages || []).length; } return count; })(),
 homeTitleName: s.homeTitleName || 'Kel & 江吟',
@@ -8473,7 +8666,9 @@ this.setState({ tab: 'chatlist' });
 this.persist();
 },
 navSoul: () => {
-this.setState({ tab: 'soul' });
+// 独立 Persona 页已移除，统一走聊天详情 Soul
+if (this.state.currentChatId) this.setState({ tab: 'chat', chatDetailTab: 'soul' });
+else this.setState({ tab: 'chatlist' });
 this.persist();
 },
 navDiary: () => {
@@ -8534,7 +8729,7 @@ openPromptSheet: () => self.setState({ sheet: 'prompt', plus: false, profile: fa
 openCssSheet: () => self.setState({ sheet: 'css', plus: false, profile: false }),
 openStyle: () => self.setState({ style: true, styleDraft: { ...styleObj } }),
 closeStyle: () => self.setState({ style: false }),
-openAnnivSheet: () => self.setState({ sheet: 'anniv', annivEditing: false }),
+openAnnivSheet: () => self.show('纪念日功能已移除'),
 addAnniv: () => self.setState({ annivEditing: true, annivEditId: null, annivEditName: '', annivEditDate: '' }),
 annivEditNameChange: (e) => self.setState({ annivEditName: e.target.value }),
 annivEditDateChange: (e) => self.setState({ annivEditDate: e.target.value }),
@@ -8550,7 +8745,7 @@ annivs = [...s.anniversaries, { id, name: s.annivEditName || '纪念日', date: 
 self.setState({ anniversaries: annivs, annivEditing: false }, () => self.persist());
 self.show('已保存');
 },
-openPledgesSheet: () => self.setState({ sheet: 'pledges', pledgeEditing: false }),
+openPledgesSheet: () => self.show('约定功能已移除'),
 addPledge: () => self.setState({ pledgeEditing: true, pledgeEditName: '', pledgeEditDate: '' }),
 pledgeEditNameChange: (e) => self.setState({ pledgeEditName: e.target.value }),
 pledgeEditDateChange: (e) => self.setState({ pledgeEditDate: e.target.value }),
@@ -8791,6 +8986,53 @@ toggleKeepAlive: () => {
 },
 toggleMusicPlayer: () => self.setState(v => ({ musicPlayerOpen: !v.musicPlayerOpen })),
 openMusicSettings: () => self.setState({ musicSettingsOpen: !s.musicSettingsOpen }),
+musicSettingsOpen: !!s.musicSettingsOpen,
+musicVolumePercent: Math.round((typeof s.musicVolume === 'number' ? s.musicVolume : (self._musicVolume || 0.5)) * 100),
+musicVolumeLabel: Math.round((typeof s.musicVolume === 'number' ? s.musicVolume : (self._musicVolume || 0.5)) * 100) + '%',
+musicVolumeChange: (e) => {
+  const v = Math.max(0, Math.min(100, parseInt(e.target.value, 10) || 0)) / 100;
+  self._setMusicVolume(v);
+},
+musicNeteaseApi: s.musicNeteaseApi || '',
+musicNeteaseCookie: s.musicNeteaseCookie || '',
+musicNeteaseApiChange: (e) => self.setState({ musicNeteaseApi: e.target.value }),
+musicNeteaseCookieChange: (e) => self.setState({ musicNeteaseCookie: e.target.value }),
+musicSaveNeteaseSettings: () => {
+  const api = (s.musicNeteaseApi || '').trim().replace(/\/$/, '');
+  const cookie = (s.musicNeteaseCookie || '').trim();
+  localStorage.setItem('kel-music-netease-api', api);
+  localStorage.setItem('kel-music-netease-cookie', cookie);
+  self.setState({ musicNeteaseApi: api, musicNeteaseCookie: cookie });
+  self.show(api ? '网易云 API 已保存' : '已清空 API 地址');
+},
+musicSearchQuery: s.musicSearchQuery || '',
+musicSearchQueryChange: (e) => self.setState({ musicSearchQuery: e.target.value }),
+musicSongIdInput: s.musicSongIdInput || '',
+musicSongIdChange: (e) => self.setState({ musicSongIdInput: e.target.value }),
+musicSearchNetease: () => self._searchNetease(),
+musicAddById: async () => {
+  const id = String(s.musicSongIdInput || '').trim();
+  if (!id) { self.show('请输入歌曲 ID'); return; }
+  await self._addNeteaseTrack({ id, name: '网易云 ' + id, artist: '', album: '' });
+},
+musicSearchResults: (s.musicSearchResults || []).map(sr => ({
+  name: sr.name,
+  artist: sr.artist,
+  album: sr.album,
+  add: () => self._addNeteaseTrack(sr)
+})),
+musicSearchHasResults: (s.musicSearchResults || []).length > 0,
+musicSearchEmpty: !!s.musicSearchDone && (s.musicSearchResults || []).length === 0,
+musicSeek: (e) => {
+  try {
+    const a = self._musicAudio;
+    if (!a || !a.duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    a.currentTime = a.duration * ratio;
+    self.setState({ musicTick: Date.now() });
+  } catch (err) {}
+},
 addMusicFiles: () => self._addMusicFile(),
 errorLogOpen: s.errorLogOpen,
 errorLogCount: (s.errorLogs || []).length + ' 条',
