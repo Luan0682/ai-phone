@@ -219,55 +219,6 @@ button:active {
 
 <div style="position:absolute;inset:0;display:flex;background:var(--bg-main, #F5F3EE);color:var(--text-primary, #1A1815);font-family:-apple-system,'Noto Sans SC','Helvetica Neue',sans-serif;overflow:hidden;letter-spacing:-0.01em;">
 
-<!-- ===== LEFT NAV BAR (OVERLAY) ===== -->
-<div style="position:absolute;top:0;left:0;bottom:0;width:220px;background:var(--bg-main, #F5F3EE);border-right:1px solid rgba(104,84,75,.06);z-index:999;transform:translateX({{ sidebarTransform }});transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:{{ sidebarShadow }};display:flex;flex-direction:column;align-items:center;padding:16px 0 16px;">
-
-<!-- Sidebar Header -->
-<div style="width:100%;padding:24px 20px 20px;border-bottom:1px solid rgba(104,84,75,.06);display:flex;flex-direction:column;align-items:center;">
-<div onClick="{{ openProfileCardAndClose }}" style="width:64px;height:64px;border-radius:50%;overflow:hidden;cursor:pointer;border:2px solid var(--bubble-ai, #D7EBE4);flex:none;margin:0 auto 10px;">
-<sc-if value="{{ hasUserAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ userAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
-<sc-if value="{{ !hasUserAvatar }}" hint-placeholder-val="{{ true }}"><div style="width:100%;height:100%;background:var(--bubble-ai, #D7EBE4);display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.5" stroke="var(--bubble-user, #59483F)" stroke-width="1.5"/><path d="M5.5 19.5c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke="var(--bubble-user, #59483F)" stroke-width="1.5" stroke-linecap="round"/></svg></div></sc-if>
-</div>
-<div style="font-size:15px;font-weight:600;color:var(--text-primary, #1A1815);">Kel & Yin</div>
-<div style="font-size:11px;color:#9A958B;margin-top:2px;">{{ togetherDays }} days together</div>
-</div>
-
-<!-- Nav Items -->
-<div style="flex:1;width:100%;padding:12px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;">
-
-<div class="nav-icon {{ navHomeClass }}" onClick="{{ navHomeSidebar }}" style="width:100%;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12l7-7 7 7" stroke="var(--text-secondary, #68544B)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 10.5V19a1 1 0 001 1h3v-4.5a1 1 0 011-1h0a1 1 0 011 1V20h3a1 1 0 001-1v-8.5" stroke="var(--text-secondary, #68544B)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-<span style="font-size:14px;color:var(--text-primary, #1A1815);">Home</span>
-</div>
-
-<div class="nav-icon" onClick="{{ navChatListSidebar }}" style="width:100%;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.5 6.5h15M4.5 12h10M4.5 17.5h13" stroke="var(--text-secondary, #68544B)" stroke-width="1.5" stroke-linecap="round"/></svg>
-<span style="font-size:14px;color:var(--text-primary, #1A1815);">Chats</span>
-</div>
-
-<div class="nav-icon {{ navDiaryClass }}" onClick="{{ navDiarySidebar }}" style="width:100%;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="var(--text-secondary, #68544B)" stroke-width="1.5"/><path d="M8 7h8M8 11h5" stroke="var(--text-secondary, #68544B)" stroke-width="1.5" stroke-linecap="round"/><path d="M4 7.5h2M4 16.5h2" stroke="var(--text-secondary, #68544B)" stroke-width="1.5" stroke-linecap="round"/></svg>
-<span style="font-size:14px;color:var(--text-primary, #1A1815);">Diary</span>
-</div>
-
-<div class="nav-icon {{ navMemClass }}" onClick="{{ navMemorySidebar }}" style="width:100%;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 4v16M8 6c0 3 4 4 4 8M16 6c0 3-4 4-4 8" stroke="var(--text-secondary, #68544B)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="20" r="1" fill="var(--text-secondary, #68544B)"/></svg>
-<span style="font-size:14px;color:var(--text-primary, #1A1815);">Memory</span>
-</div>
-
-<div class="nav-icon" onClick="{{ navSettingsSidebar }}" style="width:100%;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="var(--text-secondary, #68544B)" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="var(--text-secondary, #68544B)" stroke-width="1.5" stroke-linecap="round"/></svg>
-<span style="font-size:14px;color:var(--text-primary, #1A1815);">Settings</span>
-</div>
-
-</div>
-</div>
-
-<!-- Sidebar overlay backdrop -->
-<sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ false }}">
-<div onClick="{{ closeSidebar }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:998;animation:fadeIn .2s ease both;"></div>
-</sc-if>
-
 <!-- ===== MAIN CONTENT ===== -->
 <div style="flex:1;min-width:0;position:relative;">
 
@@ -600,7 +551,7 @@ button:active {
 
 <!-- 顶部：Chats + 右上角新建 -->
 <div style="padding:20px 0 8px;display:flex;align-items:center;justify-content:space-between;">
-<div onClick="{{ openSidebar }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Chats</div>
+<div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Chats</div>
 <button onClick="{{ newChat }}" style="width:36px;height:36px;border-radius:50%;background:#68544B;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(104,84,75,0.25);">
 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/></svg>
 </button>
@@ -626,7 +577,7 @@ button:active {
 <!-- 用户信息 + 搜索 -->
 <div style="margin-bottom:16px;">
 <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-<div onClick="{{ pickUserAvatar }}" style="width:44px;height:44px;border-radius:50%;overflow:hidden;background:#ECEAE4;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #E7E3DA;">
+<div onClick="{{ openProfileCard }}" style="width:44px;height:44px;border-radius:50%;overflow:hidden;background:#ECEAE4;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #E7E3DA;">
 <sc-if value="{{ hasUserAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ userAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
 <sc-if value="{{ !hasUserAvatar }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.5" stroke="#9A958B" stroke-width="1.5"/><path d="M5.5 19.5c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></sc-if>
 </div>
@@ -757,7 +708,7 @@ button:active {
   <!-- 顶部：名字 + 计时 -->
   <div style="padding:48px 24px 0;text-align:center;">
     <!-- 可编辑名字（点击在侧边栏修改） -->
-    <div onClick="{{ openSidebar }}" style="font-family:'Playfair Display','Newsreader','Georgia',serif !important;font-size:34px;font-weight:400;color:#68544B;letter-spacing:-0.02em;cursor:pointer;margin-bottom:4px;">
+    <div onClick="{{ navHome }}" style="font-family:'Playfair Display','Newsreader','Georgia',serif !important;font-size:34px;font-weight:400;color:#68544B;letter-spacing:-0.02em;cursor:pointer;margin-bottom:4px;">
       {{ homeTitleName }}
     </div>
     <div style="font-size:13px;color:#9A958B;margin-bottom:20px;">点击名字编辑</div>
@@ -789,7 +740,7 @@ button:active {
 
   <!-- 底部：App 卡片（仅图标，间距可调） -->
   <div style="padding:0 20px 100px;">
-    <div style="display:flex;gap:{{ homeCardGap }}px;justify-content:center;align-items:center;">
+    <div style="display:flex;gap:{{ homeCardGap }}px;justify-content:center;align-items:center;flex-wrap:wrap;">
       <div onClick="{{ navPeriod }}" title="Calendar" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M3 10h18M8 2v4M16 2v4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
@@ -802,9 +753,38 @@ button:active {
       <div onClick="{{ navMusic }}" title="Music" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="17" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M11 17V5l10-2v12" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="15" r="3" stroke="#68544B" stroke-width="1.5"/></svg>
       </div>
+      <div onClick="{{ navTheme }}" title="Theme" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/></svg>
+      </div>
     </div>
   </div>
 
+</div>
+</sc-if>
+
+
+<!-- ========== THEME PAGE ========== -->
+<sc-if value="{{ isThemePage }}" hint-placeholder-val="{{ false }}">
+<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 100px;width:100%;">
+  <div style="padding:20px 0 16px;">
+    <div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:26px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Theme</div>
+  </div>
+  <div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+    <div style="padding:16px 18px;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="#68544B" stroke-width="1.5"/></svg>
+        <div>
+          <div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">首页卡片间距</div>
+          <div style="font-size:11px;color:#B8B3A8;margin-top:2px;">当前 {{ homeCardGapLabel }}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:12px;color:#9A958B;width:28px;">密</span>
+        <input type="range" min="4" max="24" step="1" value="{{ homeCardGap }}" onInput="{{ homeCardGapChange }}" style="flex:1;accent-color:#68544B;">
+        <span style="font-size:12px;color:#9A958B;width:28px;text-align:right;">疏</span>
+      </div>
+    </div>
+  </div>
 </div>
 </sc-if>
 
@@ -813,7 +793,7 @@ button:active {
 <div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 24px;width:100%;">
 
 <div style="padding:20px 0 16px;">
-<div onClick="{{ openSidebar }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:26px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Settings</div>
+<div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:26px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Settings</div>
 </div>
 
 <!-- 搜索聊天记录 -->
@@ -929,7 +909,7 @@ button:active {
 
 <!-- 后台保活 & 音乐 -->
 <div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div onClick="{{ toggleMusicPlayer }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+<div onClick="{{ navMusic }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
 <div style="display:flex;align-items:center;gap:14px;">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 18V5l12-2v13" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" stroke="#68544B" stroke-width="1.5"/><circle cx="18" cy="16" r="3" stroke="#68544B" stroke-width="1.5"/></svg>
 <div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">音乐播放器</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ musicStatusLabel }}</div></div>
@@ -1118,43 +1098,6 @@ button:active {
 </sc-if>
 
 <!-- ========== SOUL/PERSONA PAGE (身心) ========== -->
-<sc-if value="{{ isSoulPage }}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;inset:0;display:flex;flex-direction:column;width:100%;">
-
-<!-- 顶部标题 + 头像 + 保存按钮 -->
-<div style="flex:none;padding:20px 20px 16px;display:flex;flex-direction:column;gap:12px;">
-<div onClick="{{ openSidebar }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;padding:20px 0 16px;">Persona</div>
-<div style="display:flex;align-items:center;gap:12px;">
-<div onClick="{{ uploadAiAvatar }}" style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#DFF2EC;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #E7E3DA;">
-<sc-if value="{{ hasAiAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ aiAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
-<sc-if value="{{ !hasAiAvatar }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#9A958B" stroke-width="1.5"/><path d="M5 19.5c0-3.5 3.5-6.5 7-6.5s7 3 7 6.5" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></sc-if>
-</div>
-<div style="flex:1;">
-<div style="font-size:18px;font-weight:600;color:#68544B;">{{ soulName }}</div>
-<div style="font-size:11px;color:#9A958B;margin-top:2px;">{{ soulCharCount }} 字</div>
-</div>
-<button onClick="{{ saveSoulPage }}" style="border:none;background:#68544B;color:#FFF;border-radius:18px;padding:8px 16px;font-size:13px;font-family:inherit;cursor:pointer;">保存</button>
-</div>
-</div>
-
-<!-- Tab 切换 -->
-<div style="flex:none;padding:0 20px 12px;display:flex;gap:8px;overflow-x:auto;">
-<sc-for list="{{ soulTabs }}" as="tab" hint-placeholder-count="4">
-<button onClick="{{ tab.switch }}" class="tab-pill {{ tab.activeClass }}">{{ tab.label }}</button>
-</sc-for>
-</div>
-
-<!-- 内容编辑区 -->
-<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 20px 24px;">
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<textarea value="{{ soulActiveContent }}" onInput="{{ soulContentChange }}" placeholder="{{ soulActivePlaceholder }}" style="display:block;width:100%;border:none;outline:none;background:transparent;resize:vertical;font-family:inherit;font-size:14px;line-height:1.7;color:#1A1815;min-height:calc(100vh - 320px);"></textarea>
-<div style="font-size:11px;color:#B8B3A8;margin-top:8px;text-align:right;">{{ soulActiveCharCount }} 字</div>
-</div>
-</div>
-
-</div>
-</sc-if>
-
 <!-- ========== DIARY PAGE ========== -->
 <sc-if value="{{ isDiaryPage }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;background:#FFF8F0;width:100%;">
@@ -1162,7 +1105,7 @@ button:active {
 <!-- 顶部标题 + tab栏 -->
 <div style="flex:none;padding:16px 20px 0;">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-<div onClick="{{ openSidebar }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;padding:20px 0 16px;">Diary</div>
+<div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;padding:20px 0 16px;">Diary</div>
 <span style="font-size:12px;color:#8B7355;">{{ diaryTodayLabel }}</span>
 </div>
 <!-- 季度/月/周 tab -->
@@ -1376,7 +1319,7 @@ button:active {
 <div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 24px;width:100%;">
 
 <div style="padding:20px 0 16px;display:flex;align-items:center;justify-content:space-between;">
-<div onClick="{{ openSidebar }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Memory</div>
+<div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Memory</div>
 <div style="display:flex;gap:8px;">
 <button onClick="{{ openMemorySettings }}" style="width:34px;height:34px;border-radius:50%;background:var(--bg-card, #FFF);border:1px solid #EDE9E0;display:flex;align-items:center;justify-content:center;cursor:pointer;">
 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -1521,7 +1464,7 @@ button:active {
 <!-- 顶部状态 -->
 <div style="flex:none;padding:16px 20px 0;">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-  <div onClick="{{ openSidebar }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;padding:20px 0 16px;">Calendar</div>
+  <div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;padding:20px 0 16px;">Calendar</div>
   <sc-if value="{{ !sexCalendarOpen }}" hint-placeholder-val="{{ true }}">
     <button onClick="{{ openSexPasswordPrompt }}" style="width:36px;height:36px;border:none;background:rgba(255,255,255,0.55);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;opacity:0.85;box-shadow:0 1px 4px rgba(0,0,0,0.04);">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="#F4A7B9" stroke-width="1.5" stroke-linejoin="round" fill="rgba(244,167,185,0.15)"/></svg>
@@ -1959,38 +1902,6 @@ button:active {
 </sc-if>
 
 <!-- ========== REGEX PAGE ========== -->
-<sc-if value="{{ isRegexPage }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 24px;">
-
-<div style="padding:20px 0 16px;display:flex;align-items:center;justify-content:space-between;">
-<div onClick="{{ openSidebar }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Regex</div>
-<button onClick="{{ newRegex }}" style="border:none;background:#1A1815;color:#F5F3EE;border-radius:18px;padding:8px 16px;font-size:13px;font-family:inherit;cursor:pointer;">+ 新建</button>
-</div>
-
-<div style="font-size:12px;color:#9A958B;line-height:1.6;margin-bottom:16px;padding:12px 14px;background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:14px;">扫描 AI 输出文字，匹配关键词时触发动作（如切换像素小人表情、替换文本等）</div>
-
-<sc-if value="{{ regexListHasItems }}" hint-placeholder-val="{{ true }}">
-<sc-for list="{{ regexList }}" as="rx" hint-placeholder-count="3">
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;box-shadow:0 1px 3px rgba(43,38,30,.04);" onClick="{{ rx.edit }}">
-<div style="display:flex;align-items:center;justify-content:space-between;">
-<div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
-<div style="width:7px;height:7px;border-radius:50%;background:{{ rx.dotColor }};flex:none;"></div>
-<span style="font-size:14px;font-weight:500;color:var(--text-primary, #1A1815);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rx.name }}</span>
-<span style="font-size:10px;color:#9A958B;background:#F2EFE8;border-radius:8px;padding:2px 8px;flex:none;">{{ rx.targetLabel }}</span>
-</div>
-<button onClick="{{ rx.toggle }}" style="border:none;background:{{ rx.toggleBg }};border-radius:12px;padding:4px 10px;font-size:10px;color:{{ rx.toggleFg }};cursor:pointer;font-family:inherit;">{{ rx.toggleLabel }}</button>
-</div>
-<div style="font-size:11px;color:#6B665E;margin-top:6px;font-family:'SF Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rx.patternPreview }}</div>
-<div style="font-size:11px;color:#9A958B;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">→ {{ rx.actionPreview }}</div>
-</div>
-</sc-for>
-</sc-if>
-<sc-if value="{{ !regexListHasItems }}" hint-placeholder-val="{{ false }}">
-<div style="text-align:center;padding:50px 0;color:#B8B3A8;font-size:13px;">还没有正则规则，点击右上角新建</div>
-</sc-if>
-</div>
-</sc-if>
-
 </div>
 
 <!-- ===== PET ===== -->
@@ -2212,135 +2123,6 @@ button:active {
 </sc-if>
 
 <!-- CSS Editor Sheet -->
-<sc-if value="{{ isCssSheet }}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;inset:0;z-index:260;">
-<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);animation:fadeIn .15s ease both;"></div>
-<div class="sa" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg-main, #F5F3EE);border-radius:16px 16px 0 0;padding:12px 16px 30px;animation:slideUp .25s ease both;max-height:90%;overflow-y:auto;">
-<div style="width:36px;height:5px;border-radius:3px;background:#CFCAC1;margin:0 auto 14px;"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 14px;">
-<button onClick="{{ closeSheet }}" style="width:34px;height:34px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="1.8" stroke-linecap="round"/></svg>
-</button>
-<span style="font-size:15px;font-weight:600;color:var(--text-primary, #1A1815);">界面美化</span>
-<button onClick="{{ saveCssSettings }}" style="border:none;background:#1A1815;color:#F5F3EE;border-radius:18px;padding:8px 13px;font-size:12px;font-family:inherit;cursor:pointer;">保存</button>
-</div>
-<div style="background:var(--bg-card, #FFF);border-radius:16px;overflow:hidden;border:1px solid var(--border-card, #EDE9E0);">
-<!-- 配色方案 -->
-<div style="padding:13px 14px;border-bottom:1px solid #ECE8DF;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:10px;">一键配色</div>
-<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;">
-<sc-for list="{{ themeOptions }}" as="th" hint-placeholder-count="7">
-<button onClick="{{ th.pick }}" style="width:38px;height:38px;border-radius:12px;border:{{ th.border }};background:{{ th.preview }};cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.1);">
-<sc-if value="{{ th.isActive }}" hint-placeholder-val="{{ false }}">
-<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="{{ th.checkColor }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</sc-if>
-</button>
-</sc-for>
-</div>
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:8px;">自定义配色</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">外层背景</div>
-<input value="{{ customThemeBgBase }}" onInput="{{ customThemeBgBaseChange }}" placeholder="#d6d2c8" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">主背景</div>
-<input value="{{ customThemeBgMain }}" onInput="{{ customThemeBgMainChange }}" placeholder="#F5F3EE" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">卡片背景</div>
-<input value="{{ customThemeBgCard }}" onInput="{{ customThemeBgCardChange }}" placeholder="#FFF" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">输入框背景</div>
-<input value="{{ customThemeBgInput }}" onInput="{{ customThemeBgInputChange }}" placeholder="#FBFAF7" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">卡片边框</div>
-<input value="{{ customThemeBorderCard }}" onInput="{{ customThemeBorderCardChange }}" placeholder="#EDE9E0" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">输入框边框</div>
-<input value="{{ customThemeBorderInput }}" onInput="{{ customThemeBorderInputChange }}" placeholder="#E7E3DA" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">主文字</div>
-<input value="{{ customThemeTextPrimary }}" onInput="{{ customThemeTextPrimaryChange }}" placeholder="#1A1815" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">次文字</div>
-<input value="{{ customThemeTextSecondary }}" onInput="{{ customThemeTextSecondaryChange }}" placeholder="#48453E" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">用户气泡</div>
-<input value="{{ customThemeBubbleUser }}" onInput="{{ customThemeBubbleUserChange }}" placeholder="#ECEAE4" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-<div>
-<div style="font-size:9px;color:#9A958B;margin-bottom:3px;">AI气泡</div>
-<input value="{{ customThemeBubbleAi }}" onInput="{{ customThemeBubbleAiChange }}" placeholder="#FFF" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:10px;padding:6px 9px;font-family:inherit;font-size:11px;color:#1A1815;">
-</div>
-</div>
-<button onClick="{{ applyCustomTheme }}" style="margin-top:10px;width:100%;border:none;background:#1A1815;color:#F5F3EE;border-radius:14px;padding:8px 16px;font-size:12px;font-family:inherit;cursor:pointer;">应用自定义配色</button>
-</div>
-</div>
-<!-- 头像设置 -->
-<div style="padding:13px 14px;border-bottom:1px solid #ECE8DF;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:10px;">头像设置</div>
-<div style="display:flex;gap:18px;align-items:center;">
-<div style="text-align:center;">
-<div onClick="{{ pickUserAvatar }}" style="width:46px;height:46px;border-radius:50%;background:#ECEAE4;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;border:2px solid #E7E3DA;">
-<sc-if value="{{ hasUserAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ userAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
-<sc-if value="{{ !hasUserAvatar }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.5" stroke="#9A958B" stroke-width="1.5"/><path d="M5.5 19.5c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></sc-if>
-</div>
-<div style="font-size:10px;color:#9A958B;margin-top:4px;">我的头像</div>
-</div>
-<div style="text-align:center;">
-<div onClick="{{ pickAiAvatar }}" style="width:46px;height:46px;border-radius:50%;background:#ECEAE4;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;border:2px solid #E7E3DA;">
-<sc-if value="{{ hasAiAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ aiAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
-<sc-if value="{{ !hasAiAvatar }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#9A958B" stroke-width="1.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1" fill="#9A958B"/><circle cx="15" cy="10" r="1" fill="#9A958B"/></svg></sc-if>
-</div>
-<div style="font-size:10px;color:#9A958B;margin-top:4px;">AI 头像</div>
-</div>
-</div>
-</div>
-<!-- 头像大小 -->
-<div style="padding:13px 14px;border-bottom:1px solid #ECE8DF;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">头像大小 (px)</div>
-<input value="{{ avatarSize }}" onInput="{{ avatarSizeChange }}" type="number" min="20" max="80" style="width:75px;border:1px solid #E7E3DA;border-radius:12px;padding:7px 11px;font-family:inherit;font-size:13px;color:#1A1815;text-align:center;">
-</div>
-<!-- 字体 -->
-<div style="padding:13px 14px;border-bottom:1px solid #ECE8DF;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">自定义字体</div>
-<input value="{{ customFont }}" onInput="{{ customFontChange }}" placeholder="例: 'LXGW WenKai', serif" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:12px;color:#1A1815;margin-bottom:8px;">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-<button onClick="{{ pickFontFile }}" style="border:none;background:#1A1815;color:#F5F3EE;border-radius:12px;padding:6px 13px;font-size:11px;font-family:inherit;cursor:pointer;">上传 TTF/OTF</button>
-<span style="font-size:10px;color:#9A958B;">{{ localFontName }}</span>
-</div>
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">消息字体大小 (px)</div>
-<input value="{{ msgFontSize }}" onInput="{{ msgFontSizeChange }}" type="number" min="12" max="24" style="width:75px;border:1px solid #E7E3DA;border-radius:12px;padding:7px 11px;font-family:inherit;font-size:13px;color:#1A1815;text-align:center;">
-</div>
-<!-- 字体预设 -->
-<div style="padding:13px 14px;border-bottom:1px solid #ECE8DF;">
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-<span style="font-size:11px;color:#B8B3A8;">字体预设</span>
-<button onClick="{{ saveFontPreset }}" style="border:none;background:#1A1815;color:#F5F3EE;border-radius:12px;padding:5px 11px;font-size:10px;font-family:inherit;cursor:pointer;">保存当前字体</button>
-</div>
-<div style="display:flex;flex-wrap:wrap;gap:6px;">
-<sc-for list="{{ fontPresets }}" as="fp" hint-placeholder-count="3">
-<button onClick="{{ fp.apply }}" style="border:1px solid {{ fp.border }};background:var(--bg-card, #FFF);border-radius:12px;padding:4px 10px;font-size:11px;font-family:inherit;cursor:pointer;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ fp.name }}</button>
-</sc-for>
-</div>
-</div>
-<!-- CSS -->
-<div style="padding:13px 14px;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">自定义 CSS</div>
-<textarea value="{{ customCss }}" onInput="{{ customCssChange }}" placeholder="/* 在这里写 CSS */&#10;body { }&#10;.sa { }" rows="10" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 11px;font-family:'SF Mono',monospace;font-size:11px;line-height:1.6;color:#1A1815;resize:vertical;min-height:150px;"></textarea>
-</div>
-</div>
-</div>
-</div>
-</sc-if>
-
 <!-- Memory Editor Sheet -->
 <sc-if value="{{ isMemoryEditorSheet }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;z-index:270;">
@@ -2501,109 +2283,7 @@ button:active {
 </sc-if>
 
 <!-- Anniversary Sheet -->
-<sc-if value="{{ isAnnivSheet }}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;inset:0;z-index:270;">
-<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);animation:fadeIn .15s ease both;"></div>
-<div class="sa" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg-main, #F5F3EE);border-radius:16px 16px 0 0;padding:12px 16px 30px;animation:slideUp .25s ease both;max-height:85%;overflow-y:auto;">
-<div style="width:36px;height:4px;border-radius:2px;background:#D1CCC2;margin:0 auto 16px;"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-<button onClick="{{ closeSheet }}" style="width:34px;height:34px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="1.8" stroke-linecap="round"/></svg>
-</button>
-<span style="font-size:15px;font-weight:600;color:var(--text-primary, #1A1815);">纪念日</span>
-<button onClick="{{ addAnniv }}" style="border:none;background:#1A1815;color:#F5F3EE;border-radius:18px;padding:8px 13px;font-size:12px;font-family:inherit;cursor:pointer;">+ 新建</button>
-</div>
-<sc-for list="{{ annivList }}" as="av" hint-placeholder-count="2">
-<div style="background:var(--bg-card, #FFF);border:1px solid {{ av.bd }};border-radius:16px;padding:13px 15px;margin-bottom:10px;cursor:pointer;" onClick="{{ av.pick }}">
-<div style="display:flex;align-items:center;justify-content:space-between;">
-<div style="flex:1;min-width:0;">
-<div style="font-size:14px;font-weight:500;color:var(--text-primary, #1A1815);">{{ av.name }}</div>
-<div style="font-size:12px;color:#B8B3A8;margin-top:2px;">{{ av.date }}</div>
-</div>
-<div style="display:flex;align-items:center;gap:8px;">
-<span style="font-family:'Newsreader',serif;font-size:22px;color:var(--text-primary, #1A1815);">{{ av.days }}</span>
-<span style="font-size:11px;color:#9A958B;">days</span>
-<button onClick="{{ av.editBtn }}" style="border:none;background:transparent;cursor:pointer;opacity:.4;padding:4px;">
-<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#48453E" stroke-width="1.5"/></svg>
-</button>
-<button onClick="{{ av.del }}" style="border:none;background:transparent;cursor:pointer;opacity:.4;padding:4px;">
-<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="2" stroke-linecap="round"/></svg>
-</button>
-</div>
-</div>
-</div>
-</sc-for>
-<sc-if value="{{ annivEditing }}" hint-placeholder-val="{{ false }}">
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:16px;padding:14px;margin-top:10px;">
-<div style="margin-bottom:10px;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">名称</div>
-<input value="{{ annivEditName }}" onInput="{{ annivEditNameChange }}" placeholder="纪念日名称" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
-</div>
-<div style="margin-bottom:10px;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">日期 (YYYY-MM-DD)</div>
-<input value="{{ annivEditDate }}" onInput="{{ annivEditDateChange }}" placeholder="2026-01-01" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
-</div>
-<div style="display:flex;gap:8px;justify-content:flex-end;">
-<button onClick="{{ annivCancelEdit }}" style="padding:6px 14px;border:1px solid #DDD8CE;background:#FFF;border-radius:14px;font-size:12px;font-family:inherit;color:#6B665E;cursor:pointer;">取消</button>
-<button onClick="{{ annivSaveEdit }}" style="padding:6px 14px;border:none;background:#1A1815;border-radius:14px;font-size:12px;font-family:inherit;color:#F5F3EE;cursor:pointer;">保存</button>
-</div>
-</div>
-</sc-if>
-</div>
-</div>
-</sc-if>
-
 <!-- Pledges Sheet -->
-<sc-if value="{{ isPledgesSheet }}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;inset:0;z-index:270;">
-<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);animation:fadeIn .15s ease both;"></div>
-<div class="sa" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg-main, #F5F3EE);border-radius:16px 16px 0 0;padding:12px 16px 30px;animation:slideUp .25s ease both;max-height:85%;overflow-y:auto;">
-<div style="width:36px;height:4px;border-radius:2px;background:#D1CCC2;margin:0 auto 16px;"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-<button onClick="{{ closeSheet }}" style="width:34px;height:34px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="1.8" stroke-linecap="round"/></svg>
-</button>
-<span style="font-size:15px;font-weight:600;color:var(--text-primary, #1A1815);">约定</span>
-<button onClick="{{ addPledge }}" style="border:none;background:#1A1815;color:#F5F3EE;border-radius:18px;padding:8px 13px;font-size:12px;font-family:inherit;cursor:pointer;">+ 新建</button>
-</div>
-<sc-for list="{{ pledgeList }}" as="pl" hint-placeholder-count="0">
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:16px;padding:13px 15px;margin-bottom:10px;">
-<div style="display:flex;align-items:flex-start;gap:10px;">
-<button onClick="{{ pl.toggleDone }}" style="width:20px;height:20px;border-radius:6px;border:1.5px solid {{ pl.checkBd }};background:{{ pl.checkBg }};display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;margin-top:1px;">
-<sc-if value="{{ pl.done }}" hint-placeholder-val="{{ false }}">
-<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</sc-if>
-</button>
-<div style="flex:1;min-width:0;">
-<div style="font-size:14px;color:{{ pl.textColor }};text-decoration:{{ pl.textDeco }};">{{ pl.name }}</div>
-<sc-if value="{{ pl.hasDate }}" hint-placeholder-val="{{ false }}">
-<div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ pl.date }}</div>
-</sc-if>
-</div>
-<button onClick="{{ pl.del }}" style="border:none;background:transparent;cursor:pointer;opacity:.35;padding:4px;">
-<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="2" stroke-linecap="round"/></svg>
-</button>
-</div>
-</div>
-</sc-for>
-<sc-if value="{{ pledgeEditing }}" hint-placeholder-val="{{ false }}">
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:16px;padding:14px;margin-top:10px;">
-<div style="margin-bottom:10px;">
-<input value="{{ pledgeEditName }}" onInput="{{ pledgeEditNameChange }}" placeholder="约定内容" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
-</div>
-<div style="margin-bottom:10px;">
-<input value="{{ pledgeEditDate }}" onInput="{{ pledgeEditDateChange }}" placeholder="截止日期 (可选)" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
-</div>
-<div style="display:flex;gap:8px;justify-content:flex-end;">
-<button onClick="{{ pledgeCancelEdit }}" style="padding:6px 14px;border:1px solid #DDD8CE;background:#FFF;border-radius:14px;font-size:12px;font-family:inherit;color:#6B665E;cursor:pointer;">取消</button>
-<button onClick="{{ pledgeSaveEdit }}" style="padding:6px 14px;border:none;background:#1A1815;border-radius:14px;font-size:12px;font-family:inherit;color:#F5F3EE;cursor:pointer;">保存</button>
-</div>
-</div>
-</sc-if>
-</div>
-</div>
-</sc-if>
-
 <!-- Context menu -->
 <sc-if value="{{ contextMenuOpen }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;z-index:500;" onClick="{{ closeContextMenu }}">
@@ -2840,67 +2520,6 @@ button:active {
 </sc-if>
 
 <!-- Music Player Modal -->
-<sc-if value="{{ musicPlayerOpen }}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;inset:0;z-index:350;">
-<div onClick="{{ closeMusicPlayer }}" style="position:absolute;inset:0;background:rgba(0,0,0,.25);animation:fadeIn .15s ease both;"></div>
-<div style="position:absolute;bottom:60px;left:16px;right:16px;background:rgba(245,243,238,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,.15);animation:slideUp .25s ease both;border:1px solid rgba(255,255,255,.3);">
-
-<!-- disc -->
-<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
-<div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#1A1815,#3A362F);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2);animation:{{ musicDiscAnim }};">
-<div style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.2);"></div>
-</div>
-<div style="flex:1;min-width:0;">
-<div style="font-size:14px;font-weight:600;color:var(--text-primary, #1A1815);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ musicCurrentDisplay }}</div>
-<div style="font-size:11px;color:#9A958B;margin-top:3px;">{{ musicCountDisplay }}</div>
-</div>
-</div>
-
-<!-- controls -->
-<div style="display:flex;align-items:center;justify-content:center;gap:22px;margin-bottom:14px;">
-<button onClick="{{ musicPrev }}" style="width:34px;height:34px;border:none;background:rgba(26,24,21,.06);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 20L9 12l10-8v16ZM5 4v16" stroke="var(--text-primary, #1A1815)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-<button onClick="{{ musicToggle }}" style="width:46px;height:46px;border:none;background:#1A1815;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none">{{ musicPlayIcon }}</svg>
-</button>
-<button onClick="{{ musicNext }}" style="width:34px;height:34px;border:none;background:rgba(26,24,21,.06);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 4l10 8-10 8V4ZM19 4v16" stroke="var(--text-primary, #1A1815)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-<button onClick="{{ musicToggleLoop }}" style="width:34px;height:34px;border:none;background:{{ musicLoopBg }};border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M17 2l4 4-4 4M3 11V9a4 4 0 014-4h14M7 22l-4-4 4-4M21 13v2a4 4 0 01-4 4H3" stroke="{{ musicLoopColor }}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-</div>
-
-<!-- track list -->
-<div class="sa" style="max-height:170px;overflow-y:auto;border-top:1px solid rgba(26,24,21,.08);padding-top:11px;">
-<sc-for list="{{ musicTrackList }}" as="tk" hint-placeholder-count="3">
-<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 4px;border-radius:10px;background:{{ tk.bg }};cursor:pointer;" onClick="{{ tk.play }}">
-<div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0;">
-<span style="font-size:12px;color:{{ tk.numColor }};width:18px;text-align:center;">{{ tk.num }}</span>
-<span style="font-size:13px;color:{{ tk.nameColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ tk.name }}</span>
-</div>
-<button onClick="{{ tk.del }}" style="border:none;background:transparent;cursor:pointer;opacity:.3;padding:4px;flex:none;">
-<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="2" stroke-linecap="round"/></svg>
-</button>
-</div>
-</sc-for>
-<sc-if value="{{ musicListEmpty }}" hint-placeholder-val="{{ false }}">
-<div style="text-align:center;padding:18px 0;font-size:12px;color:#B8B3A8;">还没有音乐，去 Settings 添加</div>
-</sc-if>
-</div>
-
-<!-- 添加音乐按钮 -->
-<div style="margin-top:12px;display:flex;justify-content:center;">
-<button onClick="{{ addMusicFiles }}" style="border:none;background:rgba(26,24,21,.06);color:#3A362F;border-radius:14px;padding:8px 16px;font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;">
-<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round"/></svg>
-添加音乐
-</button>
-</div>
-</div>
-</div>
-</sc-if>
-
 <!-- ========== MUSIC FULL PAGE ========== -->
 <sc-if value="{{ isMusicPage }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;background:#F5F3EE;display:flex;flex-direction:column;width:100%;">
@@ -7296,7 +6915,7 @@ navHomeClass: s.tab === 'home' ? 'active' : '',
 sidebarOpen: s.sidebarOpen || false,
 sidebarTransform: s.sidebarOpen ? '0%' : '-100%',
 sidebarShadow: s.sidebarOpen ? '4px 0 24px rgba(0,0,0,.12)' : 'none',
-openSidebar: () => self.setState({ sidebarOpen: true }),
+navHome: () => self.setState({ sidebarOpen: true }),
 closeSidebar: () => self.setState({ sidebarOpen: false }),
 navHomeSidebar: () => { self.setState({ tab: 'home', sidebarOpen: false }); },
 navChatListSidebar: () => { self.setState({ tab: 'chatlist', sidebarOpen: false }); },
@@ -7434,11 +7053,13 @@ navMemory: () => self.setState({ tab: 'memory', memSubPage: false }),
 navChatList: () => self.setState({ tab: 'chatlist' }),
 navMCP: () => self.setState({ tab: 'mcp' }),
 navMusic: () => self.setState({ tab: 'music' }),
+navTheme: () => self.setState({ tab: 'theme' }),
 navSettings: () => self.setState({ tab: 'settings' }),
 isChat: s.tab === 'chat',
 isHome: s.tab === 'home',
 isMore: s.tab === 'more',
 isMusicPage: s.tab === 'music',
+isThemePage: s.tab === 'theme',
 isSoulPage: s.tab === 'soul',
 isPeriodPage: s.tab === 'period',
 // ===== Period/Calendar Data =====
@@ -8347,7 +7968,7 @@ navPeriodBg: s.tab === 'period' ? '#ECEAE4' : 'transparent',
 navPeriodClass: s.tab === 'period' ? 'active' : '',
 navPeriodTodo: () => { self.setState({ tab: 'period', periodSubTab: 'todo' }); },
 openProfileCard: () => self.setState(v => ({ profileCardOpen: !v.profileCardOpen })),
-openProfileCardAndClose: () => self.setState({ profileCardOpen: true, sidebarOpen: false }),
+openProfileCardAndClose: () => self.setState({ profileCardOpen: true }),
 navRegexClass: s.tab === 'regex' ? 'active' : '',
 navRegexSidebar: () => { self.setState({ tab: 'regex', sidebarOpen: false }); },
 navRegexBg: s.tab === 'regex' ? '#ECEAE4' : 'transparent',
@@ -8878,6 +8499,7 @@ navMemory: () => self.setState({ tab: 'memory', drawer: false }),
 navMCP: () => self.setState({ tab: 'mcp', drawer: false }),
 navDiary: () => { const d=new Date(); const todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); self.setState({ tab:'diary', drawer:false, diarySelectedDate:todayStr, diaryWeekBase:null }); },
 navMusic: () => self.setState({ tab: 'music', drawer: false }),
+navTheme: () => self.setState({ tab: 'theme', drawer: false }),
 navRegex: () => self.setState({ tab: 'regex', drawer: false }),
 // ===== 导航函数 =====
 navHome: () => {
