@@ -119,3 +119,10 @@
 - Library 英文标题点击回记忆第一层 Hub
 - 分类/详情/回收站：英文标题作返回，无单独返回箭头按钮
 
+### Home 对齐 + MCP 返回 + Phase C（2026-07-18）
+- Home 卡片左对齐换行，不再居中对称第二排
+- MCP 左上角英文标题点击回 Home
+- Phase C：loadMemoriesForContext 替换旧衰减注入
+- 双协议 tools（OpenAI tool_calls / Anthropic tool_use）
+- save/update/delete_memory 执行后聊天插入记忆时间戳提示
+

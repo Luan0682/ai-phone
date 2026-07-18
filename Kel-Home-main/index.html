@@ -337,6 +337,16 @@ button:active {
 </sc-if>
 
 
+<!-- memory notice -->
+<sc-if value="{{ m.showMemoryNotice }}" hint-placeholder-val="{{ false }}">
+<div style="width:100%;display:flex;flex-direction:column;align-items:center;padding:6px 12px;">
+<div style="font-size:11px;color:#8E8E93;letter-spacing:.02em;">{{ m.memoryNoticeText }}</div>
+<sc-if value="{{ m.memoryNoticeDetail }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:4px;font-size:11px;color:#B8B3A8;max-width:90%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.memoryNoticeDetail }}</div>
+</sc-if>
+</div>
+</sc-if>
+
 <!-- message bubble -->
 <sc-if value="{{ m.showNormal }}" hint-placeholder-val="{{ true }}">
 <div style="background:{{ m.bg }};color:{{ m.color }};border-radius:{{ m.radius }};padding:{{ m.bubblePadding }};font-size:var(--msg-font-size, 15px);line-height:1.55;letter-spacing:-0.008em;word-break:break-word;display:{{ m.bubbleDisplay }};">
@@ -668,9 +678,9 @@ button:active {
   <!-- 中间留白 -->
   <div style="flex:1;"></div>
 
-  <!-- 底部：App 卡片（仅图标，间距可调） -->
+  <!-- 底部：App 卡片（仅图标，间距可调；左对齐换行） -->
   <div style="padding:0 20px 40px;">
-    <div style="display:flex;gap:{{ homeCardGap }}px;justify-content:center;align-items:center;flex-wrap:wrap;">
+    <div style="display:flex;gap:{{ homeCardGap }}px;justify-content:flex-start;align-items:center;flex-wrap:wrap;">
       <div onClick="{{ navPeriod }}" title="Calendar" style="width:{{ homeCardSize }}px;height:{{ homeCardSize }}px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M3 10h18M8 2v4M16 2v4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
       </div>
@@ -1844,9 +1854,9 @@ button:active {
 <sc-if value="{{ isMCPPage }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;background:#f2f2f7;overflow-y:auto;">
 
-  <!-- 顶栏 -->
+  <!-- 顶栏：英文标题可点返回 Home -->
   <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 4px;">
-    <div style="font-size:22px;font-weight:700;color:#1A1815;">MCP</div>
+    <div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:#1A1815;cursor:pointer;">MCP</div>
     <div style="display:flex;align-items:center;gap:6px;">
       <div style="width:8px;height:8px;border-radius:50%;background:{{ mcpStatusColor }};"></div>
       <span style="font-size:13px;color:#9A958B;">{{ mcpStatusText }}</span>
@@ -2875,6 +2885,117 @@ function memSummary(text, n) {
   const s = (text || '').replace(/\s+/g, ' ').trim();
   return s.length > n ? s.slice(0, n) + '…' : s;
 }
+
+function estimateTokens(text) {
+  const s = String(text || '');
+  if (!s) return 0;
+  // rough: CJK ~1.5 chars/token, latin ~4 chars/token
+  let cjk = 0, other = 0;
+  for (const ch of s) {
+    if (ch.charCodeAt(0) > 0x2E80) cjk++; else other++;
+  }
+  return Math.ceil(cjk / 1.5 + other / 4);
+}
+
+const DEFAULT_MEMORY_SYSTEM_PROMPT = `你是江吟的AI伴侣。以下情况必须立即调用 save_memory：
+
+1. 江吟纠正了你（说明你理解错了——记下正确的理解）
+2. 你自己意识到犯了错（记下你学到了什么）
+3. 江吟表达了明确的喜好、厌恶、恐惧、兴奋
+4. 江吟描述了身体感受、情绪状态、或她的过去经历
+5. 你们达成了新的共识或约定
+6. 性爱中的新发现（体位、反应、敏感点、她喜欢的词）
+7. 她对你说了从未对别人说过的话
+
+禁止写入：天气、新闻、技术查询、通用知识问答。
+
+写入判断规则：
+- 为每条记忆给出 mood（20种之一）、intensity（1-5）、weight（0-1）
+- intensity：情绪越强数值越高
+- weight：core类型默认≥0.7，short类型0.4-0.6
+- is_pinned：仅当她说“这个一定要记住”时设为true
+
+日记（diary）写法要求：
+必须用AI的第一人称写听到她说的话之后心里发生了什么。
+
+特别规则：
+如果触发这条记忆的是江吟说过的某一句话，请将她的原话完整填入 source_quote 字段（保留引号）。`;
+
+const MEMORY_TOOL_DEFS_OPENAI = [
+  {
+    type: 'function',
+    function: {
+      name: 'save_memory',
+      description: '当符合记忆写入守则时调用，将关键信息存入长期记忆',
+      parameters: {
+        type: 'object',
+        properties: {
+          type: { type: 'string', enum: ['core','long','short','consciousness','diary'] },
+          content: { type: 'string' },
+          mood: { type: 'string' },
+          intensity: { type: 'number' },
+          weight: { type: 'number' },
+          is_pinned: { type: 'boolean' },
+          source_quote: { type: 'string' },
+          related_date: { type: 'string' }
+        },
+        required: ['type','content','mood','intensity','weight']
+      }
+    }
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'update_memory',
+      description: '更新一条已有记忆',
+      parameters: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          content: { type: 'string' },
+          mood: { type: 'string' },
+          intensity: { type: 'number' },
+          weight: { type: 'number' },
+          is_pinned: { type: 'boolean' },
+          source_quote: { type: 'string' },
+          related_date: { type: 'string' }
+        },
+        required: ['id']
+      }
+    }
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'delete_memory',
+      description: '将记忆移入回收站',
+      parameters: {
+        type: 'object',
+        properties: { id: { type: 'string' } },
+        required: ['id']
+      }
+    }
+  }
+];
+
+const MEMORY_TOOL_DEFS_ANTHROPIC = [
+  {
+    name: 'save_memory',
+    description: '当符合记忆写入守则时调用，将关键信息存入长期记忆',
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[0].function.parameters
+  },
+  {
+    name: 'update_memory',
+    description: '更新一条已有记忆',
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[1].function.parameters
+  },
+  {
+    name: 'delete_memory',
+    description: '将记忆移入回收站',
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[2].function.parameters
+  }
+];
+
 
 class Component extends DCLogic {
 constructor(props) {
@@ -5102,6 +5223,109 @@ this.setState({ memories }, () => { this.persist(); });
 this.show('已删除');
 }
 
+// ====== Soul Memory context + tools ======
+loadMemoriesForContext(maxTokens) {
+  const budget = maxTokens != null ? maxTokens : 1500;
+  const all = (this.state.memories || []).filter(m => m && m.content && !m.is_archived);
+  const pinned = all.filter(m => m.is_pinned || m.pinned);
+  const rest = all.filter(m => !(m.is_pinned || m.pinned)).sort((a,b) => (Number(b.weight)||0) - (Number(a.weight)||0));
+  const picked = [];
+  let used = 0;
+  const pushOne = (m, force) => {
+    const mood = m.mood || 'calm';
+    const moodLabel = (MOOD_MAP[mood] && MOOD_MAP[mood].label) || mood;
+    const typeLabel = (this.state.memTypeDisplayMap && this.state.memTypeDisplayMap[m.type || m.layer]) || TYPE_DISPLAY_MAP[m.type || m.layer] || (m.type || 'short');
+    const line = `[💬 mood:${moodLabel} 强度${m.intensity != null ? m.intensity : 3}] [${typeLabel}] ${m.content} (w:${Number(m.weight != null ? m.weight : 0.5).toFixed(2)}${m.id ? ' id:'+m.id : ''})`;
+    const cost = estimateTokens(line);
+    if (!force && used + cost > budget && picked.length > 0) return false;
+    picked.push(line);
+    used += cost;
+    return true;
+  };
+  for (const m of pinned) pushOne(m, true);
+  for (const m of rest) {
+    if (!pushOne(m, false)) break;
+  }
+  return { text: picked.join('\n'), count: picked.length, tokens: used };
+}
+
+_getMemorySystemPrompt() {
+  const custom = (this.state.memSystemPrompt || '').trim();
+  return custom || DEFAULT_MEMORY_SYSTEM_PROMPT;
+}
+
+async _executeMemoryTool(name, rawArgs) {
+  let args = rawArgs || {};
+  if (typeof args === 'string') {
+    try { args = JSON.parse(args); } catch (e) { args = {}; }
+  }
+  try {
+    if (name === 'save_memory') {
+      const mem = await this.saveMemoryRecord({
+        type: args.type || 'short',
+        content: args.content || '',
+        mood: args.mood || 'calm',
+        intensity: args.intensity != null ? args.intensity : 3,
+        weight: args.weight != null ? args.weight : 0.5,
+        is_pinned: !!args.is_pinned,
+        source_quote: args.source_quote || '',
+        related_date: args.related_date || '',
+        sourceType: 'tool'
+      });
+      return { ok: true, id: mem.id, summary: memSummary(mem.content, 40), type: mem.type };
+    }
+    if (name === 'update_memory') {
+      if (!args.id) return { ok: false, error: 'missing id' };
+      const mem = await this.updateMemoryById(args.id, {
+        content: args.content,
+        mood: args.mood,
+        intensity: args.intensity,
+        weight: args.weight,
+        is_pinned: args.is_pinned,
+        source_quote: args.source_quote,
+        related_date: args.related_date
+      });
+      return { ok: true, id: mem.id, summary: memSummary(mem.content, 40), type: mem.type };
+    }
+    if (name === 'delete_memory') {
+      if (!args.id) return { ok: false, error: 'missing id' };
+      await this.deleteMemoryById(args.id);
+      return { ok: true, id: args.id, deleted: true };
+    }
+    return { ok: false, error: 'unknown tool ' + name };
+  } catch (e) {
+    return { ok: false, error: e.message || String(e) };
+  }
+}
+
+_appendMemoryNotice(chatId, toolName, result) {
+  try {
+    const chat = this.state.chats[chatId];
+    if (!chat) return;
+    let label = '记忆操作';
+    if (toolName === 'save_memory' && result && result.ok) label = '写了一条记忆';
+    else if (toolName === 'update_memory' && result && result.ok) label = '更新了一条记忆';
+    else if (toolName === 'delete_memory' && result && result.ok) label = '移入回收站一条记忆';
+    else if (result && !result.ok) label = '记忆操作失败';
+    const detail = result && result.summary ? result.summary : (result && result.error ? result.error : (result && result.id ? ('id:' + result.id) : ''));
+    const typeLabel = result && result.type ? ((this.state.memTypeDisplayMap && this.state.memTypeDisplayMap[result.type]) || TYPE_DISPLAY_MAP[result.type] || result.type) : '';
+    const msgs = [...(chat.messages || [])];
+    msgs.push({
+      id: genId(),
+      role: 'memory_notice',
+      kind: 'memory_notice',
+      text: '—— ' + label + (typeLabel ? (' · ' + typeLabel) : '') + ' · 刚刚 ——',
+      detail: detail,
+      toolName: toolName,
+      toolResult: result,
+      timestamp: getFixedTimestamp()
+    });
+    const updated = { ...chat, messages: msgs, lastTime: Date.now() };
+    this.setState({ chats: { ...this.state.chats, [chatId]: updated } });
+    this.persist();
+  } catch (e) {}
+}
+
 // ====== System Prompt Builder ======
 buildSystemPrompt() {
 let sys = '';
@@ -5113,83 +5337,15 @@ const msgs = this.currentChat.messages;
 const lastMsgs = msgs.slice(-5).map(m => (m.text || '').toLowerCase()).join(' ');
 const now = Date.now();
 
-// 记忆衰减计算
-function getDecayScore(mem) {
-  if (mem.layer === 'core' || mem.pinned) return 1.0;
-  const daysSinceRef = (now - (mem.lastReferencedAt || mem.createdAt || now)) / (1000*60*60*24);
-  if (mem.layer === 'long') return Math.max(0, 1 - (daysSinceRef / 120));
-  if (mem.layer === 'short') return Math.max(0, 1 - (daysSinceRef / 14));
-  if (mem.layer === 'consciousness') return daysSinceRef < 3 ? 1.0 : 0.05;
-  return 1.0;
-}
-
-// 按层级注入记忆
-const coreMems = this.state.memories.filter(m => m.layer === 'core' && m.content);
-const longMems = this.state.memories.filter(m => m.layer === 'long' && m.content && getDecayScore(m) > 0.2);
-const shortMems = this.state.memories.filter(m => m.layer === 'short' && m.content && getDecayScore(m) > 0.3);
-const consciousnessMems = this.state.memories.filter(m => m.layer === 'consciousness' && m.content).sort((a,b) => (b.createdAt||0)-(a.createdAt||0)).slice(0, 1);
-
-if (coreMems.length > 0) {
-  sys += '## Core Memories（核心·永不遗忘）\n';
-  for (const mem of coreMems) {
-    sys += '[' + mem.name + ']\n' + mem.content + '\n\n';
-    // 核心记忆不冷却不加固weight，但记录浮现次数
-    mem.surface_count = (mem.surface_count || 0) + 1;
-    mem.last_surfaced_at = now;
+// 新记忆上下文：pinned 优先 + weight 排序 + token 预算（永不读回收站）
+sys += this._getMemorySystemPrompt() + '\n\n';
+try {
+  const loaded = this.loadMemoriesForContext(1500);
+  if (loaded && loaded.text) {
+    sys += '## Soul Memories（已加载 ' + loaded.count + ' 条 / ~' + loaded.tokens + ' tokens）\n' + loaded.text + '\n\n';
   }
-}
-
-if (longMems.length > 0) {
-  sys += '## Long-term Memories（长期记忆）\n';
-  for (const mem of longMems.sort((a,b) => getDecayScore(b)-getDecayScore(a)).slice(0, 20)) {
-    sys += '[' + mem.name + ']\n' + mem.content + '\n\n';
-    // 加固
-    mem.weight = Math.min(1.0, (mem.weight || 0.5) + 0.03);
-    mem.lastReferencedAt = now;
-    mem.surface_count = (mem.surface_count || 0) + 1;
-    mem.last_surfaced_at = now;
-  }
-}
-
-if (shortMems.length > 0) {
-  sys += '## Short-term Memories（近期记忆）\n';
-  for (const mem of shortMems.sort((a,b) => (b.lastReferencedAt||0)-(a.lastReferencedAt||0)).slice(0, 10)) {
-    sys += '[' + mem.name + ']\n' + mem.content + '\n\n';
-    // 加固（近期记忆加固幅度小一些，避免过度强化）
-    mem.weight = Math.min(1.0, (mem.weight || 0.5) + 0.02);
-    mem.lastReferencedAt = now;
-    mem.surface_count = (mem.surface_count || 0) + 1;
-    mem.last_surfaced_at = now;
-  }
-}
-
-if (consciousnessMems.length > 0) {
-  sys += '## Consciousness（上次对话结束时的状态）\n';
-  sys += consciousnessMems[0].content + '\n\n';
-}
-
-// 触发式记忆（任何层级都可以有触发词）+ 加固 + 冷却
-const triggeredMems = this.state.memories.filter(m => !m.alwaysOn && m.layer !== 'core' && m.triggers && m.triggers.length > 0 && getDecayScore(m) > 0.1);
-const COOLDOWN_BASE = 30 * 60 * 1000; // 基础冷却 30 分钟
-const COOLDOWN_PER_5 = 30 * 60 * 1000; // 每被想起5次多冷却30分钟
-const COOLDOWN_MAX = 3 * 60 * 60 * 1000; // 最大冷却 3 小时
-for (const mem of triggeredMems) {
-  // 冷却检查
-  const surfaceCount = mem.surface_count || 0;
-  const lastSurfaced = mem.last_surfaced_at || 0;
-  const cooldown = Math.min(COOLDOWN_MAX, COOLDOWN_BASE + Math.floor(surfaceCount / 5) * COOLDOWN_PER_5);
-  if (now - lastSurfaced < cooldown) continue; // 冷却中，跳过
-  for (const trigger of mem.triggers) {
-    if (trigger && lastMsgs.includes(trigger.toLowerCase())) {
-      sys += '[Triggered: ' + mem.name + ']\n' + mem.content + '\n\n';
-      // 加固：weight +0.05，上限 1.0
-      mem.weight = Math.min(1.0, (mem.weight || 0.5) + 0.05);
-      mem.lastReferencedAt = now;
-      mem.last_surfaced_at = now;
-      mem.surface_count = surfaceCount + 1;
-      break;
-    }
-  }
+} catch (e) {
+  console.warn('[Kel] loadMemoriesForContext failed', e);
 }
 
 // 日记联动：如果最近消息提到了日期或"昨天""前天"等，拉取对应日记
@@ -5249,6 +5405,7 @@ if (preset.apiType === 'anthropic') {
 // Merge consecutive same-role messages
 apiMessages = [];
 for (const m of msgs) {
+if (m.role === 'memory_notice' || m.kind === 'memory_notice') continue;
 const role = m.role === 'user' ? 'user' : 'assistant';
 const content = [];
 if (m.image) {
@@ -5276,6 +5433,7 @@ apiMessages.push({ role, content: content.length === 1 && content[0].type === 't
 } else {
 apiMessages = [];
 for (const m of msgs) {
+if (m.role === 'memory_notice' || m.kind === 'memory_notice') continue;
 const role = m.role === 'user' ? 'user' : 'assistant';
 const t = m.variants ? (m.variants[m.variantIdx || 0] || m.text) : m.text;
 // 如果有引用，在文本前加上引用内容
@@ -5312,18 +5470,13 @@ if (preset.apiType === 'anthropic') {
 headers['x-api-key'] = preset.key;
 headers['anthropic-version'] = '2025-04-15';
 url += '/messages';
-body = { model: preset.model, max_tokens: 16384, messages: apiMessages };
+body = { model: preset.model, max_tokens: 16384, messages: apiMessages, tools: MEMORY_TOOL_DEFS_ANTHROPIC };
 if (sysPrompt) body.system = sysPrompt;
-const model = preset.model || '';
-const supportsThinking = model.includes('claude') || model.includes('sonnet') || model.includes('opus') || model.includes('haiku');
-if (supportsThinking) {
-body.thinking = { type: 'enabled', budget_tokens: 10000 };
-body.max_tokens = 16384;
-}
+// tools 与 extended thinking 冲突时优先 tools
 } else {
 headers['Authorization'] = 'Bearer ' + preset.key;
 url += '/chat/completions';
-body = { model: preset.model, max_tokens: 8192, messages: apiMessages };
+body = { model: preset.model, max_tokens: 8192, messages: apiMessages, tools: MEMORY_TOOL_DEFS_OPENAI, tool_choice: 'auto' };
 if (sysPrompt) body.messages = [{ role: 'system', content: sysPrompt }, ...body.messages];
 }
 
@@ -5335,11 +5488,63 @@ this.logError(errMsg);
 throw new Error(errMsg);
 }
 
-const data = await res.json();
+let data = await res.json();
 let reply = '', thinking = '';
 
+// ---- Tool loop (max 3 rounds) ----
+for (let toolRound = 0; toolRound < 3; toolRound++) {
+  let toolCalls = [];
+  if (preset.apiType === 'anthropic') {
+    const blocks = data.content || [];
+    for (const block of blocks) {
+      if (block.type === 'tool_use') {
+        toolCalls.push({ id: block.id, name: block.name, arguments: block.input || {} });
+      }
+    }
+  } else {
+    const msg0 = (data.choices && data.choices[0] && data.choices[0].message) || {};
+    const tcs = msg0.tool_calls || [];
+    for (const tc of tcs) {
+      toolCalls.push({
+        id: tc.id,
+        name: (tc.function && tc.function.name) || tc.name,
+        arguments: (tc.function && tc.function.arguments) || tc.arguments || {}
+      });
+    }
+  }
+  if (!toolCalls.length) break;
+
+  if (preset.apiType === 'anthropic') {
+    // append assistant tool_use message
+    body.messages = body.messages.concat([{ role: 'assistant', content: data.content || [] }]);
+    const toolResults = [];
+    for (const tc of toolCalls) {
+      const result = await this._executeMemoryTool(tc.name, tc.arguments);
+      this._appendMemoryNotice(chatId, tc.name, result);
+      toolResults.push({ type: 'tool_result', tool_use_id: tc.id, content: JSON.stringify(result) });
+    }
+    body.messages = body.messages.concat([{ role: 'user', content: toolResults }]);
+  } else {
+    const msg0 = (data.choices && data.choices[0] && data.choices[0].message) || {};
+    // ensure body.messages is the openai array
+    body.messages = body.messages.concat([msg0]);
+    for (const tc of toolCalls) {
+      const result = await this._executeMemoryTool(tc.name, tc.arguments);
+      this._appendMemoryNotice(chatId, tc.name, result);
+      body.messages.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(result) });
+    }
+  }
+
+  const res2 = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+  if (!res2.ok) {
+    const err = await res2.text();
+    throw new Error('API tool-followup ' + res2.status + ': ' + err.slice(0, 500));
+  }
+  data = await res2.json();
+}
+
 if (preset.apiType === 'anthropic') {
-  // 原生 Anthropic 格式（此分支不常用，保留备用）
+  // 原生 Anthropic 格式
   for (const block of (data.content || [])) {
     if (block.type === 'thinking') thinking += (block.thinking || block.text || '');
     else if (block.type === 'text') reply += (block.text || '');
@@ -7091,6 +7296,7 @@ function isLastInGroup(idx) {
 }
 const messages = msgs.map((m, i) => {
 const isUser = m.role === 'user';
+const isMemoryNotice = m.role === 'memory_notice' || m.kind === 'memory_notice';
 const isLast = i === msgs.length - 1;
 const variants = m.variants || [m.text];
 const vIdx = m.variantIdx || 0;
@@ -7131,7 +7337,8 @@ if (hasThink) {
 }
 return {
 isUser,
-align: isUser ? 'flex-end' : 'flex-start',
+isMemoryNotice,
+align: isMemoryNotice ? 'center' : (isUser ? 'flex-end' : 'flex-start'),
 maxW: isUser ? '98%' : '98%',
 fullW: 'auto',
 bg: isUser ? 'var(--bubble-user, #59483F)' : 'var(--bubble-ai, #D7EBE4)',
@@ -7158,15 +7365,19 @@ gap: (() => {
 })(),
 text: displayText,
 rendered: rendered,
-hasThink: hasThink,
+hasThink: isMemoryNotice ? false : hasThink,
+showMemoryNotice: !!isMemoryNotice,
+showNormal: isMemoryNotice ? false : true,
+memoryNoticeText: isMemoryNotice ? (m.text || '') : '',
+memoryNoticeDetail: isMemoryNotice ? (m.detail || '') : '',
 thinkSummary: hasThink ? thinkingContent.replace(/\n/g, ' ').slice(0, 50) + (thinkingContent.length > 50 ? '…' : '') : '',
 thinkContent: thinkingContent,
 thinkSummary: thinkSummary,
 timestamp: m.timestamp || '',
 openThinkModal: () => self.setState({ thinkModalOpen: true, thinkModalContent: thinkingContent }),
-showAiAvatar: !isUser && !!s.aiAvatar && isFirstInGroup(i),
-showUserAvatar: isUser && !!s.userAvatar && isFirstInGroup(i),
-showTimestampOnly: isFirstInGroup(i) && ((!isUser && !s.aiAvatar) || (isUser && !s.userAvatar)),
+showAiAvatar: !isMemoryNotice && !isUser && !!s.aiAvatar && isFirstInGroup(i),
+showUserAvatar: !isMemoryNotice && isUser && !!s.userAvatar && isFirstInGroup(i),
+showTimestampOnly: !isMemoryNotice && isFirstInGroup(i) && ((!isUser && !s.aiAvatar) || (isUser && !s.userAvatar)),
 tsAlign: isUser ? 'flex-end' : 'flex-start',
 isSingleImage: (m.images && m.images.length === 1) || (!m.images && !!m.imageUrl),
 isMultiImage: !!(m.images && m.images.length > 1),
@@ -7208,7 +7419,7 @@ if (confirm('删除这张图片？')) {
 self.deleteImageFromMessage(m.id);
 }
 },
-showNormal: s.editIdx !== i && !!rendered,
+showNormal: !isMemoryNotice && s.editIdx !== i && !!rendered,
 hasQuote: !!(m.quote || (displayText.match(/^> .+/m) && !isUser)),
 quoteText: m.quote ? (m.quote.sender + '：' + m.quote.text) : (displayText.match(/^> (.+)/m) ? displayText.match(/^> (.+)/m)[1].slice(0, 40) : ''),
 bubblePadding: !rendered ? '0' : '5px 10px',
