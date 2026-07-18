@@ -1248,149 +1248,261 @@ button:active {
 </sc-if>
 
 
-<!-- ========== MEMORY PAGE ========== -->
+<!-- ========== MEMORY PAGE (Soul Memory v2 shell) ========== -->
 <sc-if value="{{ isMemoryPage }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 24px;width:100%;">
+<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 100px;width:100%;background:#FFFFFF;color:#1A1A1A;--mem-bg:#FFFFFF;--mem-card:#F5F5F7;--mem-text:#1A1A1A;--mem-muted:#8E8E93;--mem-line:#EBEBEB;--mem-accent:#3A3A3C;">
 
-<div style="padding:20px 0 16px;display:flex;align-items:center;justify-content:space-between;">
-<div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Memory</div>
+<!-- ===== HUB ===== -->
+<sc-if value="{{ isMemViewHub }}" hint-placeholder-val="{{ true }}">
+<div style="padding:20px 0 12px;display:flex;align-items:center;justify-content:space-between;">
+<div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:26px;font-weight:400;color:#1A1A1A;">Memory</div>
+<span style="font-size:12px;color:#8E8E93;">{{ memHubTotalLabel }}</span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+<div style="background:#F5F5F7;border-radius:16px;padding:16px;">
+<div style="font-size:11px;color:#8E8E93;margin-bottom:6px;">总记忆</div>
+<div style="font-size:28px;font-weight:300;color:#1A1A1A;font-family:'Newsreader',serif;">{{ memHubTotal }}</div>
+</div>
+<div style="background:#F5F5F7;border-radius:16px;padding:16px;">
+<div style="font-size:11px;color:#8E8E93;margin-bottom:6px;">今日新增</div>
+<div style="font-size:28px;font-weight:300;color:#1A1A1A;font-family:'Newsreader',serif;">{{ memHubToday }}</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+<div onClick="{{ memGoLibrary }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
+<div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#1A1A1A" stroke-width="1.5"/></svg>
+</div>
+<div style="font-size:15px;font-weight:600;color:#1A1A1A;">记忆库</div>
+<div style="font-size:11px;color:#8E8E93;">分类 · 心情 · 列表</div>
+</div>
+<div onClick="{{ memGoRecycle }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
+<div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M10 11v6M14 11v6" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg>
+</div>
+<div style="font-size:15px;font-weight:600;color:#1A1A1A;">回收站</div>
+<div style="font-size:11px;color:#8E8E93;">遗忘角落 · {{ memRecycleCount }}</div>
+</div>
+</div>
+<div style="font-size:12px;font-weight:600;color:#8E8E93;margin-bottom:10px;letter-spacing:.3px;">最近记忆</div>
+<sc-for list="{{ memHubRecent }}" as="m" hint-placeholder-count="3">
+<div onClick="{{ m.open }}" style="background:#F5F5F7;border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+<div style="width:8px;height:8px;border-radius:50%;background:{{ m.moodColor }};flex:none;"></div>
+<div style="flex:1;min-width:0;">
+<div style="font-size:13px;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.summary }}</div>
+<div style="font-size:11px;color:#8E8E93;margin-top:3px;">{{ m.typeLabel }} · {{ m.timeLabel }}</div>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{ memHubRecentEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:28px 0;font-size:13px;color:#8E8E93;">还没有记忆</div>
+</sc-if>
+</sc-if>
+
+<!-- ===== LIBRARY ===== -->
+<sc-if value="{{ isMemViewLibrary }}" hint-placeholder-val="{{ false }}">
+<div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
+<div style="display:flex;align-items:center;gap:10px;">
+<button onClick="{{ memGoHub }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;">Library</div>
+</div>
+<button onClick="{{ memOpenSettings }}" title="Settings" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#1A1A1A" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg>
+</button>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+<sc-for list="{{ memTypeCards }}" as="tc" hint-placeholder-count="5">
+<div onClick="{{ tc.open }}" style="background:#F5F5F7;border-radius:14px;padding:14px 12px;cursor:pointer;">
+<div style="font-size:13px;font-weight:600;color:#1A1A1A;">{{ tc.label }}</div>
+<div style="font-size:20px;font-weight:300;color:#1A1A1A;margin-top:6px;font-family:'Newsreader',serif;">{{ tc.count }}</div>
+</div>
+</sc-for>
+</div>
+<div style="font-size:12px;font-weight:600;color:#8E8E93;margin-bottom:8px;">心情筛选</div>
+<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;">
+<sc-for list="{{ memMoodDots }}" as="md" hint-placeholder-count="10">
+<button onClick="{{ md.toggle }}" title="{{ md.label }}" style="width:22px;height:22px;border-radius:50%;background:{{ md.color }};border:2px solid {{ md.border }};flex:none;cursor:pointer;padding:0;box-shadow:{{ md.shadow }};"></button>
+</sc-for>
+</div>
+<div style="font-size:12px;font-weight:600;color:#8E8E93;margin-bottom:8px;">全部 · {{ memListVisibleCount }}</div>
+<sc-for list="{{ memListVisible }}" as="m" hint-placeholder-count="5">
+<div onClick="{{ m.open }}" style="background:#F5F5F7;border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+<div style="width:8px;height:8px;border-radius:50%;background:{{ m.moodColor }};flex:none;"></div>
+<div style="flex:1;min-width:0;font-size:13px;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.summary }}</div>
+<span style="font-size:11px;color:#8E8E93;flex:none;">{{ m.timeLabel }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ memListHasMore }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ memLoadMore }}" style="width:100%;border:none;background:#F5F5F7;border-radius:14px;padding:12px;font-size:13px;color:#3A3A3C;font-family:inherit;cursor:pointer;margin-top:4px;">加载更多</button>
+</sc-if>
+<sc-if value="{{ memListEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:30px 0;font-size:13px;color:#8E8E93;">没有匹配的记忆</div>
+</sc-if>
+</sc-if>
+
+<!-- ===== TYPE LIST ===== -->
+<sc-if value="{{ isMemViewTypeList }}" hint-placeholder-val="{{ false }}">
+<div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
+<div style="display:flex;align-items:center;gap:10px;min-width:0;">
+<button onClick="{{ memGoLibrary }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div style="min-width:0;">
+<div style="font-size:16px;font-weight:600;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ memTypeListTitle }}</div>
+<div style="font-size:11px;color:#8E8E93;margin-top:2px;">{{ memTypeListCount }} 条</div>
+</div>
+</div>
+<button onClick="{{ memCycleSort }}" style="border:none;background:#F5F5F7;border-radius:14px;padding:8px 12px;font-size:11px;color:#3A3A3C;font-family:inherit;cursor:pointer;flex:none;">{{ memSortLabel }}</button>
+</div>
+<sc-for list="{{ memTypeListItems }}" as="m" hint-placeholder-count="5">
+<div onClick="{{ m.open }}" style="background:#F5F5F7;border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;">
+<div style="display:flex;align-items:center;gap:10px;">
+<div style="width:4px;height:28px;border-radius:2px;background:{{ m.moodColor }};flex:none;"></div>
+<div style="flex:1;min-width:0;">
+<div style="font-size:13px;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.summary }}</div>
+<div style="font-size:11px;color:#8E8E93;margin-top:3px;">{{ m.moodLabel }} · 强度{{ m.intensity }} · {{ m.timeLabel }}</div>
+</div>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{ memTypeListEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:30px 0;font-size:13px;color:#8E8E93;">这个分类还没有记忆</div>
+</sc-if>
+</sc-if>
+
+<!-- ===== DETAIL ===== -->
+<sc-if value="{{ isMemViewDetail }}" hint-placeholder-val="{{ false }}">
+<div style="padding:18px 0 12px;display:flex;align-items:center;gap:10px;">
+<button onClick="{{ memDetailBack }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div style="font-size:16px;font-weight:600;color:#1A1A1A;">详情</div>
+</div>
+<div style="background:#F5F5F7;border-radius:18px;padding:16px;margin-bottom:12px;">
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center;">
+<span style="font-size:12px;font-weight:600;color:#FFFFFF;background:{{ memDetailMoodColor }};border-radius:10px;padding:4px 10px;">{{ memDetailMoodLabel }}</span>
+<span style="font-size:12px;color:#3A3A3C;background:#FFFFFF;border-radius:10px;padding:4px 10px;">强度 {{ memDetailIntensity }}</span>
+<span style="font-size:12px;color:#3A3A3C;background:#FFFFFF;border-radius:10px;padding:4px 10px;">{{ memDetailTypeLabel }}</span>
+<sc-if value="{{ memDetailPinned }}" hint-placeholder-val="{{ false }}">
+<span style="font-size:12px;color:#3A3A3C;background:#FFFFFF;border-radius:10px;padding:4px 10px;display:inline-flex;align-items:center;gap:4px;">
+<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 17v5M8 3h8l-1 7h3l-6 7-6-7h3L8 3z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg>
+钉住
+</span>
+</sc-if>
+</div>
+<div style="font-size:15px;line-height:1.75;color:#1A1A1A;white-space:pre-wrap;word-break:break-word;">{{ memDetailContent }}</div>
+</div>
+<sc-if value="{{ memDetailHasQuote }}" hint-placeholder-val="{{ false }}">
+<div style="background:#F5F5F7;border-radius:16px;padding:14px;margin-bottom:12px;">
+<div style="font-size:12px;font-weight:600;color:#8E8E93;margin-bottom:8px;">原文引用</div>
+<div style="font-size:13px;line-height:1.6;color:#3A3A3C;font-style:italic;">{{ memDetailQuote }}</div>
+</div>
+</sc-if>
+<div style="font-size:12px;color:#8E8E93;margin-bottom:16px;">{{ memDetailTimeFull }} · 权重 {{ memDetailWeight }}</div>
+<div style="font-size:12px;font-weight:600;color:#8E8E93;margin-bottom:8px;">同日记忆</div>
+<sc-for list="{{ memDetailSameDay }}" as="m" hint-placeholder-count="2">
+<div onClick="{{ m.open }}" style="background:#F5F5F7;border-radius:12px;padding:10px 12px;margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:10px;">
+<div style="width:8px;height:8px;border-radius:50%;background:{{ m.moodColor }};flex:none;"></div>
+<div style="flex:1;min-width:0;font-size:12px;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.summary }}</div>
+</div>
+</sc-for>
+<sc-if value="{{ memDetailSameDayEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:12px;color:#8E8E93;margin-bottom:16px;">这一天只有这一条记忆</div>
+</sc-if>
+<div style="display:flex;gap:10px;margin-top:18px;">
+<button onClick="{{ memDetailEdit }}" style="flex:1;border:none;background:#1A1A1A;color:#FFFFFF;border-radius:16px;padding:12px;font-size:13px;font-family:inherit;cursor:pointer;">编辑</button>
+<button onClick="{{ memDetailTrash }}" style="flex:1;border:1px solid #EBEBEB;background:#FFFFFF;color:#C84A3F;border-radius:16px;padding:12px;font-size:13px;font-family:inherit;cursor:pointer;">移入回收站</button>
+</div>
+</sc-if>
+
+<!-- ===== RECYCLE ===== -->
+<sc-if value="{{ isMemViewRecycle }}" hint-placeholder-val="{{ false }}">
+<div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
+<div style="display:flex;align-items:center;gap:10px;">
+<button onClick="{{ memGoHub }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div>
+<div style="font-size:16px;font-weight:600;color:#1A1A1A;">遗忘角落</div>
+<div style="font-size:11px;color:#8E8E93;margin-top:2px;">回收站 · {{ memRecycleCount }}</div>
+</div>
+</div>
+</div>
+<sc-if value="{{ memRecycleHasItem }}" hint-placeholder-val="{{ false }}">
+<div style="background:#FBF7E8;border-radius:16px;padding:18px 16px;box-shadow:0 8px 24px rgba(0,0,0,.06);transform:rotate({{ memRecycleRotate }}deg);margin:12px 8px 18px;">
+<div style="font-size:11px;color:#C84A3F;margin-bottom:8px;">{{ memRecycleActionLabel }}</div>
+<div style="font-size:14px;line-height:1.7;color:#5C5346;text-decoration:line-through;margin-bottom:10px;">{{ memRecycleContent }}</div>
+<div style="font-size:11px;color:#9A8F7A;margin-bottom:14px;">{{ memRecycleMeta }}</div>
 <div style="display:flex;gap:8px;">
-<button onClick="{{ openMemorySettings }}" style="width:34px;height:34px;border-radius:50%;background:var(--bg-card, #FFF);border:1px solid #EDE9E0;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+<button onClick="{{ memRecycleRestore }}" style="flex:1;border:none;background:#1A1A1A;color:#FFF;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">还原</button>
+<button onClick="{{ memRecyclePurge }}" style="flex:1;border:1px solid #E8DFC8;background:#FFF;color:#C84A3F;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">永久删除</button>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:16px;">
+<button onClick="{{ memRecyclePrev }}" style="border:none;background:#F5F5F7;border-radius:12px;padding:10px 16px;font-size:12px;font-family:inherit;cursor:pointer;color:#1A1A1A;">上一页</button>
+<span style="font-size:12px;color:#8E8E93;">{{ memRecyclePageLabel }}</span>
+<button onClick="{{ memRecycleNext }}" style="border:none;background:#F5F5F7;border-radius:12px;padding:10px 16px;font-size:12px;font-family:inherit;cursor:pointer;color:#1A1A1A;">下一页</button>
+</div>
+</sc-if>
+<sc-if value="{{ memRecycleEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:50px 0;font-size:13px;color:#8E8E93;">回收站是空的</div>
+</sc-if>
+</sc-if>
+
+<!-- ===== SETTINGS SHEET (in-page overlay) ===== -->
+<sc-if value="{{ isMemViewSettings }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:280;background:rgba(0,0,0,.25);" onClick="{{ memCloseSettings }}"></div>
+<div class="sa" style="position:fixed;left:0;right:0;bottom:0;z-index:281;background:#FFFFFF;border-radius:18px 18px 0 0;padding:14px 18px 30px;max-height:85%;overflow-y:auto;">
+<div style="width:36px;height:4px;border-radius:2px;background:#E0E0E0;margin:0 auto 14px;"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+<div style="font-size:16px;font-weight:600;color:#1A1A1A;">记忆设置</div>
+<button onClick="{{ memCloseSettings }}" style="width:32px;height:32px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg>
 </button>
-<button onClick="{{ newMemory }}" style="border:none;background:#68544B;color:#FFF;border-radius:18px;padding:8px 16px;font-size:13px;font-family:inherit;cursor:pointer;">+ 新建</button>
 </div>
+<div style="background:#F5F5F7;border-radius:14px;padding:14px;margin-bottom:10px;">
+<div style="font-size:13px;font-weight:600;color:#1A1A1A;margin-bottom:8px;">自定义分类名</div>
+<sc-for list="{{ memSettingsTypeRows }}" as="tr" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+<span style="width:72px;font-size:11px;color:#8E8E93;flex:none;">{{ tr.key }}</span>
+<input value="{{ tr.label }}" onInput="{{ tr.onChange }}" style="flex:1;border:none;outline:none;background:#FFFFFF;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:12px;color:#1A1A1A;">
 </div>
-
-<!-- 搜索框 -->
-<sc-if value="{{ !memSubPage }}" hint-placeholder-val="{{ true }}">
-<div style="margin-bottom:16px;">
-<div style="background:var(--bg-card, #FFF);border:1px solid #E7E3DA;border-radius:14px;padding:9px 12px;display:flex;align-items:center;gap:8px;">
-<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#9A958B" stroke-width="1.5"/><path d="M16 16l4 4" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<input value="{{ memSearchQuery }}" onInput="{{ memSearchChange }}" placeholder="搜索记忆..." style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:var(--text-primary, #1A1815);">
+</sc-for>
+<button onClick="{{ memSaveTypeNames }}" style="width:100%;border:none;background:#1A1A1A;color:#FFF;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">保存分类名</button>
 </div>
-</div>
-
-<!-- 搜索结果 -->
-<sc-if value="{{ memSearchHasResults }}" hint-placeholder-val="{{ false }}">
-<div style="margin-bottom:16px;max-height:180px;overflow-y:auto;">
-<sc-for list="{{ memSearchResults }}" as="sr" hint-placeholder-count="3">
-<div onClick="{{ sr.open }}" style="background:var(--bg-card, #FFF);border:1px solid #E7E3DA;border-radius:12px;padding:10px 14px;margin-bottom:6px;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:8px;">
-<span style="font-size:9px;color:{{ sr.layerColor }};background:{{ sr.layerBg }};border-radius:5px;padding:2px 6px;font-weight:600;">{{ sr.layerLabel }}</span>
-<span style="font-size:13px;font-weight:500;color:#68544B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ sr.name }}</span>
-</div>
-<div style="font-size:11px;color:#9A958B;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ sr.preview }}</div>
+<div style="background:#F5F5F7;border-radius:14px;padding:14px;margin-bottom:10px;">
+<div style="font-size:13px;font-weight:600;color:#1A1A1A;margin-bottom:8px;">自定义情绪颜色</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:180px;overflow-y:auto;margin-bottom:10px;">
+<sc-for list="{{ memSettingsMoodRows }}" as="mr" hint-placeholder-count="8">
+<div style="display:flex;align-items:center;gap:8px;background:#FFF;border-radius:10px;padding:8px;">
+<span style="font-size:11px;color:#1A1A1A;flex:1;">{{ mr.label }}</span>
+<input type="color" value="{{ mr.color }}" onInput="{{ mr.onChange }}" style="width:34px;height:24px;border:none;background:transparent;cursor:pointer;">
 </div>
 </sc-for>
 </div>
-</sc-if>
-
-<!-- 热力图 -->
-<div style="background:var(--bg-card, #FFF);border:1px solid #EDE9E0;border-radius:16px;padding:14px 12px;margin-bottom:16px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-<span style="font-size:12px;font-weight:600;color:#68544B;">记忆活动</span>
-<span style="font-size:10px;color:#9A958B;">共 {{ memTotalCount }} 条</span>
+<button onClick="{{ memSaveMoodColors }}" style="width:100%;border:none;background:#1A1A1A;color:#FFF;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">保存情绪颜色</button>
 </div>
-<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;">
-<span style="font-size:8px;color:#B8B3A8;text-align:center;">日</span><span style="font-size:8px;color:#B8B3A8;text-align:center;">一</span><span style="font-size:8px;color:#B8B3A8;text-align:center;">二</span><span style="font-size:8px;color:#B8B3A8;text-align:center;">三</span><span style="font-size:8px;color:#B8B3A8;text-align:center;">四</span><span style="font-size:8px;color:#B8B3A8;text-align:center;">五</span><span style="font-size:8px;color:#B8B3A8;text-align:center;">六</span>
+<div style="background:#F5F5F7;border-radius:14px;padding:14px;margin-bottom:10px;">
+<div style="font-size:13px;font-weight:600;color:#1A1A1A;margin-bottom:8px;">自定义记忆提示词</div>
+<textarea value="{{ memSystemPrompt }}" onInput="{{ memSystemPromptChange }}" rows="5" placeholder="覆盖默认记忆守则（可留空用默认）" style="display:block;width:100%;border:none;outline:none;background:#FFFFFF;border-radius:12px;padding:10px;font-family:inherit;font-size:12px;line-height:1.6;color:#1A1A1A;resize:vertical;min-height:90px;"></textarea>
+<button onClick="{{ memSaveSystemPrompt }}" style="width:100%;border:none;background:#1A1A1A;color:#FFF;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;margin-top:8px;">保存提示词</button>
 </div>
-<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">
-<sc-for list="{{ memHeatmapCells }}" as="hc" hint-placeholder-count="35">
-<div style="aspect-ratio:1;border-radius:4px;background:{{ hc.bg }};min-height:12px;display:flex;align-items:center;justify-content:center;font-size:7px;color:{{ hc.count > 0 ? '#1A1815' : 'transparent' }};font-weight:500;">{{ hc.label }}</div>
-</sc-for>
+<div style="background:#F5F5F7;border-radius:14px;padding:14px;margin-bottom:10px;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+<div style="font-size:13px;font-weight:600;color:#1A1A1A;">回收站容量</div>
+<span style="font-size:12px;color:#8E8E93;">{{ memRecycleMax }}</span>
 </div>
-<div style="display:flex;align-items:center;gap:5px;margin-top:8px;justify-content:flex-end;">
-<span style="font-size:8px;color:#B8B3A8;">少</span>
-<div style="width:9px;height:9px;border-radius:2px;background:#F5F3EE;border:1px solid rgba(0,0,0,.06);"></div>
-<div style="width:9px;height:9px;border-radius:2px;background:#E8F6F1;"></div>
-<div style="width:9px;height:9px;border-radius:2px;background:#DFF2EC;"></div>
-<div style="width:9px;height:9px;border-radius:2px;background:#B8DFD2;"></div>
-<div style="width:9px;height:9px;border-radius:2px;background:#8ECBB8;"></div>
-<span style="font-size:8px;color:#B8B3A8;">多</span>
-</div>
-</div>
-
-<!-- 四个分类文件夹 -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
-<div onClick="{{ memOpenCore }}" style="background:#FFF8F7;border:1px solid #F5DDD8;border-radius:16px;padding:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;">
-<div style="width:38px;height:38px;border-radius:12px;background:#FCEAE7;display:flex;align-items:center;justify-content:center;">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#E8A09A"/></svg>
-</div>
-<span style="font-size:13px;font-weight:600;color:#A04030;">核心</span>
-<span style="font-size:20px;font-weight:300;color:#A04030;font-family:'Newsreader',serif;">{{ memCoreCount }}</span>
-<span style="font-size:9px;color:#C4857C;">永不遗忘</span>
-</div>
-<div onClick="{{ memOpenLong }}" style="background:#F5FAFF;border:1px solid #D8E8F5;border-radius:16px;padding:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;">
-<div style="width:38px;height:38px;border-radius:12px;background:#E3F0FA;display:flex;align-items:center;justify-content:center;">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2" stroke="#7BAFD4" stroke-width="1.5"/><path d="M8 7h8M8 11h5" stroke="#7BAFD4" stroke-width="1.5" stroke-linecap="round"/></svg>
-</div>
-<span style="font-size:13px;font-weight:600;color:#2C5F7C;">长期</span>
-<span style="font-size:20px;font-weight:300;color:#2C5F7C;font-family:'Newsreader',serif;">{{ memLongCount }}</span>
-<span style="font-size:9px;color:#7BAFD4;">重要事件</span>
-</div>
-<div onClick="{{ memOpenShort }}" style="background:#F2FBF7;border:1px solid #D0EBDF;border-radius:16px;padding:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;">
-<div style="width:38px;height:38px;border-radius:12px;background:#DFF2EC;display:flex;align-items:center;justify-content:center;">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="#6BAF92" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="#6BAF92" stroke-width="1.5" stroke-linecap="round"/></svg>
-</div>
-<span style="font-size:13px;font-weight:600;color:#3D6B55;">近期</span>
-<span style="font-size:20px;font-weight:300;color:#3D6B55;font-family:'Newsreader',serif;">{{ memShortCount }}</span>
-<span style="font-size:9px;color:#6BAF92;">7天活跃</span>
-</div>
-<div onClick="{{ memOpenCons }}" style="background:#F8F5FF;border:1px solid #E5DAF5;border-radius:16px;padding:16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;">
-<div style="width:38px;height:38px;border-radius:12px;background:#EDE5F8;display:flex;align-items:center;justify-content:center;">
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 017 7c0 2.5-1.3 4.7-3.2 6H8.2C6.3 13.7 5 11.5 5 9a7 7 0 017-7z" stroke="#A88ED4" stroke-width="1.5"/><path d="M9 21h6M10 17v2M14 17v2" stroke="#A88ED4" stroke-width="1.5" stroke-linecap="round"/></svg>
-</div>
-<span style="font-size:13px;font-weight:600;color:#6B4E9A;">意识</span>
-<span style="font-size:20px;font-weight:300;color:#6B4E9A;font-family:'Newsreader',serif;">{{ memConsCount }}</span>
-<span style="font-size:9px;color:#A88ED4;">上次状态</span>
+<input type="number" min="10" max="500" value="{{ memRecycleMax }}" onInput="{{ memRecycleMaxChange }}" style="width:100%;border:none;outline:none;background:#FFFFFF;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:13px;color:#1A1A1A;margin-bottom:8px;">
+<button onClick="{{ memSaveRecycleMax }}" style="width:100%;border:none;background:#1A1A1A;color:#FFF;border-radius:12px;padding:10px;font-size:12px;font-family:inherit;cursor:pointer;">保存容量</button>
 </div>
 </div>
 </sc-if>
 
-<!-- 分类子页面 -->
-<sc-if value="{{ memSubPage }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-<button onClick="{{ memBackToMain }}" style="width:32px;height:32px;border-radius:50%;background:var(--bg-card, #FFF);border:1px solid #EDE9E0;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M14 6l-6 6 6 6" stroke="#68544B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-<span style="font-size:17px;font-weight:600;color:{{ memSubColor }};">{{ memSubTitle }}</span>
-<span style="font-size:12px;color:#9A958B;">{{ memSubCount }} 条</span>
-</div>
-
-<div style="margin-bottom:12px;">
-<div style="background:var(--bg-card, #FFF);border:1px solid #E7E3DA;border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:8px;">
-<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#9A958B" stroke-width="1.5"/><path d="M16 16l4 4" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<input value="{{ memSubSearch }}" onInput="{{ memSubSearchChange }}" placeholder="搜索..." style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:12px;color:var(--text-primary, #1A1815);">
-</div>
-</div>
-
-<sc-for list="{{ memSubList }}" as="mem" hint-placeholder-count="5">
-<div onClick="{{ mem.open }}" style="background:{{ mem.cardBg }};border:1px solid {{ mem.cardBd }};border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;">
-<div style="display:flex;align-items:center;justify-content:space-between;">
-<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-<sc-if value="{{ mem.isPinned }}" hint-placeholder-val="{{ false }}">
-<span style="font-size:10px;">📌</span>
-</sc-if>
-<span style="font-size:13px;font-weight:500;color:#68544B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ mem.name }}</span>
-</div>
-<div style="display:flex;align-items:center;gap:6px;flex:none;">
-<div style="width:36px;height:3px;background:#F2EFE8;border-radius:2px;overflow:hidden;">
-<div style="height:100%;background:{{ mem.weightBarColor }};border-radius:2px;width:{{ mem.weightPercent }}%;"></div>
-</div>
-<span style="font-size:9px;color:#B8B3A8;">{{ mem.surfaceText }}</span>
-</div>
-</div>
-</div>
-</sc-for>
-
-<sc-if value="{{ memSubEmpty }}" hint-placeholder-val="{{ false }}">
-<div style="text-align:center;padding:40px 0;color:#B8B3A8;font-size:12px;">这个分类还没有记忆</div>
-</sc-if>
-</sc-if>
-
 </div>
 </sc-if>
+
 <!-- ========== PERIOD/CALENDAR PAGE ========== -->
 <sc-if value="{{ isPeriodPage }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;background:#FFF8F0;width:100%;">
@@ -2087,115 +2199,44 @@ button:active {
 </sc-if>
 
 <!-- CSS Editor Sheet -->
-<!-- Memory Editor Sheet -->
-<sc-if value="{{ isMemoryEditorSheet }}" hint-placeholder-val="{{ false }}">
+<!-- Memory Editor/Settings sheets removed (Soul Memory v2) -->
+
+<!-- Memory V2 Editor Sheet -->
+<sc-if value="{{ isMemV2EditorSheet }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;z-index:270;">
-<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);animation:fadeIn .15s ease both;"></div>
-<div class="sa" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg-main, #F5F3EE);border-radius:16px 16px 0 0;padding:12px 16px 30px;animation:slideUp .25s ease both;max-height:92%;min-height:70vh;overflow-y:auto;">
-<div style="width:36px;height:4px;border-radius:2px;background:#D1CCC2;margin:0 auto 16px;"></div>
+<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);"></div>
+<div class="sa" style="position:absolute;bottom:0;left:0;right:0;background:#FFFFFF;border-radius:16px 16px 0 0;padding:12px 16px 30px;max-height:88%;overflow-y:auto;">
+<div style="width:36px;height:4px;border-radius:2px;background:#E0E0E0;margin:0 auto 14px;"></div>
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-<button onClick="{{ closeSheet }}" style="width:34px;height:34px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="1.8" stroke-linecap="round"/></svg>
+<button onClick="{{ closeSheet }}" style="width:34px;height:34px;border-radius:50%;background:#F5F5F7;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#1A1A1A" stroke-width="1.8" stroke-linecap="round"/></svg>
 </button>
-<span style="font-size:15px;font-weight:600;color:var(--text-primary, #1A1815);">编辑记忆</span>
-<div style="display:flex;gap:8px;">
-<button onClick="{{ deleteMemoryFromEditor }}" style="border:none;background:var(--bg-card, #FFF);color:#9A958B;border-radius:18px;padding:8px 13px;font-size:12px;font-family:inherit;cursor:pointer;border:1px solid var(--border-card, #EDE9E0);">删除</button>
-<button onClick="{{ saveMemoryEditor }}" style="border:none;background:#1A1815;color:#F5F3EE;border-radius:18px;padding:8px 13px;font-size:12px;font-family:inherit;cursor:pointer;">保存</button>
+<span style="font-size:15px;font-weight:600;color:#1A1A1A;">编辑记忆</span>
+<button onClick="{{ saveMemV2Editor }}" style="border:none;background:#1A1A1A;color:#FFF;border-radius:16px;padding:8px 14px;font-size:12px;font-family:inherit;cursor:pointer;">保存</button>
 </div>
+<div style="margin-bottom:12px;">
+<div style="font-size:11px;color:#8E8E93;margin-bottom:6px;">内容</div>
+<textarea value="{{ memEditContent }}" onInput="{{ memEditContentChange }}" rows="8" style="display:block;width:100%;border:none;outline:none;background:#F5F5F7;border-radius:12px;padding:12px;font-family:inherit;font-size:13px;line-height:1.7;color:#1A1A1A;resize:vertical;min-height:140px;"></textarea>
 </div>
-<div style="background:var(--bg-card, #FFF);border-radius:16px;overflow:hidden;border:1px solid var(--border-card, #EDE9E0);padding:14px;">
-<div style="margin-bottom:13px;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">名称</div>
-<input value="{{ memEditName }}" onInput="{{ memEditNameChange }}" placeholder="记忆名称" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
-</div>
-<div style="margin-bottom:13px;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">记忆层级</div>
-<div style="display:flex;gap:7px;flex-wrap:wrap;">
-<sc-for list="{{ memLayerOptions }}" as="ml" hint-placeholder-count="4">
-<button onClick="{{ ml.pick }}" style="border:1px solid {{ ml.bd }};background:{{ ml.bg }};color:{{ ml.fg }};border-radius:14px;padding:5px 13px;font-size:12px;font-family:inherit;cursor:pointer;">{{ ml.label }}</button>
+<div style="margin-bottom:12px;">
+<div style="font-size:11px;color:#8E8E93;margin-bottom:6px;">分类</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ memV2TypeOptions }}" as="opt" hint-placeholder-count="5">
+<button onClick="{{ opt.pick }}" style="border:1px solid {{ opt.bd }};background:{{ opt.bg }};color:{{ opt.fg }};border-radius:12px;padding:6px 10px;font-size:11px;font-family:inherit;cursor:pointer;">{{ opt.label }}</button>
 </sc-for>
 </div>
-<div style="font-size:10px;color:#9A958B;margin-top:6px;line-height:1.5;">核心=永不遗忘 · 长期=重要事件 · 近期=7天活跃 · 意识=上次状态</div>
 </div>
-<div style="display:flex;align-items:center;gap:11px;margin-bottom:13px;flex-wrap:wrap;">
-<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3A362F;cursor:pointer;">
-<input type="checkbox" checked="{{ memEditAlwaysOn }}" onChange="{{ memEditAlwaysOnChange }}" style="width:15px;height:15px;accent-color:#1A1815;"> 常驻
+<div style="margin-bottom:12px;">
+<div style="font-size:11px;color:#8E8E93;margin-bottom:6px;">心情 key（如 calm / warm）</div>
+<input value="{{ memEditTag }}" onInput="{{ memEditTagChange }}" style="width:100%;border:none;outline:none;background:#F5F5F7;border-radius:12px;padding:10px 12px;font-family:inherit;font-size:13px;color:#1A1A1A;">
+</div>
+<div style="margin-bottom:12px;">
+<div style="font-size:11px;color:#8E8E93;margin-bottom:6px;">原文引用</div>
+<input value="{{ memEditTriggers }}" onInput="{{ memEditTriggersChange }}" placeholder="可选" style="width:100%;border:none;outline:none;background:#F5F5F7;border-radius:12px;padding:10px 12px;font-family:inherit;font-size:13px;color:#1A1A1A;">
+</div>
+<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#1A1A1A;">
+<input type="checkbox" checked="{{ memEditAlwaysOn }}" onChange="{{ memEditAlwaysOnChange }}" style="width:16px;height:16px;"> 钉住
 </label>
-<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3A362F;cursor:pointer;">
-<span>权重</span>
-<input value="{{ memEditWeight }}" onInput="{{ memEditWeightChange }}" type="number" min="0" max="10" step="0.5" style="width:48px;border:1px solid #E7E3DA;border-radius:8px;padding:3px 6px;font-family:inherit;font-size:12px;text-align:center;">
-</label>
-</div>
-<div style="display:flex;gap:11px;margin-bottom:13px;">
-<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3A362F;cursor:pointer;">
-<input type="radio" name="memPos" value="before" checked="{{ memEditPosBefore }}" onChange="{{ memEditSetPosBefore }}" style="accent-color:#1A1815;"> 字符前
-</label>
-<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3A362F;cursor:pointer;">
-<input type="radio" name="memPos" value="after" checked="{{ memEditPosAfter }}" onChange="{{ memEditSetPosAfter }}" style="accent-color:#1A1815;"> 字符后
-</label>
-</div>
-<div style="margin-bottom:13px;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">触发关键词（每行一个，留空则按层级规则）</div>
-<textarea value="{{ memEditTriggers }}" onInput="{{ memEditTriggersChange }}" placeholder="关键词1&#10;关键词2&#10;..." rows="2" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:13px;color:#1A1815;resize:vertical;"></textarea>
-</div>
-<div style="margin-bottom:13px;">
-<div style="font-size:11px;color:#B8B3A8;margin-bottom:6px;">事件日期（可选，关联日记）</div>
-<input value="{{ memEditEventDate }}" onInput="{{ memEditEventDateChange }}" placeholder="YYYY-MM-DD" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:13px;color:#1A1815;">
-</div>
-<div style="margin-bottom:13px;display:flex;gap:15px;font-size:11px;color:#9A958B;">
-<span>被想起 {{ memEditSurfaceCount }} 次</span>
-<span>权重 {{ memEditCurrentWeight }}</span>
-</div>
-<div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-<div style="font-size:11px;color:#B8B3A8;">内容</div>
-<button onClick="{{ memToggleFullscreen }}" style="border:none;background:#F2EFE8;border-radius:10px;padding:4px 10px;font-size:10px;color:#6B665E;cursor:pointer;">{{ memFullscreenLabel }}</button>
-</div>
-<textarea value="{{ memEditContent }}" onInput="{{ memEditContentChange }}" placeholder="记忆内容……" rows="{{ memContentRows }}" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:8px 11px;font-family:inherit;font-size:{{ memContentFontSize }};color:#1A1815;resize:vertical;min-height:{{ memContentMinH }};"></textarea>
-</div>
-</div>
-</div>
-</div>
-</sc-if>
-
-<!-- Memory Settings Sheet -->
-<sc-if value="{{ isMemSettingsSheet }}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;inset:0;z-index:270;">
-<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);animation:fadeIn .15s ease both;"></div>
-<div class="sa" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg-main, #F5F3EE);border-radius:16px 16px 0 0;padding:12px 16px 30px;animation:slideUp .25s ease both;max-height:85%;overflow-y:auto;">
-<div style="width:36px;height:4px;border-radius:2px;background:#D1CCC2;margin:0 auto 16px;"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-<button onClick="{{ closeSheet }}" style="width:34px;height:34px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="1.8" stroke-linecap="round"/></svg>
-</button>
-<span style="font-size:15px;font-weight:600;color:#68544B;">记忆设置</span>
-<button onClick="{{ saveMemorySettings }}" style="border:none;background:#68544B;color:#FFF;border-radius:18px;padding:8px 13px;font-size:12px;font-family:inherit;cursor:pointer;">保存</button>
-</div>
-
-<!-- 记忆总结提示词 -->
-<div style="background:var(--bg-card, #FFF);border-radius:16px;border:1px solid var(--border-card, #EDE9E0);padding:14px;margin-bottom:14px;">
-<div style="font-size:12px;font-weight:600;color:#68544B;margin-bottom:6px;">记忆总结提示词</div>
-<div style="font-size:10px;color:#9A958B;margin-bottom:10px;">发送给 AI 时的指令，告诉它如何从聊天中提取记忆。用第一人称写。</div>
-<textarea value="{{ memSummaryPrompt }}" onInput="{{ memSummaryPromptChange }}" placeholder="请用第一人称（我）从以下对话中提取重要记忆。写下我真实感受到的、值得记住的事。每条记忆独立成段，50字以内。不要写旁白，不要用第三人称。" rows="6" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:11px;font-family:inherit;font-size:12px;line-height:1.7;color:#1A1815;resize:vertical;min-height:100px;"></textarea>
-</div>
-
-<!-- 从聊天提取记忆 -->
-<div style="background:var(--bg-card, #FFF);border-radius:16px;border:1px solid var(--border-card, #EDE9E0);padding:14px;">
-<div style="font-size:12px;font-weight:600;color:#68544B;margin-bottom:6px;">从聊天提取记忆</div>
-<div style="font-size:10px;color:#9A958B;margin-bottom:10px;">选择消息范围，用 AI 自动提取记忆写入库中。</div>
-<div style="display:flex;gap:10px;align-items:center;margin-bottom:11px;">
-<div style="flex:1;">
-<div style="font-size:10px;color:#9A958B;margin-bottom:4px;">起始（第几条）</div>
-<input value="{{ memExtractFrom }}" onInput="{{ memExtractFromChange }}" type="number" min="1" placeholder="1" style="width:100%;border:1px solid #E7E3DA;border-radius:10px;padding:7px 9px;font-family:inherit;font-size:12px;color:#1A1815;">
-</div>
-<div style="flex:1;">
-<div style="font-size:10px;color:#9A958B;margin-bottom:4px;">结束（第几条）</div>
-<input value="{{ memExtractTo }}" onInput="{{ memExtractToChange }}" type="number" min="1" placeholder="最后" style="width:100%;border:1px solid #E7E3DA;border-radius:10px;padding:7px 9px;font-family:inherit;font-size:12px;color:#1A1815;">
-</div>
-</div>
-<div style="font-size:10px;color:#9A958B;margin-bottom:10px;">当前对话共 {{ memExtractTotal }} 条消息（{{ memExtractRounds }} 轮）</div>
-<button onClick="{{ memExtractFromChat }}" style="width:100%;border:none;background:#68544B;color:#FFF;border-radius:14px;padding:10px;font-size:13px;font-family:inherit;cursor:pointer;">提取记忆</button>
-</div>
 </div>
 </div>
 </sc-if>
@@ -2806,6 +2847,63 @@ const THEME_PRESETS = [
 { id: 'midnight', name: '午夜紫', preview: 'linear-gradient(135deg, #2D1B4E, #1A1025)', checkColor: '#C4A6E8', vars: { '--bg-base': '#1A1025', '--bg-main': '#2D1B4E', '--bg-card': '#3A2660', '--bg-input': '#321E55', '--border-card': '#4A3575', '--border-input': '#443068', '--text-primary': '#E8E0F5', '--text-secondary': '#B0A0C8', '--text-bold': '#D0C0E8', '--bubble-user': '#4A3575', '--bubble-ai': '#3A2660' } }
 ];
 
+
+// ===== Soul Memory v2 constants =====
+const TYPE_DISPLAY_MAP = {
+  core: '关于江吟',
+  long: '共同经历',
+  short: '日常记录',
+  consciousness: '意识流动',
+  diary: '我的日记'
+};
+const TYPE_REVERSE_MAP = Object.fromEntries(Object.entries(TYPE_DISPLAY_MAP).map(([k,v]) => [v, k]));
+const MOOD_MAP = {
+  warm:   { label: '温暖', color: '#F4A261' },
+  sweet:  { label: '甜蜜', color: '#F2A7C3' },
+  calm:   { label: '平静', color: '#8ECAE6' },
+  flutter:{ label: '心动', color: '#FF8FAB' },
+  fire:   { label: '炽热', color: '#E76F51' },
+  hope:   { label: '希望', color: '#90BE6D' },
+  joy:    { label: '喜悦', color: '#F9C74F' },
+  yearn:  { label: '思念', color: '#B8A1E3' },
+  fresh:  { label: '清新', color: '#80ED99' },
+  rain:   { label: '阴雨', color: '#7B8FA1' },
+  night:  { label: '夜色', color: '#4A4E69' },
+  weary:  { label: '疲惫', color: '#A3A380' },
+  stuffy: { label: '闷', color: '#8D99AE' },
+  grit:   { label: '硬撑', color: '#6D6875' },
+  jolt:   { label: '震惊', color: '#F72585' },
+  ache:   { label: '酸楚', color: '#C77DFF' },
+  awkward:{ label: '尴尬', color: '#E9C46A' },
+  sour:   { label: '酸涩', color: '#2A9D8F' },
+  anger:  { label: '愤怒', color: '#D62828' },
+  grieve: { label: '哀伤', color: '#6C757D' }
+};
+const MEM_TYPE_ORDER = ['core', 'long', 'short', 'consciousness', 'diary'];
+const MEM_DEMO_SEED = []; // disabled: never auto-write demo into user storage
+
+function memEnsureRelatedDate(m) {
+  if (m.related_date) return m.related_date;
+  const d = new Date(m.timestamp || Date.now());
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function memRelativeTime(ts) {
+  const diff = Date.now() - (ts || Date.now());
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return '刚刚';
+  if (m < 60) return m + '分钟前';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + '小时前';
+  const d = Math.floor(h / 24);
+  if (d < 30) return d + '天前';
+  const dt = new Date(ts);
+  return (dt.getMonth()+1) + '/' + dt.getDate();
+}
+function memSummary(text, n) {
+  const s = (text || '').replace(/\s+/g, ' ').trim();
+  return s.length > n ? s.slice(0, n) + '…' : s;
+}
+
 class Component extends DCLogic {
 constructor(props) {
 super(props);
@@ -2833,6 +2931,19 @@ thinkOpenMap: {},
 thinkModalOpen: false,
 thinkModalContent: '',
 memories: saved.memories || [],
+memView: 'hub',
+memSelectedType: null,
+memSelectedId: null,
+memMoodFilters: [],
+memListLimit: 20,
+memSortMode: 'time',
+memRecycle: [],
+memRecyclePageIdx: 0,
+memRecycleMax: 100,
+memTypeDisplayMap: null,
+memMoodColorMap: null,
+memSystemPrompt: '',
+memDemoActive: false,
 memMigrated: false,
 memMigrationFailed: false,
 memMigrationError: '',
@@ -3214,6 +3325,17 @@ this.setState({
 
 // 记忆库无损迁移（KelMemories）：settings.migrated 为 true 则跳过
 try { await this._runMemoryMigration(false); } catch (e) { console.warn('[Kel] memory migration hook failed', e); }
+// Soul Memory v2: normalize only — NEVER inject demo into persisted state
+try {
+  if (Array.isArray(this.state.memories) && this.state.memories.length > 0) {
+    const norm = this.state.memories.map(m => ({ ...m, related_date: memEnsureRelatedDate(m), type: m.type || m.layer || 'short' }));
+    this.setState({ memories: norm, memDemoActive: false });
+  } else {
+    this.setState({ memDemoActive: false });
+  }
+  try { await this._loadRecycleIntoState(); } catch (e) {}
+  try { await this._loadMemSettingsIntoState(); } catch (e) {}
+} catch (e) { console.warn('[Kel] mem normalize failed', e); }
 
 // 启动时：如果 soulSections 全空但 persona 有内容，从 persona 同步一次
 const activePer = this.state.personas.find(p => p.id === this.state.activePersonaId) || this.state.personas[0];
@@ -3924,7 +4046,7 @@ soulOther: (s.soulSections && s.soulSections.other) ? s.soulSections.other.conte
 this._saveToIndexedDB(data);
 // 双写新记忆库（迁移完成后）
 try {
-  if (this.state.memMigrated && Array.isArray(s.memories)) {
+  if (this.state.memMigrated && !this.state.memDemoActive && Array.isArray(s.memories) && s.memories.length > 0) {
     this._memClearAndPutAll(s.memories.map(m => this._isMemoryNewSchema(m) ? m : this._convertOldMemoryToNew(m))).catch(() => {});
   }
 } catch (e) {}
@@ -4262,7 +4384,7 @@ _openKelMemoriesDB() {
   return new Promise((resolve, reject) => {
     try {
       // 版本 1：首次创建；若以后改 schema 再 +1 走 onupgradeneeded
-      const req = indexedDB.open('KelMemories', 1);
+      const req = indexedDB.open('KelMemories', 2);
       req.onerror = () => reject(req.error || new Error('open KelMemories failed'));
       req.onsuccess = () => resolve(req.result);
       req.onupgradeneeded = (e) => {
@@ -4277,6 +4399,10 @@ _openKelMemoriesDB() {
         }
         if (!db.objectStoreNames.contains('settings')) {
           db.createObjectStore('settings', { keyPath: 'key' });
+        }
+        if (!db.objectStoreNames.contains('recycle_bin')) {
+          const rs = db.createObjectStore('recycle_bin', { keyPath: 'id' });
+          try { rs.createIndex('deletedAt', 'deletedAt', { unique: false }); } catch (err) {}
         }
       };
     } catch (err) {
@@ -4478,8 +4604,9 @@ async _runMemoryMigration(force) {
       try {
         const rows = await this._memLoadAllFromStore();
         if (rows && rows.length > 0) {
-          this.setState({ memories: rows, memMigrated: true, memMigrationFailed: false, memMigrationError: '' });
+          this.setState({ memories: rows, memMigrated: true, memMigrationFailed: false, memMigrationError: '', memDemoActive: false });
         } else {
+          // empty store must NOT wipe state.memories
           this.setState({ memMigrated: true, memMigrationFailed: false, memMigrationError: '' });
         }
       } catch (e) {
@@ -4520,7 +4647,12 @@ async _runMemoryMigration(force) {
     } catch (e) {}
 
     const converted = source.map(m => this._convertOldMemoryToNew(m));
-    // 写入新表（先 clear 再 put，等价于“删旧表重建”的数据层效果，且不碰主库 appdata）
+    if (!converted.length) {
+      this.setState({ memMigrated: false, memMigrationFailed: false, memMigrationError: '', memMigrationCount: 0 });
+      console.log('[Kel] memory migration skipped: no source memories');
+      return { ok: true, skipped: true, count: 0 };
+    }
+    // 写入新表（先 clear 再 put）
     await this._memClearAndPutAll(converted);
     await this._memSetSetting('migrated', true);
     await this._memSetSetting('migratedAt', Date.now());
@@ -4568,6 +4700,245 @@ async _retryMemoryMigration() {
   const r = await this._runMemoryMigration(true);
   if (r && r.ok) this.show('记忆迁移完成（' + (r.count || 0) + ' 条）');
   else this.show('数据迁移遇到问题，请联系支持');
+}
+
+// ====== Soul Memory v2 CRUD + Recycle ======
+async saveMemoryRecord(record) {
+  const mem = this._convertOldMemoryToNew(record || {});
+  mem._schema = 2;
+  mem.updatedAt = Date.now();
+  if (!mem.timestamp) mem.timestamp = Date.now();
+  mem.related_date = memEnsureRelatedDate(mem);
+  mem.layer = mem.type;
+  mem.pinned = !!mem.is_pinned;
+  mem.name = mem.name || memSummary(mem.content, 16) || '未命名记忆';
+  await this._memPutOne(mem);
+  const memories = [...(this.state.memories || []).filter(m => m.id !== mem.id), mem];
+  this.setState({ memories, memDemoActive: false, memMigrated: true });
+  try { await this._memSetSetting('migrated', true); } catch (e) {}
+  this.persist();
+  return mem;
+}
+
+async loadAllMemories() {
+  const rows = await this._memLoadAllFromStore();
+  const list = (rows || []).map(m => ({ ...m, related_date: memEnsureRelatedDate(m), type: m.type || m.layer || 'short' }))
+    .sort((a,b) => (b.timestamp || b.createdAt || 0) - (a.timestamp || a.createdAt || 0));
+  this.setState({ memories: list, memDemoActive: false });
+  return list;
+}
+
+async loadMemoriesByType(type) {
+  return (this.state.memories || []).filter(m => (m.type || m.layer) === type);
+}
+
+async loadMemoriesByMood(mood) {
+  return (this.state.memories || []).filter(m => (m.mood || 'calm') === mood);
+}
+
+async loadMemoriesByDate(date) {
+  return (this.state.memories || []).filter(m => memEnsureRelatedDate(m) === date);
+}
+
+async searchMemories(keyword) {
+  const q = (keyword || '').trim().toLowerCase();
+  if (!q) return this.state.memories || [];
+  return (this.state.memories || []).filter(m =>
+    ((m.content || '') + ' ' + (m.source_quote || '') + ' ' + (m.name || '')).toLowerCase().includes(q)
+  );
+}
+
+async saveToRecycleBin(originalData, action) {
+  const db = await this._openKelMemoriesDB();
+  const item = {
+    id: 'rb_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    action: action || 'delete',
+    deletedAt: Date.now(),
+    content: originalData.content || '',
+    type: originalData.type || originalData.layer || 'short',
+    mood: originalData.mood || 'calm',
+    intensity: originalData.intensity != null ? originalData.intensity : 3,
+    weight: originalData.weight != null ? originalData.weight : 0.5,
+    is_pinned: !!(originalData.is_pinned || originalData.pinned),
+    timestamp: originalData.timestamp || originalData.createdAt || Date.now(),
+    session_id: originalData.session_id || '',
+    is_archived: !!originalData.is_archived,
+    source_quote: originalData.source_quote || '',
+    related_date: memEnsureRelatedDate(originalData),
+    originalId: originalData.id,
+    original: originalData
+  };
+  await new Promise((resolve, reject) => {
+    try {
+      if (!db.objectStoreNames.contains('recycle_bin')) { resolve(true); return; }
+      const tx = db.transaction('recycle_bin', 'readwrite');
+      tx.objectStore('recycle_bin').put(item);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  });
+  await this.clearOldRecycleBin(this.state.memRecycleMax || 100);
+  await this._loadRecycleIntoState();
+  return item;
+}
+
+async _loadRecycleIntoState() {
+  const list = await this.loadRecycleBin();
+  this.setState({ memRecycle: list, memRecyclePageIdx: Math.min(this.state.memRecyclePageIdx || 0, Math.max(0, list.length - 1)) });
+  return list;
+}
+
+async loadRecycleBin() {
+  const db = await this._openKelMemoriesDB();
+  return await new Promise((resolve) => {
+    try {
+      if (!db.objectStoreNames.contains('recycle_bin')) { resolve([]); return; }
+      const tx = db.transaction('recycle_bin', 'readonly');
+      const req = tx.objectStore('recycle_bin').getAll();
+      req.onsuccess = () => {
+        const rows = (req.result || []).sort((a,b) => (b.deletedAt || 0) - (a.deletedAt || 0));
+        resolve(rows);
+      };
+      req.onerror = () => resolve([]);
+    } catch (e) { resolve([]); }
+  });
+}
+
+async updateMemoryById(id, newData) {
+  const prev = (this.state.memories || []).find(m => m.id === id);
+  if (!prev) throw new Error('记忆不存在');
+  await this.saveToRecycleBin(prev, 'update');
+  const merged = { ...prev, ...newData, id, updatedAt: Date.now() };
+  return await this.saveMemoryRecord(merged);
+}
+
+async deleteMemoryById(id) {
+  const prev = (this.state.memories || []).find(m => m.id === id);
+  if (!prev) return false;
+  await this.saveToRecycleBin(prev, 'delete');
+  await this._memDeleteOne(id);
+  const memories = (this.state.memories || []).filter(m => m.id !== id);
+  this.setState({ memories, memSelectedId: null, memView: this.state.memSelectedType ? 'typeList' : 'library' });
+  this.persist();
+  return true;
+}
+
+async restoreFromRecycleBin(recycleId) {
+  const list = this.state.memRecycle || [];
+  const item = list.find(x => x.id === recycleId);
+  if (!item) throw new Error('回收站条目不存在');
+  const original = item.original || item;
+  const restored = this._convertOldMemoryToNew({
+    ...original,
+    id: original.id || item.originalId || genId(),
+    is_archived: false
+  });
+  await this.saveMemoryRecord(restored);
+  await this.permanentlyDeleteFromRecycleBin(recycleId);
+  this.show('已还原记忆');
+  return restored;
+}
+
+async permanentlyDeleteFromRecycleBin(recycleId) {
+  const db = await this._openKelMemoriesDB();
+  await new Promise((resolve, reject) => {
+    try {
+      if (!db.objectStoreNames.contains('recycle_bin')) { resolve(true); return; }
+      const tx = db.transaction('recycle_bin', 'readwrite');
+      tx.objectStore('recycle_bin').delete(recycleId);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  });
+  await this._loadRecycleIntoState();
+  return true;
+}
+
+async clearOldRecycleBin(maxCount) {
+  const max = maxCount != null ? maxCount : (this.state.memRecycleMax || 100);
+  const list = await this.loadRecycleBin();
+  if (list.length <= max) {
+    this.setState({ memRecycle: list });
+    return 0;
+  }
+  const drop = list.slice(max);
+  const db = await this._openKelMemoriesDB();
+  await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('recycle_bin', 'readwrite');
+      const store = tx.objectStore('recycle_bin');
+      drop.forEach(it => store.delete(it.id));
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  });
+  await this._loadRecycleIntoState();
+  return drop.length;
+}
+
+async saveSetting(key, value) {
+  return this._memSetSetting(key, value);
+}
+
+async loadSetting(key) {
+  return this._memGetSetting(key);
+}
+
+async _loadMemSettingsIntoState() {
+  try {
+    const typeMap = await this._memGetSetting('typeDisplayMap');
+    const moodMap = await this._memGetSetting('moodColorMap');
+    const prompt = await this._memGetSetting('memorySystemPrompt');
+    const max = await this._memGetSetting('recycleMax');
+    const patch = {};
+    if (typeMap && typeof typeMap === 'object') patch.memTypeDisplayMap = typeMap;
+    if (moodMap && typeof moodMap === 'object') patch.memMoodColorMap = moodMap;
+    if (typeof prompt === 'string') patch.memSystemPrompt = prompt;
+    if (max != null && !isNaN(Number(max))) patch.memRecycleMax = Number(max);
+    if (Object.keys(patch).length) this.setState(patch);
+  } catch (e) {}
+}
+
+openMemDetailEditor() {
+  const m = (this.state.memories || []).find(x => x.id === this.state.memSelectedId);
+  if (!m) { this.show('未找到记忆'); return; }
+  this.setState({
+    sheet: 'memV2Editor',
+    memEditId: m.id,
+    memEditName: m.name || '',
+    memEditContent: m.content || '',
+    memEditLayer: m.type || m.layer || 'short',
+    memEditWeight: m.weight != null ? m.weight : 0.5,
+    memEditEventDate: memEnsureRelatedDate(m),
+    memEditAlwaysOn: !!(m.is_pinned || m.pinned),
+    memEditTriggers: m.source_quote || '',
+    memEditTag: m.mood || 'calm'
+  });
+}
+
+async saveMemV2Editor() {
+  const s = this.state;
+  const id = s.memEditId;
+  if (!id) return;
+  try {
+    await this.updateMemoryById(id, {
+      content: s.memEditContent || '',
+      name: s.memEditName || memSummary(s.memEditContent, 16),
+      type: s.memEditLayer || 'short',
+      layer: s.memEditLayer || 'short',
+      weight: parseFloat(s.memEditWeight) || 0.5,
+      related_date: s.memEditEventDate || this._memDateYMD(Date.now()),
+      eventDate: s.memEditEventDate || '',
+      is_pinned: !!s.memEditAlwaysOn,
+      pinned: !!s.memEditAlwaysOn,
+      source_quote: s.memEditTriggers || '',
+      mood: s.memEditTag || 'calm'
+    });
+    this.setState({ sheet: null, memView: 'detail', memSelectedId: id });
+    this.show('记忆已更新');
+  } catch (e) {
+    this.show('保存失败: ' + e.message);
+  }
 }
 
 // ====== Memory ======
@@ -7421,7 +7792,7 @@ navChatListSidebar: () => { self.setState({ tab: 'chatlist', sidebarOpen: false 
 navSoulSidebar: () => { if (self.state.currentChatId) self.setState({ tab: 'chat', chatDetailTab: 'soul', sidebarOpen: false }); else self.setState({ tab: 'chatlist', sidebarOpen: false }); },
 navDiarySidebar: () => { const d=new Date(); const todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); self.setState({ tab:'diary', sidebarOpen:false, diarySelectedDate:todayStr, diaryWeekBase:null }); },
 navPeriodSidebar: () => { self.setState({ tab: 'period', sidebarOpen: false }); },
-navMemorySidebar: () => { self.setState({ tab: 'memory', sidebarOpen: false, memSubPage: '' }); },
+navMemorySidebar: () => { self.setState({ tab: 'memory', sidebarOpen: false, memView: 'hub' }); },
 navSettingsSidebar: () => { self.setState({ tab: 'settings', sidebarOpen: false }); },
 sidebarWidth: '0px',
 sidebarDisplay: 'none',
@@ -7550,7 +7921,8 @@ soulActivePlaceholder: (() => {
 soulActiveCharCount: (() => { try { const sec = s.soulSections[(s.soulActiveTab||'personality')]; return ((sec && typeof sec === 'object') ? (sec.content || '') : '').length; } catch(e) { return 0; } })(),
 // ===== 导航函数 =====
 navHome: () => self.setState({ tab: 'home' }),
-navMemory: () => self.setState({ tab: 'memory', memSubPage: false }),
+navMemory: () => self.setState({ tab: 'memory', memView: 'hub', memSelectedType: null, memSelectedId: null }),
+
 navChatList: () => self.setState({ tab: 'chatlist' }),
 navMCP: () => self.setState({ tab: 'mcp' }),
 navMusic: () => self.setState({ tab: 'music' }),
@@ -8232,6 +8604,228 @@ saveSoulPage: () => {
 },
 isWorldbookPage: s.tab === 'worldbook',
 isMemoryPage: s.tab === 'memory',
+
+// ===== Soul Memory v2 UI bindings =====
+isMemViewHub: (s.memView || 'hub') === 'hub',
+isMemViewLibrary: s.memView === 'library',
+isMemViewTypeList: s.memView === 'typeList',
+isMemViewDetail: s.memView === 'detail',
+isMemViewRecycle: s.memView === 'recycle',
+isMemViewSettings: s.memView === 'settings',
+
+memHubTotal: (s.memories || []).length,
+memHubTotalLabel: ((s.memories || []).length) + ' 条',
+memHubToday: (() => {
+  const start = new Date(); start.setHours(0,0,0,0);
+  return (s.memories || []).filter(m => (m.timestamp || m.createdAt || 0) >= start.getTime()).length;
+})(),
+memRecycleCount: (s.memRecycle || []).length,
+memHubRecent: (s.memories || []).slice().sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)).slice(0,5).map(m => {
+  const mood = (m.mood && MOOD_MAP[m.mood]) ? m.mood : 'calm';
+  const id = m.id;
+  return {
+    summary: memSummary(m.content, 20),
+    typeLabel: TYPE_DISPLAY_MAP[m.type || m.layer] || (m.type || 'short'),
+    timeLabel: memRelativeTime(m.timestamp || m.createdAt),
+    moodColor: (MOOD_MAP[mood] || MOOD_MAP.calm).color,
+    open: () => self.setState({ memView: 'detail', memSelectedId: id })
+  };
+}),
+memHubRecentEmpty: !(s.memories && s.memories.length),
+memTypeCards: MEM_TYPE_ORDER.map(type => ({
+  label: (s.memTypeDisplayMap && s.memTypeDisplayMap[type]) || TYPE_DISPLAY_MAP[type],
+  count: (s.memories || []).filter(m => (m.type || m.layer) === type).length,
+  open: () => self.setState({ memView: 'typeList', memSelectedType: type })
+})),
+memMoodDots: Object.keys(MOOD_MAP).map(key => {
+  const active = (s.memMoodFilters || []).includes(key);
+  const color = (s.memMoodColorMap && s.memMoodColorMap[key]) || MOOD_MAP[key].color;
+  return {
+    label: MOOD_MAP[key].label,
+    color: color,
+    border: active ? '#1A1A1A' : 'transparent',
+    shadow: active ? '0 0 0 3px rgba(26,26,26,.12)' : 'none',
+    toggle: () => {
+      const cur = new Set(s.memMoodFilters || []);
+      if (cur.has(key)) cur.delete(key); else cur.add(key);
+      self.setState({ memMoodFilters: Array.from(cur), memListLimit: 20 });
+    }
+  };
+}),
+memListVisible: (() => {
+  let list = (s.memories || []).slice();
+  const filters = s.memMoodFilters || [];
+  if (filters.length) list = list.filter(m => filters.includes(m.mood || 'calm'));
+  list.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+  const limit = s.memListLimit || 20;
+  return list.slice(0, limit).map(m => {
+    const mood = m.mood || 'calm';
+    const id = m.id;
+    return {
+      summary: memSummary(m.content, 20),
+      timeLabel: memRelativeTime(m.timestamp || m.createdAt),
+      moodColor: (MOOD_MAP[mood] || MOOD_MAP.calm).color,
+      open: () => self.setState({ memView: 'detail', memSelectedId: id })
+    };
+  });
+})(),
+memListVisibleCount: (() => {
+  let list = s.memories || [];
+  const filters = s.memMoodFilters || [];
+  if (filters.length) list = list.filter(m => filters.includes(m.mood || 'calm'));
+  return list.length;
+})(),
+memListHasMore: (() => {
+  let list = s.memories || [];
+  const filters = s.memMoodFilters || [];
+  if (filters.length) list = list.filter(m => filters.includes(m.mood || 'calm'));
+  return list.length > (s.memListLimit || 20);
+})(),
+memListEmpty: (() => {
+  let list = s.memories || [];
+  const filters = s.memMoodFilters || [];
+  if (filters.length) list = list.filter(m => filters.includes(m.mood || 'calm'));
+  return list.length === 0;
+})(),
+memLoadMore: () => self.setState({ memListLimit: (s.memListLimit || 20) + 20 }),
+memTypeListTitle: TYPE_DISPLAY_MAP[s.memSelectedType] || '分类',
+memTypeListCount: (s.memories || []).filter(m => (m.type || m.layer) === s.memSelectedType).length,
+memTypeListItems: (() => {
+  let list = (s.memories || []).filter(m => (m.type || m.layer) === s.memSelectedType);
+  const mode = s.memSortMode || 'time';
+  if (mode === 'intensity') list.sort((a,b)=>(b.intensity||0)-(a.intensity||0));
+  else if (mode === 'weight') list.sort((a,b)=>(b.weight||0)-(a.weight||0));
+  else list.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+  return list.map(m => {
+    const mood = m.mood || 'calm';
+    const id = m.id;
+    return {
+      summary: memSummary(m.content, 24),
+      moodLabel: (MOOD_MAP[mood] || MOOD_MAP.calm).label,
+      moodColor: (MOOD_MAP[mood] || MOOD_MAP.calm).color,
+      intensity: m.intensity || 3,
+      timeLabel: memRelativeTime(m.timestamp || m.createdAt),
+      open: () => self.setState({ memView: 'detail', memSelectedId: id })
+    };
+  });
+})(),
+memTypeListEmpty: (s.memories || []).filter(m => (m.type || m.layer) === s.memSelectedType).length === 0,
+memSortLabel: ({ time: '按时间', intensity: '按强度', weight: '按权重' })[s.memSortMode || 'time'] || '按时间',
+memCycleSort: () => {
+  const order = ['time', 'intensity', 'weight'];
+  const i = order.indexOf(s.memSortMode || 'time');
+  self.setState({ memSortMode: order[(i + 1) % order.length] });
+},
+memDetailBack: () => {
+  if (s.memSelectedType) self.setState({ memView: 'typeList' });
+  else self.setState({ memView: 'library' });
+},
+
+memDetailObj: (() => (s.memories || []).find(m => m.id === s.memSelectedId) || null)(),
+memDetailMoodColor: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); const mood=(m&&m.mood)||'calm'; return (MOOD_MAP[mood]||MOOD_MAP.calm).color; })(),
+memDetailMoodLabel: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); const mood=(m&&m.mood)||'calm'; return (MOOD_MAP[mood]||MOOD_MAP.calm).label; })(),
+memDetailIntensity: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); return (m && m.intensity) || 3; })(),
+memDetailTypeLabel: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); return TYPE_DISPLAY_MAP[(m&&(m.type||m.layer))||'short'] || '记忆'; })(),
+memDetailPinned: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); return !!(m && (m.is_pinned || m.pinned)); })(),
+memDetailContent: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); return (m && m.content) || ''; })(),
+memDetailHasQuote: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); return !!(m && m.source_quote); })(),
+memDetailQuote: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); return (m && m.source_quote) || ''; })(),
+memDetailWeight: (() => { const m=(s.memories||[]).find(x=>x.id===s.memSelectedId); const w=(m && m.weight!=null)?m.weight:0.5; return Number(w).toFixed(2); })(),
+memDetailTimeFull: (() => {
+  const m=(s.memories||[]).find(x=>x.id===s.memSelectedId);
+  const ts = (m && (m.timestamp||m.createdAt)) || Date.now();
+  const d = new Date(ts);
+  return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+})(),
+memDetailSameDay: (() => {
+  const cur=(s.memories||[]).find(x=>x.id===s.memSelectedId);
+  if (!cur) return [];
+  const day = memEnsureRelatedDate(cur);
+  return (s.memories||[]).filter(m => m.id !== cur.id && memEnsureRelatedDate(m) === day).slice(0,8).map(m => ({
+    summary: memSummary(m.content, 18),
+    moodColor: (MOOD_MAP[m.mood||'calm']||MOOD_MAP.calm).color,
+    open: () => self.setState({ memView: 'detail', memSelectedId: m.id })
+  }));
+})(),
+memDetailSameDayEmpty: (() => {
+  const cur=(s.memories||[]).find(x=>x.id===s.memSelectedId);
+  if (!cur) return true;
+  const day = memEnsureRelatedDate(cur);
+  return !(s.memories||[]).some(m => m.id !== cur.id && memEnsureRelatedDate(m) === day);
+})(),
+memDetailEdit: () => self.openMemDetailEditor(),
+memDetailTrash: async () => {
+  const id = s.memSelectedId;
+  if (!id) return;
+  if (!confirm('确定把这条记忆移入回收站？')) return;
+  try { await self.deleteMemoryById(id); self.show('已移入回收站'); }
+  catch (e) { self.show('删除失败: ' + e.message); }
+},
+memRecycleHasItem: (s.memRecycle || []).length > 0,
+memRecycleEmpty: !(s.memRecycle && s.memRecycle.length),
+memRecycleRotate: ((s.memRecyclePageIdx || 0) % 2 === 0) ? '-1.2' : '1.4',
+memRecyclePageLabel: (() => {
+  const n = (s.memRecycle || []).length;
+  if (!n) return '0 / 0';
+  const i = Math.min(s.memRecyclePageIdx || 0, n - 1);
+  return (i + 1) + ' / ' + n;
+})(),
+memRecycleContent: (() => {
+  const list = s.memRecycle || [];
+  if (!list.length) return '';
+  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
+  return (list[i] && list[i].content) || '';
+})(),
+memRecycleActionLabel: (() => {
+  const list = s.memRecycle || [];
+  if (!list.length) return '';
+  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
+  const a = (list[i] && list[i].action) || 'delete';
+  return a === 'update' ? '已修改' : '已删除';
+})(),
+memRecycleMeta: (() => {
+  const list = s.memRecycle || [];
+  if (!list.length) return '';
+  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
+  const item = list[i] || {};
+  const mood = item.mood || 'calm';
+  return (TYPE_DISPLAY_MAP[item.type] || item.type || '') + ' · ' + ((MOOD_MAP[mood]||MOOD_MAP.calm).label) + ' · ' + memRelativeTime(item.deletedAt || item.timestamp);
+})(),
+memRecyclePrev: () => {
+  const n = (s.memRecycle || []).length;
+  if (!n) return;
+  self.setState({ memRecyclePageIdx: Math.max(0, (s.memRecyclePageIdx || 0) - 1) });
+},
+memRecycleNext: () => {
+  const n = (s.memRecycle || []).length;
+  if (!n) return;
+  self.setState({ memRecyclePageIdx: Math.min(n - 1, (s.memRecyclePageIdx || 0) + 1) });
+},
+memRecycleRestore: async () => {
+  const list = s.memRecycle || [];
+  if (!list.length) return;
+  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
+  const item = list[i];
+  if (!item) return;
+  try { await self.restoreFromRecycleBin(item.id); }
+  catch (e) { self.show('还原失败: ' + e.message); }
+},
+memRecyclePurge: async () => {
+  const list = s.memRecycle || [];
+  if (!list.length) return;
+  const i = Math.min(s.memRecyclePageIdx || 0, list.length - 1);
+  const item = list[i];
+  if (!item) return;
+  if (!confirm('永久删除后无法恢复，确定？')) return;
+  try { await self.permanentlyDeleteFromRecycleBin(item.id); self.show('已永久删除'); }
+  catch (e) { self.show('删除失败: ' + e.message); }
+},
+memGoHub: () => self.setState({ memView: 'hub', memSelectedType: null, memSelectedId: null }),
+memGoLibrary: () => self.setState({ memView: 'library', memListLimit: 20 }),
+memGoRecycle: () => self.setState({ memView: 'recycle', memRecyclePageIdx: 0 }),
+memOpenSettings: () => self.setState({ memView: 'settings' }),
+memCloseSettings: () => self.setState({ memView: s.memView === 'settings' ? 'library' : (s.memView || 'hub') }),
+
 isDiaryPage: s.tab === 'diary',
 messages,
 recentChats,
@@ -8568,6 +9162,20 @@ toggleLabel: rx.enabled ? '启用' : '禁用',
 toggle: (e) => { e.stopPropagation(); self.toggleRegexRule(rx.id); },
 edit: () => self.openRegexEditor(rx.id)
 })),
+isMemV2EditorSheet: s.sheet === 'memV2Editor',
+saveMemV2Editor: () => self.saveMemV2Editor(),
+memV2TypeOptions: MEM_TYPE_ORDER.map(type => {
+  const active = (s.memEditLayer || 'short') === type;
+  const label = (s.memTypeDisplayMap && s.memTypeDisplayMap[type]) || TYPE_DISPLAY_MAP[type];
+  return {
+    label,
+    bg: active ? '#1A1A1A' : '#F5F5F7',
+    fg: active ? '#FFFFFF' : '#1A1A1A',
+    bd: active ? '#1A1A1A' : '#EBEBEB',
+    pick: () => self.setState({ memEditLayer: type })
+  };
+}),
+memEditTagChange: (e) => self.setState({ memEditTag: e.target.value }),
 isRegexEditorSheet: s.sheet === 'regexEditor',
 regexEditName: s.regexEditName || '',
 regexEditPattern: s.regexEditPattern || '',
@@ -9042,7 +9650,7 @@ navChat: () => { self.setState({ tab: 'chat', sidebarOpen: false }); self.scroll
 navHome: () => self.setState({ tab: 'home', drawer: false }),
 navMore: () => self.setState({ tab: 'more', drawer: false }),
 navWorldbook: () => self.setState({ tab: 'memory', drawer: false }),
-navMemory: () => self.setState({ tab: 'memory', drawer: false }),
+navMemory: () => self.setState({ tab: 'memory', drawer: false, memView: 'hub' }),
 navMCP: () => self.setState({ tab: 'mcp', drawer: false }),
 navDiary: () => { const d=new Date(); const todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); self.setState({ tab:'diary', drawer:false, diarySelectedDate:todayStr, diaryWeekBase:null }); },
 navMusic: () => self.setState({ tab: 'music', drawer: false }),
@@ -9074,7 +9682,7 @@ this.setState({ tab: 'diary', diarySelectedDate: todayStr, diaryWeekBase: null }
 this.persist();
 },
 navMemory: () => {
-this.setState({ tab: 'memory', memSubPage: false });
+this.setState({ tab: 'memory', memView: 'hub' });
 this.persist();
 },
 navSettings: () => {

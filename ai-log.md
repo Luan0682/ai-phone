@@ -103,3 +103,12 @@
 - 失败不删旧数据；Settings 显示状态+重试；成功一次性 toast
 - 语法通过；已 scp 部署 kel-home.xyz；GitHub 不急
 
+### 记忆系统 Phase B（2026-07-18）
+- 改了：Kel-Home-main/index.html
+- 关闭 demo 自动灌库；空迁移/空双写不再 clear 真数据
+- KelMemories 升 v2：memories + settings + recycle_bin
+- 正式 CRUD：save/load/update/delete + 回收站还原/永久删除/容量清理
+- 设置：分类名/情绪色/提示词/回收站容量可保存
+- 详情编辑 sheet 已接真保存
+- 语法通过；准备 scp 部署
+
