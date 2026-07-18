@@ -240,11 +240,20 @@ button:active {
 <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
 <div onClick="{{ navChatList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;white-space:nowrap;">Chat</div>
 </div>
-<div style="display:flex;align-items:center;gap:8px;flex:none;">
+<div style="display:flex;align-items:center;gap:8px;flex:none;position:relative;">
 <button onClick="{{ navChatDetailSoul }}" title="Soul" style="height:36px;border:none;background:{{ chatDetailTabBgs.soul }};color:{{ chatDetailTabFgs.soul }};border-radius:18px;padding:0 12px;font-size:12px;font-family:inherit;cursor:pointer;box-shadow:0 0 0 1px rgba(43,38,30,.05);">Soul</button>
-<button onClick="{{ navChatDetailSettings }}" title="Settings" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<button onClick="{{ toggleChatMoreMenu }}" title="More" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;z-index:61;">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="6" r="1.2" fill="var(--text-secondary, #48453E)"/><circle cx="12" cy="12" r="1.2" fill="var(--text-secondary, #48453E)"/><circle cx="12" cy="18" r="1.2" fill="var(--text-secondary, #48453E)"/></svg>
 </button>
+<sc-if value="{{ chatMoreMenuOpen }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeChatMoreMenu }}" style="position:fixed;inset:0;z-index:59;"></div>
+<div style="position:absolute;top:42px;right:0;z-index:60;min-width:168px;background:var(--bg-card, #FFF);border:1px solid #EDE9E0;border-radius:14px;box-shadow:0 10px 30px rgba(43,38,30,.12);padding:6px;animation:fadeUp .15s ease both;">
+<button onClick="{{ openChatSettingsFromMore }}" style="width:100%;border:none;background:transparent;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;font-family:inherit;text-align:left;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+<span style="font-size:13px;color:#1A1815;font-weight:500;">聊天设置</span>
+</button>
+</div>
+</sc-if>
 </div>
 </div>
 
@@ -254,7 +263,7 @@ button:active {
 <div style="flex:1;min-height:0;position:relative;">
 <div style="position:absolute;top:0;left:0;right:0;height:0px;pointer-events:none;"></div>
 <div style="position:absolute;bottom:0;left:0;right:0;height:0px;pointer-events:none;"></div>
-<div class="sa" id="kel-msg-scroll" onScroll="{{ onMsgScroll }}" style="position:absolute;inset:0;overflow-y:auto;padding:10px 6px 10px;">
+<div class="sa" id="kel-msg-scroll" onScroll="{{ onMsgScroll }}" style="position:absolute;inset:0;overflow-y:auto;padding:10px var(--chat-side-pad, 6px) 10px;">
 
 <div style="position:sticky;top:50%;left:50%;transform:translate(-50%,-50%);width:0;height:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
 <svg width="48" height="48" viewBox="0 0 64 64" fill="none" style="opacity:.06;">
@@ -273,7 +282,7 @@ button:active {
 </sc-if>
 </button>
 </sc-if>
-<div style="max-width:{{ m.maxW }};">
+<div style="max-width:{{ m.maxW }};width:auto;">
 <!-- thinking button -->
 <sc-if value="{{ m.hasThink }}" hint-placeholder-val="{{ false }}">
 <button onClick="{{ m.openThinkModal }}" style="border:none;background:transparent;padding:0;margin-bottom:2px;cursor:pointer;display:block;width:18px;height:18px;">
@@ -349,7 +358,7 @@ button:active {
 
 <!-- message bubble -->
 <sc-if value="{{ m.showNormal }}" hint-placeholder-val="{{ true }}">
-<div style="background:{{ m.bg }};color:{{ m.color }};border-radius:{{ m.radius }};padding:{{ m.bubblePadding }};font-size:var(--msg-font-size, 15px);line-height:1.55;letter-spacing:-0.008em;word-break:break-word;display:{{ m.bubbleDisplay }};">
+<div style="background:{{ m.bg }};color:{{ m.color }};border-radius:{{ m.radius }};padding:{{ m.bubblePadding }};font-size:var(--msg-font-size, 15px);line-height:1.55;letter-spacing:var(--chat-letter-spacing, -0.008em);word-break:break-word;display:{{ m.bubbleDisplay }};">
 <sc-if value="{{ m.hasQuote }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;padding:3px 8px;background:rgba(0,0,0,.06);border-radius:6px;border-left:2px solid rgba(0,0,0,.2);">
 <span style="font-size:11px;opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ m.quoteText }}</span>
@@ -528,12 +537,83 @@ button:active {
 </div>
 </sc-if>
 
-<!-- Chat detail Settings blank -->
+<!-- Chat detail Settings -->
 <sc-if value="{{ isChatDetailSettings }}" hint-placeholder-val="{{ false }}">
-<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;">
-<div style="text-align:center;">
-<div style="font-size:16px;font-weight:500;color:#68544B;margin-bottom:8px;">聊天设置</div>
-<div style="font-size:13px;color:#9A958B;">页面预留，稍后填充</div>
+<div style="flex:1;min-height:0;display:flex;flex-direction:column;background:var(--bg-main, #F5F3EE);">
+<div style="flex:none;padding:8px 16px 12px;display:flex;align-items:center;gap:12px;">
+<button onClick="{{ navChatDetailChat }}" title="Back" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div style="font-size:16px;font-weight:600;color:var(--text-primary, #1A1815);">聊天设置</div>
+</div>
+<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 28px;">
+<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:16px;padding:4px 16px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+
+<div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+<span style="font-size:14px;color:#3A362F;">气泡间距</span>
+<span style="font-size:12px;font-weight:600;color:#68544B;">{{ chatBubbleGapLabel }}</span>
+</div>
+<input type="range" min="0" max="24" step="1" value="{{ chatBubbleGap }}" onInput="{{ chatBubbleGapChange }}" style="width:100%;accent-color:#68544B;">
+<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>紧</span><span>疏</span></div>
+</div>
+
+<div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+<span style="font-size:14px;color:#3A362F;">消息字体</span>
+<span style="font-size:12px;font-weight:600;color:#68544B;">{{ chatFontSizeLabel }}</span>
+</div>
+<input type="range" min="12" max="22" step="1" value="{{ chatFontSize }}" onInput="{{ chatFontSizeChange }}" style="width:100%;accent-color:#68544B;">
+<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>小</span><span>大</span></div>
+</div>
+
+<div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+<span style="font-size:14px;color:#3A362F;">气泡内边距</span>
+<span style="font-size:12px;font-weight:600;color:#68544B;">{{ chatBubblePadLabel }}</span>
+</div>
+<input type="range" min="2" max="18" step="1" value="{{ chatBubblePad }}" onInput="{{ chatBubblePadChange }}" style="width:100%;accent-color:#68544B;">
+<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>贴边</span><span>宽松</span></div>
+</div>
+
+<div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+<span style="font-size:14px;color:#3A362F;">气泡最大宽度</span>
+<span style="font-size:12px;font-weight:600;color:#68544B;">{{ chatBubbleMaxWLabel }}</span>
+</div>
+<input type="range" min="60" max="98" step="1" value="{{ chatBubbleMaxW }}" onInput="{{ chatBubbleMaxWChange }}" style="width:100%;accent-color:#68544B;">
+<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>短</span><span>长</span></div>
+</div>
+
+<div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+<span style="font-size:14px;color:#3A362F;">字间距</span>
+<span style="font-size:12px;font-weight:600;color:#68544B;">{{ chatLetterSpacingLabel }}</span>
+</div>
+<input type="range" min="0" max="20" step="1" value="{{ chatLetterSpacing }}" onInput="{{ chatLetterSpacingChange }}" style="width:100%;accent-color:#68544B;">
+<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>密</span><span>疏</span></div>
+</div>
+
+<div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+<span style="font-size:14px;color:#3A362F;">气泡与边框间距</span>
+<span style="font-size:12px;font-weight:600;color:#68544B;">{{ chatSidePadLabel }}</span>
+</div>
+<input type="range" min="0" max="24" step="1" value="{{ chatSidePad }}" onInput="{{ chatSidePadChange }}" style="width:100%;accent-color:#68544B;">
+<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>贴边</span><span>留白</span></div>
+</div>
+
+<div style="padding:14px 0;">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+<span style="font-size:14px;color:#3A362F;">头像大小</span>
+<span style="font-size:12px;font-weight:600;color:#68544B;">{{ chatAvatarSizeLabel }}</span>
+</div>
+<input type="range" min="20" max="70" step="1" value="{{ chatAvatarSize }}" onInput="{{ chatAvatarSizeChange }}" style="width:100%;accent-color:#68544B;">
+<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>小</span><span>大</span></div>
+</div>
+
+</div>
+<div style="font-size:11px;color:#B8B3A8;margin-top:12px;line-height:1.5;padding:0 4px;">设置会自动保存。字号与头像与全局设置同步。</div>
 </div>
 </div>
 </sc-if>
@@ -992,23 +1072,8 @@ button:active {
 </div>
 <sc-if value="{{ tunerSectionOpen }}" hint-placeholder-val="{{ false }}">
 <div style="padding:0 18px 18px;border-top:1px solid #ECE8DF;">
-<!-- 消息字体 -->
-<div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-<span style="font-size:14px;color:#3A362F;">消息字体</span>
-<span style="font-size:13px;font-weight:600;color:#68544B;">{{ tunerFontSize }}px</span>
-</div>
-<input type="range" min="12" max="22" value="{{ tunerFontSize }}" onInput="{{ tunerFontSizeChange }}" style="width:100%;height:4px;border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,#DFF2EC {{ tunerFontPercent }},#F2EFE8 {{ tunerFontPercent }});">
-<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>小</span><span>大</span></div>
-</div>
-<!-- 头像大小 -->
-<div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-<span style="font-size:14px;color:#3A362F;">头像大小</span>
-<span style="font-size:13px;font-weight:600;color:#68544B;">{{ tunerAvatarSize }}px</span>
-</div>
-<input type="range" min="20" max="70" value="{{ tunerAvatarSize }}" onInput="{{ tunerAvatarSizeChange }}" style="width:100%;height:4px;border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,#DFF2EC {{ tunerAvatarPercent }},#F2EFE8 {{ tunerAvatarPercent }});">
-</div>
+<!-- 消息字体已移至 聊天设置 -->
+<!-- 头像大小已移至 聊天设置 -->
 <!-- 聊天渲染条数 -->
 <div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
@@ -3259,6 +3324,12 @@ mcpNewToolSchema: '',
 mcpCustomTools: (() => { try { const raw = localStorage.getItem('mcpcustomtools'); return raw ? JSON.parse(raw) : []; } catch(e) { return []; } })(),
 memoryCount: saved.memoryCount || 10,
 avatarSize: saved.avatarSize || 36,
+chatBubbleGap: saved.chatBubbleGap != null ? saved.chatBubbleGap : 10,
+chatBubblePad: saved.chatBubblePad != null ? saved.chatBubblePad : 5,
+chatBubbleMaxW: saved.chatBubbleMaxW != null ? saved.chatBubbleMaxW : 98,
+chatLetterSpacing: saved.chatLetterSpacing != null ? saved.chatLetterSpacing : 0,
+chatSidePad: saved.chatSidePad != null ? saved.chatSidePad : 6,
+chatMoreMenuOpen: false,
 homeCardGap: saved.homeCardGap || 12,
 homeCardSize: saved.homeCardSize || 56,
 userNickname: saved.userNickname || '江吟',
@@ -3563,6 +3634,11 @@ this.setState({
   regexRules: idbData.regexRules || this.state.regexRules,
   fontPresets: idbData.fontPresets || this.state.fontPresets,
   avatarSize: idbData.avatarSize || this.state.avatarSize,
+  chatBubbleGap: idbData.chatBubbleGap != null ? idbData.chatBubbleGap : this.state.chatBubbleGap,
+  chatBubblePad: idbData.chatBubblePad != null ? idbData.chatBubblePad : this.state.chatBubblePad,
+  chatBubbleMaxW: idbData.chatBubbleMaxW != null ? idbData.chatBubbleMaxW : this.state.chatBubbleMaxW,
+  chatLetterSpacing: idbData.chatLetterSpacing != null ? idbData.chatLetterSpacing : this.state.chatLetterSpacing,
+  chatSidePad: idbData.chatSidePad != null ? idbData.chatSidePad : this.state.chatSidePad,
   petEnabled: idbData.petEnabled !== undefined ? idbData.petEnabled : this.state.petEnabled,
   petSizeIdx: idbData.petSizeIdx !== undefined ? idbData.petSizeIdx : this.state.petSizeIdx,
   soundEnabled: idbData.soundEnabled !== undefined ? idbData.soundEnabled : this.state.soundEnabled,
@@ -3624,7 +3700,8 @@ this.applyTheme(this.state.activeThemeId);
 this.applyCustomCss();
 this.applyCustomFont();
 this.applyMsgFontSize();
-this.applyMsgFontSize();
+this.applyChatLayout();
+this.applyChatLayout();
 
 // 从 IndexedDB 加载头像
 try {
@@ -4262,6 +4339,11 @@ petSizeIdx: s.petSizeIdx,
 soundEnabled: s.soundEnabled,
 memoryCount: s.memoryCount,
 avatarSize: s.avatarSize,
+chatBubbleGap: s.chatBubbleGap,
+chatBubblePad: s.chatBubblePad,
+chatBubbleMaxW: s.chatBubbleMaxW,
+chatLetterSpacing: s.chatLetterSpacing,
+chatSidePad: s.chatSidePad,
 homeCardGap: s.homeCardGap,
 homeCardSize: s.homeCardSize,
 userNickname: s.userNickname,
@@ -5536,18 +5618,7 @@ if (dateKeywords && Object.keys(this.state.diaries).length > 0) {
 const style = this.activeStyleObj;
 if (style.content) sys += '## Style: ' + style.title + '\n' + style.content + '\n\n';
 
-// ---- 新增：用户消息时间线 ----
-const userTimeline = msgs
-  .filter(m => m.role === 'user')
-  .map(m => {
-    const time = m.timestamp || '未知时间';
-    const text = (m.variants ? m.variants[m.variantIdx || 0] : m.text) || m.text || '';
-    return `[${time}] 用户: ${text.slice(0, 100)}${text.length > 100 ? '...' : ''}`;
-  })
-  .join('\n');
-if (userTimeline) {
-  sys += '## 用户消息时间线\n' + userTimeline + '\n\n';
-}
+// 用户消息时间戳现在直接附在 API messages 的每条 user 内容前（tWithTs），不再额外注入时间线
 
 const memorySummary = buildMemorySummary(this.state.chats, this.state.currentChatId, this.state.memoryCount);
 if (memorySummary) sys += '## Context Memory\n' + memorySummary + '\n\n';
@@ -5573,7 +5644,8 @@ if (m.file && m.file.isText && m.file.textContent) {
 content.push({ type: 'text', text: '[File: ' + m.file.fileName + ']\n' + m.file.textContent });
 }
 const t = m.variants ? (m.variants[m.variantIdx || 0] || m.text) : m.text;
-if (t) content.push({ type: 'text', text: t });
+const tWithTs = (role === 'user' && m.timestamp && t) ? ('[' + m.timestamp + '] ' + t) : t;
+if (tWithTs) content.push({ type: 'text', text: tWithTs });
 
 // Merge with previous if same role
 if (apiMessages.length > 0 && apiMessages[apiMessages.length - 1].role === role) {
@@ -5585,7 +5657,7 @@ const prevText = prev.content;
 prev.content = [{ type: 'text', text: prevText }].concat(content);
 }
 } else {
-apiMessages.push({ role, content: content.length === 1 && content[0].type === 'text' ? t : content });
+apiMessages.push({ role, content: content.length === 1 && content[0].type === 'text' ? (content[0].text || t) : content });
 }
 }
 } else {
@@ -5598,6 +5670,9 @@ const t = m.variants ? (m.variants[m.variantIdx || 0] || m.text) : m.text;
 let fullText = t;
 if (m.quote) {
   fullText = `> ${m.quote.sender}：${m.quote.text}\n\n${t}`;
+}
+if (role === 'user' && m.timestamp && fullText) {
+  fullText = '[' + m.timestamp + '] ' + fullText;
 }
 if (m.image) {
 const entry = { role, content: [{ type: 'image_url', image_url: { url: 'data:' + (m.imageMime || 'image/jpeg') + ';base64,' + m.image } }, { type: 'text', text: fullText || '' }] };
@@ -6079,6 +6154,11 @@ async _buildFullBackupObject() {
     regexRules: s.regexRules,
     keepAliveEnabled: s.keepAliveEnabled,
     avatarSize: s.avatarSize,
+    chatBubbleGap: s.chatBubbleGap,
+    chatBubblePad: s.chatBubblePad,
+    chatBubbleMaxW: s.chatBubbleMaxW,
+    chatLetterSpacing: s.chatLetterSpacing,
+    chatSidePad: s.chatSidePad,
     userNickname: s.userNickname,
     aiNickname: s.aiNickname,
     petEnabled: s.petEnabled,
@@ -6602,6 +6682,11 @@ if (data.customCss) updates.customCss = data.customCss;
 if (data.customFont) updates.customFont = data.customFont;
 if (data.activeThemeId) updates.activeThemeId = data.activeThemeId;
 if (data.avatarSize) updates.avatarSize = data.avatarSize;
+if (data.chatBubbleGap != null) updates.chatBubbleGap = data.chatBubbleGap;
+if (data.chatBubblePad != null) updates.chatBubblePad = data.chatBubblePad;
+if (data.chatBubbleMaxW != null) updates.chatBubbleMaxW = data.chatBubbleMaxW;
+if (data.chatLetterSpacing != null) updates.chatLetterSpacing = data.chatLetterSpacing;
+if (data.chatSidePad != null) updates.chatSidePad = data.chatSidePad;
 if (data.anniversaries) updates.anniversaries = data.anniversaries;
 if (data.pledges) updates.pledges = data.pledges;
 if (data.diaries) updates.diaries = data.diaries; // 全替换
@@ -6818,6 +6903,22 @@ const fallback = this.state.customFont || "-apple-system, 'Noto Sans SC', sans-s
 el.textContent = '@font-face { font-family: "' + fontName + '"; src: url(' + data + '); font-display: swap; }\n* { font-family: "' + fontName + '", ' + fallback + ' !important; }';
 }
 
+applyChatLayout() {
+  try {
+    const root = document.documentElement;
+    const gap = this.state.chatBubbleGap != null ? this.state.chatBubbleGap : 10;
+    const pad = this.state.chatBubblePad != null ? this.state.chatBubblePad : 5;
+    const maxW = this.state.chatBubbleMaxW != null ? this.state.chatBubbleMaxW : 98;
+    const ls = this.state.chatLetterSpacing != null ? this.state.chatLetterSpacing : 0;
+    const side = this.state.chatSidePad != null ? this.state.chatSidePad : 6;
+    root.style.setProperty('--chat-bubble-gap', gap + 'px');
+    root.style.setProperty('--chat-bubble-pad-y', pad + 'px');
+    root.style.setProperty('--chat-bubble-pad-x', Math.max(pad + 4, Math.round(pad * 1.8)) + 'px');
+    root.style.setProperty('--chat-bubble-max-w', maxW + '%');
+    root.style.setProperty('--chat-letter-spacing', (ls / 100) + 'em');
+    root.style.setProperty('--chat-side-pad', side + 'px');
+  } catch (e) {}
+}
 applyMsgFontSize() {
 const size = this.state.msgFontSize || 16;
 document.documentElement.style.setProperty('--msg-font-size', size + 'px');
@@ -7707,7 +7808,7 @@ return {
 isUser,
 isMemoryNotice,
 align: isMemoryNotice ? 'center' : (isUser ? 'flex-end' : 'flex-start'),
-maxW: isUser ? '98%' : '98%',
+maxW: ((s.chatBubbleMaxW != null ? s.chatBubbleMaxW : 98) + '%'),
 fullW: 'auto',
 bg: isUser ? 'var(--bubble-user, #59483F)' : 'var(--bubble-ai, #D7EBE4)',
 color: isUser ? 'var(--bubble-user-text, #D7EBE4)' : 'var(--bubble-ai-text, #59483F)',
@@ -7729,7 +7830,9 @@ return '8px 22px 22px 8px';
 gap: (() => {
   // 如果当前消息内容为空且没有图片，不给间距
   if (!rendered && !m.imageUrl) return '0px';
-  return isLastInGroup(i) ? '10px' : '1.5px';
+  const g = (s.chatBubbleGap != null ? s.chatBubbleGap : 10);
+  // within group keep slightly tighter; between groups use full gap
+  return isLastInGroup(i) ? (g + 'px') : (Math.max(1, Math.round(g * 0.15)) + 'px');
 })(),
 text: displayText,
 rendered: rendered,
@@ -7790,7 +7893,7 @@ self.deleteImageFromMessage(m.id);
 showNormal: !isMemoryNotice && s.editIdx !== i && !!rendered,
 hasQuote: !!(m.quote || (displayText.match(/^> .+/m) && !isUser)),
 quoteText: m.quote ? (m.quote.sender + '：' + m.quote.text) : (displayText.match(/^> (.+)/m) ? displayText.match(/^> (.+)/m)[1].slice(0, 40) : ''),
-bubblePadding: !rendered ? '0' : '5px 10px',
+bubblePadding: !rendered ? '0' : ('var(--chat-bubble-pad-y, 5px) var(--chat-bubble-pad-x, 10px)'),
 bubbleDisplay: !rendered ? 'none' : 'block',
 showEdit: s.editIdx === i,
 showActions: !isUser && isLast && !s.isBusy && isLastInGroup(i),
@@ -8433,7 +8536,32 @@ chatDetailTabFgs: {
 },
 navChatDetailChat: () => self.setState({ chatDetailTab: 'chat' }),
 navChatDetailSoul: () => self.setState({ chatDetailTab: 'soul' }),
-navChatDetailSettings: () => self.setState({ chatDetailTab: 'settings' }),
+navChatDetailSettings: () => self.setState({ chatDetailTab: 'settings', chatMoreMenuOpen: false }),
+toggleChatMoreMenu: () => self.setState({ chatMoreMenuOpen: !self.state.chatMoreMenuOpen }),
+closeChatMoreMenu: () => self.setState({ chatMoreMenuOpen: false }),
+openChatSettingsFromMore: () => self.setState({ chatDetailTab: 'settings', chatMoreMenuOpen: false }),
+chatMoreMenuOpen: !!s.chatMoreMenuOpen,
+chatBubbleGap: s.chatBubbleGap != null ? s.chatBubbleGap : 10,
+chatBubbleGapLabel: (s.chatBubbleGap != null ? s.chatBubbleGap : 10) + 'px',
+chatBubbleGapChange: (e) => { const v = parseInt(e.target.value, 10); self.setState({ chatBubbleGap: v }); self.applyChatLayout(); self.persist(); },
+chatFontSize: s.msgFontSize || 16,
+chatFontSizeLabel: (s.msgFontSize || 16) + 'px',
+chatFontSizeChange: (e) => { const v = parseInt(e.target.value, 10); self.setState({ msgFontSize: v }); self.applyMsgFontSize(); self.persist(); },
+chatBubblePad: s.chatBubblePad != null ? s.chatBubblePad : 5,
+chatBubblePadLabel: (s.chatBubblePad != null ? s.chatBubblePad : 5) + 'px',
+chatBubblePadChange: (e) => { const v = parseInt(e.target.value, 10); self.setState({ chatBubblePad: v }); self.applyChatLayout(); self.persist(); },
+chatBubbleMaxW: s.chatBubbleMaxW != null ? s.chatBubbleMaxW : 98,
+chatBubbleMaxWLabel: (s.chatBubbleMaxW != null ? s.chatBubbleMaxW : 98) + '%',
+chatBubbleMaxWChange: (e) => { const v = parseInt(e.target.value, 10); self.setState({ chatBubbleMaxW: v }); self.applyChatLayout(); self.persist(); },
+chatLetterSpacing: s.chatLetterSpacing != null ? s.chatLetterSpacing : 0,
+chatLetterSpacingLabel: ((s.chatLetterSpacing != null ? s.chatLetterSpacing : 0) / 100).toFixed(2) + 'em',
+chatLetterSpacingChange: (e) => { const v = parseInt(e.target.value, 10); self.setState({ chatLetterSpacing: v }); self.applyChatLayout(); self.persist(); },
+chatSidePad: s.chatSidePad != null ? s.chatSidePad : 6,
+chatSidePadLabel: (s.chatSidePad != null ? s.chatSidePad : 6) + 'px',
+chatSidePadChange: (e) => { const v = parseInt(e.target.value, 10); self.setState({ chatSidePad: v }); self.applyChatLayout(); self.persist(); },
+chatAvatarSize: s.avatarSize || 36,
+chatAvatarSizeLabel: (s.avatarSize || 36) + 'px',
+chatAvatarSizeChange: (e) => { const v = parseInt(e.target.value, 10); self.setState({ avatarSize: v }); self.persist(); },
 userName: '江吟',
 chatListCount: Object.values(s.chats).filter(c => c.messages && c.messages.length > 0).length + ' 段对话',
 hasPinnedChats: Object.values(s.chats).some(c => c.pinned),
