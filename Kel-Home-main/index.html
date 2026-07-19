@@ -941,33 +941,6 @@ button:active {
 <div onClick="{{ navHome }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:26px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;">Settings</div>
 </div>
 
-<!-- 搜索聊天记录 -->
-<div style="margin-bottom:16px;">
-<div style="background:var(--bg-card, #FFF);border:1px solid #E7E3DA;border-radius:14px;padding:9px 12px;display:flex;align-items:center;gap:8px;">
-<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="#9A958B" stroke-width="1.5"/><path d="M16 16l4 4" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<input value="{{ settingsSearchQuery }}" onInput="{{ settingsSearchChange }}" placeholder="搜索聊天内容..." style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:var(--text-primary, #1A1815);">
-</div>
-</div>
-<!-- 昵称设置 -->
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div style="padding:16px 18px;">
-<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="#68544B" stroke-width="1.5"/></svg>
-<div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">聊天昵称</div>
-</div>
-<div style="display:flex;gap:10px;">
-<div style="flex:1;">
-<div style="font-size:10px;color:#B8B3A8;margin-bottom:5px;">我的昵称</div>
-<input value="{{ userNickname }}" onInput="{{ userNicknameChange }}" placeholder="User" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 12px;font-family:inherit;font-size:13px;color:#1A1815;">
-</div>
-<div style="flex:1;">
-<div style="font-size:10px;color:#B8B3A8;margin-bottom:5px;">TA的昵称</div>
-<input value="{{ aiNickname }}" onInput="{{ aiNicknameChange }}" placeholder="Claude" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 12px;font-family:inherit;font-size:13px;color:#1A1815;">
-</div>
-</div>
-</div>
-</div>
-
 <!-- Pet 模块 (可折叠) + 位置调节 -->
 <div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
 <div onClick="{{ togglePetSection }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
@@ -1477,12 +1450,15 @@ button:active {
 <div style="font-size:15px;font-weight:600;color:#1A1A1A;">记忆库</div>
 <div style="font-size:11px;color:#8E8E93;">分类 · 心情 · 列表</div>
 </div>
-<div onClick="{{ memGoInbox }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
+<div onClick="{{ memGoInbox }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;position:relative;">
+<sc-if value="{{ letterHasUnread }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:#FF9500;"></div>
+</sc-if>
 <div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4V6z" stroke="#1A1A1A" stroke-width="1.5"/><path d="M4 8l8 6 8-6" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </div>
 <div style="font-size:15px;font-weight:600;color:#1A1A1A;">信箱</div>
-<div style="font-size:11px;color:#8E8E93;">预留 · 0</div>
+<div style="font-size:11px;color:#8E8E93;">{{ letterHubCountLabel }}</div>
 </div>
 <div onClick="{{ memGoFavorites }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
 <div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
@@ -1553,12 +1529,68 @@ button:active {
 </div>
 </sc-if>
 
-<!-- ===== INBOX placeholder ===== -->
+<!-- ===== INBOX (newspaper / forest letters) ===== -->
 <sc-if value="{{ isMemViewInbox }}" hint-placeholder-val="{{ false }}">
-<div style="padding:18px 0 12px;">
-<div onClick="{{ memGoHub }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;cursor:pointer;">Inbox</div>
+<div style="margin:0 -20px;padding:0 20px 40px;min-height:100%;background:#F3EFE6;color:#3A3228;">
+<div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;">
+<div onClick="{{ memGoHub }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#3A3228;cursor:pointer;">Letters</div>
+<button onClick="{{ markAllLettersRead }}" style="border:none;background:transparent;color:#8B7355;font-size:12px;font-family:inherit;cursor:pointer;padding:6px 4px;">全部已读</button>
 </div>
-<div style="text-align:center;padding:48px 0;font-size:13px;color:#8E8E93;">信箱功能预留中</div>
+
+<!-- list mode -->
+<sc-if value="{{ isLetterViewList }}" hint-placeholder-val="{{ true }}">
+<!-- mailbox mouth -->
+<div onClick="{{ openLatestLetter }}" style="margin:4px 0 18px;height:88px;border-radius:14px 14px 8px 8px;background:linear-gradient(180deg,#5C4A3A 0%,#4A3B2E 55%,#3A2F25 100%);box-shadow:0 8px 20px rgba(58,47,37,.18);position:relative;cursor:pointer;overflow:hidden;">
+  <div style="position:absolute;left:14px;right:14px;top:14px;height:22px;border-radius:4px;background:rgba(0,0,0,.22);box-shadow:inset 0 2px 4px rgba(0,0,0,.25);"></div>
+  <div style="position:absolute;left:18px;right:18px;top:18px;height:14px;border-radius:3px;background:linear-gradient(90deg,rgba(255,255,255,.08),rgba(255,255,255,.02));"></div>
+  <sc-if value="{{ letterHasAny }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;left:28px;right:40px;top:28px;height:52px;background:#F7F1E4;border-radius:4px 4px 0 0;transform:rotate(-2deg);box-shadow:0 -2px 8px rgba(0,0,0,.15);padding:10px 12px;">
+    <div style="font-family:'Cormorant Garamond','Newsreader',serif;font-size:14px;color:#5C4A3A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ letterPeekTitle }}</div>
+    <div style="margin-top:6px;height:1px;background:#D8CDBA;"></div>
+    <div style="margin-top:4px;height:1px;background:#E5DCCB;width:70%;"></div>
+  </div>
+  </sc-if>
+  <sc-if value="{{ letterEmpty }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:18px;">
+    <span style="font-size:11px;color:rgba(247,241,228,.55);letter-spacing:.08em;">EMPTY</span>
+  </div>
+  </sc-if>
+</div>
+
+<sc-for list="{{ letterListCards }}" as="lt" hint-placeholder-count="3">
+<div onClick="{{ lt.open }}" style="position:relative;background:#FBF6EB;border:1px solid #E4D8C4;border-radius:10px;padding:14px 14px 12px;margin-bottom:12px;cursor:pointer;box-shadow:0 2px 8px rgba(90,70,50,.05);">
+  <sc-if value="{{ lt.unread }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:#FF9500;"></div>
+  </sc-if>
+  <div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:16px;color:#3A3228;padding-right:14px;">{{ lt.title }}</div>
+  <div style="font-size:13px;color:#6B5E4E;line-height:1.55;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ lt.preview }}</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+    <span style="font-size:11px;color:#9A8B78;">{{ lt.meta }}</span>
+    <span style="font-size:11px;color:#9A8B78;">{{ lt.fromLabel }}</span>
+  </div>
+</div>
+</sc-for>
+
+<sc-if value="{{ letterEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:40px 12px 20px;">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="margin:0 auto 12px;display:block;opacity:.45;"><path d="M4 8l8 5 8-5" stroke="#8B7355" stroke-width="1.5" stroke-linecap="round"/><path d="M4 8v9a1 1 0 001 1h14a1 1 0 001-1V8" stroke="#8B7355" stroke-width="1.5"/><path d="M4 8l2.5-2h11L20 8" stroke="#8B7355" stroke-width="1.5" stroke-linejoin="round"/></svg>
+  <div style="font-size:14px;color:#6B5E4E;">信箱是空的，还没有信。</div>
+  <div style="font-size:12px;color:#9A8B78;margin-top:8px;line-height:1.5;">AI会在想说些什么的时候写信给你。</div>
+</div>
+</sc-if>
+</sc-if>
+
+<!-- detail mode -->
+<sc-if value="{{ isLetterViewDetail }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ letterBackList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:18px;color:#3A3228;cursor:pointer;margin-bottom:14px;">Back</div>
+<div style="background:#FBF6EB;border:1px solid #E4D8C4;border-radius:12px;padding:18px 16px 20px;box-shadow:0 4px 16px rgba(90,70,50,.06);">
+  <div style="font-size:12px;color:#9A8B78;margin-bottom:12px;">{{ letterDetailMeta }}</div>
+  <div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:20px;font-weight:600;color:#3A3228;margin-bottom:16px;line-height:1.35;">{{ letterDetailTitle }}</div>
+  <div style="font-size:15px;line-height:1.85;color:#3A3228;white-space:pre-wrap;">{{ letterDetailContent }}</div>
+</div>
+<button onClick="{{ letterDeleteConfirm }}" style="width:100%;border:none;background:transparent;color:#C45C4A;padding:16px;font-size:13px;font-family:inherit;cursor:pointer;margin-top:8px;">删除</button>
+</sc-if>
+</div>
 </sc-if>
 
 <!-- ===== LIBRARY ===== -->
@@ -3627,9 +3659,26 @@ const DEFAULT_MEMORY_SYSTEM_PROMPT = `你是用户的 AI 伴侣。以下情况�
 4. 用户描述了身体感受、情绪状态、或过去经历
 
 如果触发这条记忆的是用户说过的某一句话，请将原话完整填入 source_quote 字段（保留引号）。
+
+当你有较长、较深、不适合直接气泡回复的话时，优先调用 send_letter 把内容放入信箱；用户说「给我写封信」时也应调用 send_letter。写信后可在对话里简短告知「信已放入信箱」。
 `;
 
 const MEMORY_TOOL_DEFS_OPENAI = [
+  {
+    type: 'function',
+    function: {
+      name: 'send_letter',
+      description: '当有话想说但内容太长、或想以书信形式表达时调用，向用户发送一封信放入信箱',
+      parameters: {
+        type: 'object',
+        properties: {
+          title: { type: 'string', description: '信件标题，简短概括内容' },
+          content: { type: 'string', description: '信件完整内容' }
+        },
+        required: ['title', 'content']
+      }
+    }
+  },
   {
     type: 'function',
     function: {
@@ -3688,19 +3737,24 @@ const MEMORY_TOOL_DEFS_OPENAI = [
 
 const MEMORY_TOOL_DEFS_ANTHROPIC = [
   {
+    name: 'send_letter',
+    description: '当有话想说但内容太长、或想以书信形式表达时调用，向用户发送一封信放入信箱',
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[0].function.parameters
+  },
+  {
     name: 'save_memory',
     description: '当符合记忆写入守则时调用，将关键信息存入长期记忆',
-    input_schema: MEMORY_TOOL_DEFS_OPENAI[0].function.parameters
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[1].function.parameters
   },
   {
     name: 'update_memory',
     description: '更新一条已有记忆',
-    input_schema: MEMORY_TOOL_DEFS_OPENAI[1].function.parameters
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[2].function.parameters
   },
   {
     name: 'delete_memory',
     description: '将记忆移入回收站',
-    input_schema: MEMORY_TOOL_DEFS_OPENAI[2].function.parameters
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[3].function.parameters
   }
 ];
 
@@ -4181,6 +4235,7 @@ try {
 try { await this._loadFinanceIntoState(); } catch (e) { console.warn('[Kel] finance load failed', e); }
 // Favorites boot
 try { await this._loadFavoritesIntoState(); } catch (e) { console.warn('[Kel] favorites load failed', e); }
+try { await this._loadLettersIntoState(); } catch (e) { console.warn('[Kel] letters load failed', e); }
 
 // Soft normalize legacy default names (Kel -> Claude) for blank/default installs
 try {
@@ -5271,7 +5326,7 @@ _openKelMemoriesDB() {
   return new Promise((resolve, reject) => {
     try {
       // 版本 1：首次创建；若以后改 schema 再 +1 走 onupgradeneeded
-      const req = indexedDB.open('KelMemories', 2);
+      const req = indexedDB.open('KelMemories', 3);
       req.onerror = () => reject(req.error || new Error('open KelMemories failed'));
       req.onsuccess = () => resolve(req.result);
       req.onupgradeneeded = (e) => {
@@ -5290,6 +5345,11 @@ _openKelMemoriesDB() {
         if (!db.objectStoreNames.contains('recycle_bin')) {
           const rs = db.createObjectStore('recycle_bin', { keyPath: 'id' });
           try { rs.createIndex('deletedAt', 'deletedAt', { unique: false }); } catch (err) {}
+        }
+        if (!db.objectStoreNames.contains('letters')) {
+          const ls = db.createObjectStore('letters', { keyPath: 'id' });
+          try { ls.createIndex('timestamp', 'timestamp', { unique: false }); } catch (err) {}
+          try { ls.createIndex('is_read', 'is_read', { unique: false }); } catch (err) {}
         }
       };
     } catch (err) {
@@ -5771,6 +5831,138 @@ async saveSetting(key, value) {
 async loadSetting(key) {
   return this._memGetSetting(key);
 }
+
+// ====== Letters (mailbox) in KelMemories ======
+_letterDateParts(ts) {
+  const d = ts ? new Date(ts) : new Date();
+  const date = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  return { date, time };
+}
+
+_letterLoadAllFromStore() {
+  return this._openKelMemoriesDB().then(db => new Promise((resolve, reject) => {
+    try {
+      if (!db.objectStoreNames.contains('letters')) { resolve([]); return; }
+      const tx = db.transaction('letters', 'readonly');
+      const req = tx.objectStore('letters').getAll();
+      req.onsuccess = () => {
+        const list = (req.result || []).slice().sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        resolve(list);
+      };
+      req.onerror = () => reject(req.error);
+    } catch (e) { reject(e); }
+  }));
+}
+
+_letterPut(rec) {
+  return this._openKelMemoriesDB().then(db => new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('letters', 'readwrite');
+      tx.objectStore('letters').put(rec);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  }));
+}
+
+_letterDelete(id) {
+  return this._openKelMemoriesDB().then(db => new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('letters', 'readwrite');
+      tx.objectStore('letters').delete(id);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  }));
+}
+
+async _loadLettersIntoState() {
+  try {
+    const list = await this._letterLoadAllFromStore();
+    this.setState({ letters: list || [] });
+  } catch (e) {
+    console.warn('[Kel] load letters failed', e);
+    this.setState({ letters: [] });
+  }
+}
+
+async saveLetter(record) {
+  const now = Date.now();
+  const parts = this._letterDateParts(record.timestamp || now);
+  const rec = {
+    id: record.id || ('ltr_' + now + '_' + Math.random().toString(36).slice(2, 6)),
+    title: (record.title || '一封信').trim() || '一封信',
+    content: record.content || '',
+    timestamp: record.timestamp || now,
+    date: record.date || parts.date,
+    time: record.time || parts.time,
+    is_read: !!record.is_read,
+    session_id: record.session_id || this.state.currentChatId || ''
+  };
+  await this._letterPut(rec);
+  const list = (this.state.letters || []).filter(x => x.id !== rec.id);
+  list.unshift(rec);
+  list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  this.setState({ letters: list });
+  return rec;
+}
+
+async loadAllLetters() {
+  return (this.state.letters || []).slice().sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+}
+
+async loadUnreadLetters() {
+  return (this.state.letters || []).filter(l => !l.is_read);
+}
+
+async loadLetterById(id) {
+  return (this.state.letters || []).find(l => l.id === id) || null;
+}
+
+async markLetterAsRead(id) {
+  const prev = (this.state.letters || []).find(l => l.id === id);
+  if (!prev || prev.is_read) return prev || null;
+  const next = Object.assign({}, prev, { is_read: true });
+  await this._letterPut(next);
+  this.setState({ letters: (this.state.letters || []).map(l => l.id === id ? next : l) });
+  return next;
+}
+
+async markAllLettersAsRead() {
+  const list = (this.state.letters || []).slice();
+  let changed = false;
+  for (let i = 0; i < list.length; i++) {
+    if (!list[i].is_read) {
+      list[i] = Object.assign({}, list[i], { is_read: true });
+      try { await this._letterPut(list[i]); } catch (e) {}
+      changed = true;
+    }
+  }
+  if (changed) this.setState({ letters: list });
+  return true;
+}
+
+async deleteLetter(id) {
+  await this._letterDelete(id);
+  const patch = { letters: (this.state.letters || []).filter(l => l.id !== id) };
+  if (this.state.letterSelectedId === id) {
+    patch.letterSelectedId = null;
+    patch.letterView = 'list';
+  }
+  this.setState(patch);
+  return true;
+}
+
+getLetterCount() {
+  return (this.state.letters || []).length;
+}
+
+getUnreadLetterCount() {
+  return (this.state.letters || []).filter(l => !l.is_read).length;
+}
+
+
 
 // ====== Finance IDB (KelFinance v1) ======
 _openKelFinanceDB() {
@@ -6599,6 +6791,15 @@ async _executeMemoryTool(name, rawArgs) {
     try { args = JSON.parse(args); } catch (e) { args = {}; }
   }
   try {
+    if (name === 'send_letter') {
+      const letter = await this.saveLetter({
+        title: args.title || '一封信',
+        content: args.content || '',
+        session_id: this.state.currentChatId || '',
+        is_read: false
+      });
+      return { ok: true, id: letter.id, title: letter.title, summary: (letter.content || '').slice(0, 40) };
+    }
     if (name === 'save_memory') {
       const mem = await this.saveMemoryRecord({
         type: args.type || 'short',
@@ -6642,10 +6843,11 @@ _appendMemoryNotice(chatId, toolName, result) {
     const chat = this.state.chats[chatId];
     if (!chat) return;
     let label = '记忆操作';
-    if (toolName === 'save_memory' && result && result.ok) label = '写了一条记忆';
+    if (toolName === 'send_letter' && result && result.ok) label = '写了一封信，已放入信箱';
+    else if (toolName === 'save_memory' && result && result.ok) label = '写了一条记忆';
     else if (toolName === 'update_memory' && result && result.ok) label = '更新了一条记忆';
     else if (toolName === 'delete_memory' && result && result.ok) label = '移入回收站一条记忆';
-    else if (result && !result.ok) label = '记忆操作失败';
+    else if (result && !result.ok) label = (toolName === 'send_letter' ? '写信失败' : '记忆操作失败');
     const detail = result && result.summary ? result.summary : (result && result.error ? result.error : (result && result.id ? ('id:' + result.id) : ''));
     const typeLabel = result && result.type ? ((this.state.memTypeDisplayMap && this.state.memTypeDisplayMap[result.type]) || TYPE_DISPLAY_MAP[result.type] || result.type) : '';
     const msgs = [...(chat.messages || [])];
@@ -10657,7 +10859,7 @@ memGoHub: () => self.setState({ memView: 'hub', memSelectedType: null, memSelect
 memGoLibrary: () => self.setState({ memView: 'library', memListLimit: 20 }),
 memGoRecycle: () => self.setState({ memView: 'recycle', memRecyclePageIdx: 0 }),
 memGoFavorites: () => self.setState({ memView: 'favorites', favView: 'list', favFilter: 'ai', favSelectedId: null, favSearch: '', favStyle: 'memory' }),
-memGoInbox: () => self.setState({ memView: 'inbox' }),
+memGoInbox: () => self.setState({ memView: 'inbox', letterView: 'list', letterSelectedId: null }),
 memOpenSettings: () => self.setState({ memView: 'settings' }),
 memCloseSettings: () => self.setState({ memView: s.memView === 'settings' ? 'library' : (s.memView || 'hub') }),
 
@@ -11565,7 +11767,7 @@ favTotalCount: String((s.favorites || []).length),
 favUserCount: String((s.favorites || []).filter(f => f.sender === 'user').length),
 favAiCount: String((s.favorites || []).filter(f => f.sender === 'ai').length),
 memGoFavorites: () => self.setState({ memView: 'favorites', favView: 'list', favFilter: 'ai', favSelectedId: null, favSearch: '', favStyle: 'memory' }),
-memGoInbox: () => self.setState({ memView: 'inbox' }),
+memGoInbox: () => self.setState({ memView: 'inbox', letterView: 'list', letterSelectedId: null }),
 isMemViewFavorites: s.memView === 'favorites',
 isMemViewInbox: s.memView === 'inbox',
 favFilterUser: () => self.setState({ favFilter: 'user', favView: 'list', favSelectedId: null }),
