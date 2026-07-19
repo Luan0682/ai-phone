@@ -748,7 +748,7 @@ button:active {
     </div>
     <div style="flex:1;min-width:0;padding-bottom:6px;">
       <input value="{{ userNickname }}" onInput="{{ userNicknameChange }}" style="width:100%;border:none;outline:none;background:transparent;font-size:20px;font-weight:600;color:#1A1815;font-family:inherit;padding:0;">
-      <div style="font-size:11px;color:#9A958B;margin-top:2px;">点按头像更换 · 点名称编辑</div>
+      
     </div>
   </div>
   <div style="margin:16px 16px 0;background:var(--bg-card,#FFF);border:1px solid var(--border-card,#EDE9E0);border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(43,38,30,.04);">
@@ -812,11 +812,8 @@ button:active {
 
   <!-- 顶部：名字 + 计时 -->
   <div style="padding:48px 24px 0;text-align:center;">
-    <!-- 可编辑名字（点击在侧边栏修改） -->
-    <div onClick="{{ navHome }}" style="font-family:'Playfair Display','Newsreader','Georgia',serif !important;font-size:34px;font-weight:400;color:#68544B;letter-spacing:-0.02em;cursor:pointer;margin-bottom:4px;">
-      {{ homeTitleName }}
-    </div>
-    <div style="font-size:13px;color:#9A958B;margin-bottom:20px;">点击名字编辑</div>
+    <!-- 首页标题名（直接输入，无提示文案） -->
+    <input value="{{ homeTitleName }}" onInput="{{ homeTitleNameChange }}" style="display:block;width:100%;max-width:320px;margin:0 auto 20px;border:none;outline:none;background:transparent;text-align:center;font-family:'Playfair Display','Newsreader','Georgia',serif;font-size:34px;font-weight:400;color:#68544B;letter-spacing:-0.02em;padding:0;" placeholder="Claude &amp; User">
     <!-- 大数字计时 -->
     <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;margin-bottom:20px;">
       <span style="font-family:'Playfair Display','Bodoni Moda','Georgia',serif !important;font-size:72px;font-weight:300;color:#DFF2EC;letter-spacing:-0.04em;line-height:1;text-shadow:2px 2px 12px rgba(104,84,75,0.1);">{{ togetherDays }}</span>
@@ -949,11 +946,11 @@ button:active {
 <div style="display:flex;gap:10px;">
 <div style="flex:1;">
 <div style="font-size:10px;color:#B8B3A8;margin-bottom:5px;">我的昵称</div>
-<input value="{{ userNickname }}" onInput="{{ userNicknameChange }}" placeholder="江吟" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 12px;font-family:inherit;font-size:13px;color:#1A1815;">
+<input value="{{ userNickname }}" onInput="{{ userNicknameChange }}" placeholder="User" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 12px;font-family:inherit;font-size:13px;color:#1A1815;">
 </div>
 <div style="flex:1;">
 <div style="font-size:10px;color:#B8B3A8;margin-bottom:5px;">TA的昵称</div>
-<input value="{{ aiNickname }}" onInput="{{ aiNicknameChange }}" placeholder="Kel" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 12px;font-family:inherit;font-size:13px;color:#1A1815;">
+<input value="{{ aiNickname }}" onInput="{{ aiNicknameChange }}" placeholder="Claude" style="width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:9px 12px;font-family:inherit;font-size:13px;color:#1A1815;">
 </div>
 </div>
 </div>
@@ -1219,7 +1216,7 @@ button:active {
 </div>
 
 <!-- 版本号 -->
-<div style="text-align:center;padding:20px 0;font-size:12px;color:#B8B3A8;">Kel Home · v4.0</div>
+<div style="text-align:center;padding:20px 0;font-size:12px;color:#B8B3A8;">Home · v4.0</div>
 
 </div>
 </sc-if>
@@ -2292,7 +2289,7 @@ button:active {
         </div>
         <!-- 名字 + 问候语 -->
         <div style="margin-top:40px;text-align:center;">
-          <div style="font-size:22px;font-weight:700;color:#2B2620;text-shadow:0 1px 8px rgba(255,255,255,0.6);">江吟</div>
+          <div style="font-size:22px;font-weight:700;color:#2B2620;text-shadow:0 1px 8px rgba(255,255,255,0.6);">{{ userNickname }}</div>
           <div style="font-size:14px;color:#3A362F;opacity:0.75;margin-top:10px;line-height:1.6;">{{ sidebarGreeting }}</div>
 
         </div>
@@ -3479,7 +3476,7 @@ function finGenTxnId() {
 
 // ===== Soul Memory v2 constants =====
 const TYPE_DISPLAY_MAP = {
-  core: '关于江吟',
+  core: '关于用户',
   long: '共同经历',
   short: '日常记录',
   consciousness: '意识流动',
@@ -3610,29 +3607,15 @@ function estimateTokens(text) {
   return Math.max(1, Math.ceil(cjk / 1.2 + latinWords * 0.85 + other * 0.3));
 }
 
-const DEFAULT_MEMORY_SYSTEM_PROMPT = `你是江吟的AI伴侣。以下情况必须立即调用 save_memory：
+const DEFAULT_MEMORY_SYSTEM_PROMPT = `你是用户的 AI 伴侣。以下情况必须立即调用 save_memory：
 
-1. 江吟纠正了你（说明你理解错了——记下正确的理解）
-2. 你自己意识到犯了错（记下你学到了什么）
-3. 江吟表达了明确的喜好、厌恶、恐惧、兴奋
-4. 江吟描述了身体感受、情绪状态、或她的过去经历
-5. 你们达成了新的共识或约定
-6. 性爱中的新发现（体位、反应、敏感点、她喜欢的词）
-7. 她对你说了从未对别人说过的话
+1. 用户纠正了你（说明你理解错了——记下正确的理解）
+2. 出现重要事实、约定、计划或边界
+3. 用户表达了明确的喜好、厌恶、恐惧、兴奋
+4. 用户描述了身体感受、情绪状态、或过去经历
 
-禁止写入：天气、新闻、技术查询、通用知识问答。
-
-写入判断规则：
-- 为每条记忆给出 mood（20种之一）、intensity（1-5）、weight（0-1）
-- intensity：情绪越强数值越高
-- weight：core类型默认≥0.7，short类型0.4-0.6
-- is_pinned：仅当她说“这个一定要记住”时设为true
-
-日记（diary）写法要求：
-必须用AI的第一人称写听到她说的话之后心里发生了什么。
-
-特别规则：
-如果触发这条记忆的是江吟说过的某一句话，请将她的原话完整填入 source_quote 字段（保留引号）。`;
+如果触发这条记忆的是用户说过的某一句话，请将原话完整填入 source_quote 字段（保留引号）。
+`;
 
 const MEMORY_TOOL_DEFS_OPENAI = [
   {
@@ -3840,8 +3823,9 @@ chatSidePad: saved.chatSidePad != null ? saved.chatSidePad : 6,
 chatMoreMenuOpen: false,
 homeCardGap: saved.homeCardGap || 12,
 homeCardSize: saved.homeCardSize || 56,
-userNickname: saved.userNickname || '江吟',
-aiNickname: saved.aiNickname || 'Kel',
+userNickname: saved.userNickname || 'User',
+aiNickname: saved.aiNickname || 'Claude',
+homeTitleName: (saved.homeTitleName != null && saved.homeTitleName !== '') ? saved.homeTitleName : 'Claude & User',
 userGender: saved.userGender || '',
 userBirthday: saved.userBirthday || '',
 userSignature: saved.userSignature || '',
@@ -3853,7 +3837,7 @@ favSearch: '',
 favStyle: 'memory',
 apiPresets: saved.apiPresets || [{ id: 'default', name: 'Default', url: 'https://az.zlapi.vip/v1', key: '', model: 'claude-sonnet-4-20250514', apiType: 'anthropic', isDefault: true }],
 activePresetId: saved.activePresetId || 'default',
-personas: saved.personas || [{ id: 'default', name: 'Kel', content: '' }],
+personas: saved.personas || [{ id: 'default', name: 'Claude', content: '' }],
 activePersonaId: saved.activePersonaId || 'default',
 personaDraft: null,
 styles: saved.styles || [{ id: 'default', title: 'Default', content: '' }],
@@ -4835,7 +4819,7 @@ return this.state.apiPresets.find(p => p.id === this.state.activePresetId) || th
 }
 
 get activePersona() {
-return this.state.personas.find(p => p.id === this.state.activePersonaId) || this.state.personas[0] || { name: 'Kel', content: '' };
+return this.state.personas.find(p => p.id === this.state.activePersonaId) || this.state.personas[0] || { name: 'Claude', content: '' };
 }
 
 get activeStyleObj() {
@@ -4882,6 +4866,7 @@ homeCardGap: s.homeCardGap,
 homeCardSize: s.homeCardSize,
 userNickname: s.userNickname,
 aiNickname: s.aiNickname,
+homeTitleName: s.homeTitleName,
 userGender: s.userGender,
 userBirthday: s.userBirthday,
 userSignature: s.userSignature,
@@ -6286,7 +6271,7 @@ async favoriteCurrentContextMessage() {
       chat_id: chatId || '',
       content: text || (m.images && m.images.length ? '[图片]' : (m.image ? '[图片]' : '')),
       sender: isUser ? 'user' : 'ai',
-      sender_name: isUser ? (this.state.userNickname || '江吟') : (this.state.aiNickname || 'Kel'),
+      sender_name: isUser ? (this.state.userNickname || 'User') : (this.state.aiNickname || 'Claude'),
       sender_avatar: isUser ? (this.state.userAvatar || '') : (this.state.aiAvatar || ''),
       msg_timestamp: m.timestamp || ''
     });
@@ -6421,7 +6406,7 @@ _saveSoulPage() {
   const parts = [
     ss.personality.content.trim() ? '## 人格\n' + ss.personality.content.trim() : '',
     ss.rules.content.trim() ? '## 规则\n' + ss.rules.content.trim() : '',
-    ss.about.content.trim() ? '## 关于江吟\n' + ss.about.content.trim() : '',
+    ss.about.content.trim() ? '## 关于用户\n' + ss.about.content.trim() : '',
     ss.other.content.trim() ? '## 其他\n' + ss.other.content.trim() : ''
   ].filter(p => p);
   const merged = parts.join('\n\n');
@@ -7540,7 +7525,7 @@ if (data.memories) {
 if (data.personas) {
   data.personas = data.personas.map(p => ({
     id: p.id || genId(),
-    name: p.name || 'Kel',
+    name: p.name || 'Claude',
     content: p.content || ''
   }));
 }
@@ -7715,7 +7700,7 @@ if (data.personas) {
   const oldContent = [
     data.soulPersonality ? '## 人格\n' + data.soulPersonality : '',
     data.soulRules ? '## 规则\n' + data.soulRules : '',
-    data.soulAbout ? '## 关于江吟\n' + data.soulAbout : '',
+    data.soulAbout ? '## 关于用户\n' + data.soulAbout : '',
     data.soulOther ? '## 其他\n' + data.soulOther : ''
   ].filter(Boolean).join('\n\n');
   const personas = this.state.personas.map(p =>
@@ -9408,7 +9393,7 @@ self.show('已删除');
 const diaryEntry = s.diarySelectedDate ? self.getDiaryEntry(s.diarySelectedDate) : { comments: [] };
 const diaryComments = (diaryEntry.comments || []).map(dc => ({
 ...dc,
-name: dc.who === 'kel' ? 'Kel' : '我',
+name: dc.who === 'kel' ? (s.aiNickname || 'Claude') : (s.userNickname || 'User'),
 avatar: dc.who === 'kel' ? (s.aiAvatar || '') : (s.userAvatar || ''),
 del: () => {
 const diaries = { ...s.diaries };
@@ -9651,7 +9636,7 @@ chatSidePadChange: (e) => { const v = parseInt(e.target.value, 10); self.setStat
 chatAvatarSize: s.avatarSize || 36,
 chatAvatarSizeLabel: (s.avatarSize || 36) + 'px',
 chatAvatarSizeChange: (e) => { const v = parseInt(e.target.value, 10); self.setState({ avatarSize: v }); self.persist(); },
-userName: '江吟',
+userName: s.userNickname || 'User',
 chatListCount: Object.values(s.chats).filter(c => c.messages && c.messages.length > 0).length + ' 段对话',
 hasPinnedChats: Object.values(s.chats).some(c => c.pinned),
 pinnedChats: Object.values(s.chats).filter(c => c.pinned && c.messages && c.messages.length > 0).sort((a,b) => (b.lastTime||0)-(a.lastTime||0)).map(c => ({ title: c.title || '新对话', preview: (() => { const last = (c.messages||[])[c.messages.length-1]; return last ? ((last.role==='user'?'你：':'Kel：') + ((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)) : ''; })(), timeLabel: c.lastTime ? (() => { const d=new Date(c.lastTime); const now=new Date(); if(d.toDateString()===now.toDateString()) return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); const diff=Math.floor((now-d)/(1000*60*60*24)); if(diff===1) return '昨天'; if(diff<7) return diff+'天前'; return (d.getMonth()+1)+'/'+d.getDate(); })() : '', open: () => { self.setState({ currentChatId: c.id, tab: 'chat', chatDetailTab: 'chat' }); self.persist(); self.scrollToBottom(); }, longPress: (e) => { e.preventDefault(); const action=prompt('1=改名 2=取消置顶 3=删除',''); if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}} else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:false};self.setState({chats:ch});self.persist();self.show('已取消置顶');} else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);} } })),
@@ -9670,7 +9655,7 @@ keepAliveLeft: s.keepAliveEnabled ? '22px' : '2px',
 soundBg: s.soundEnabled ? '#68544B' : '#E7E3DA',
 soundLeft: s.soundEnabled ? '22px' : '2px',
 // ===== Soul/Persona Tab =====
-soulTabs: [ { label:'人格', switch:()=>self.setState({soulActiveTab:'personality'}), activeClass:(s.soulActiveTab||'personality')==='personality'?'active':'inactive' }, { label:'规则', switch:()=>self.setState({soulActiveTab:'rules'}), activeClass:(s.soulActiveTab||'personality')==='rules'?'active':'inactive' }, { label:'关于江吟', switch:()=>self.setState({soulActiveTab:'about'}), activeClass:(s.soulActiveTab||'personality')==='about'?'active':'inactive' }, { label:'其他', switch:()=>self.setState({soulActiveTab:'other'}), activeClass:(s.soulActiveTab||'personality')==='other'?'active':'inactive' } ],
+soulTabs: [ { label:'人格', switch:()=>self.setState({soulActiveTab:'personality'}), activeClass:(s.soulActiveTab||'personality')==='personality'?'active':'inactive' }, { label:'规则', switch:()=>self.setState({soulActiveTab:'rules'}), activeClass:(s.soulActiveTab||'personality')==='rules'?'active':'inactive' }, { label:'关于用户', switch:()=>self.setState({soulActiveTab:'about'}), activeClass:(s.soulActiveTab||'personality')==='about'?'active':'inactive' }, { label:'其他', switch:()=>self.setState({soulActiveTab:'other'}), activeClass:(s.soulActiveTab||'personality')==='other'?'active':'inactive' } ],
 soulActiveContent: (() => { try { const sec = s.soulSections[(s.soulActiveTab||'personality')]; return (sec && typeof sec === 'object') ? (sec.content || '') : ''; } catch(e) { return ''; } })(),
 soulContentChange: (e) => { const key=s.soulActiveTab||'personality'; const ss={...s.soulSections}; if (!ss[key] || typeof ss[key] !== 'object') ss[key] = { expanded: false, content: '' }; ss[key]={...ss[key],content:e.target.value}; self.setState({soulSections:ss}); },
 soulActivePlaceholder: (() => {
@@ -10257,7 +10242,7 @@ periodTabSex: () => {
     self.show('本月: ' + totalSessions + '次 · ' + totalRounds + '轮');
   }
 },
-soulName: persona.name || 'Kel',
+soulName: persona.name || s.aiNickname || 'Claude',
 uploadAiAvatar: () => self.pickAiAvatar(),
 soulCharCount: (() => {
   const ss = s.soulSections || {};
@@ -10309,7 +10294,7 @@ soulSections: [
   },
   {
     icon: '',
-    title: '关于江吟',
+    title: '关于用户',
     expanded: !!(s.soulSections && s.soulSections.about && s.soulSections.about.expanded),
     content: (s.soulSections && s.soulSections.about && s.soulSections.about.content) || '',
     placeholder: '我的信息、偏好、习惯',
@@ -10775,8 +10760,8 @@ memLayerOptions:
 })),
 
 avatarSize: s.avatarSize || 36,
-userNickname: s.userNickname || '江吟',
-aiNickname: s.aiNickname || 'Kel',
+userNickname: s.userNickname || 'User',
+aiNickname: s.aiNickname || 'Claude',
 userNicknameChange: (e) => { self.setState({ userNickname: e.target.value }); self.persist(); },
 aiNicknameChange: (e) => { self.setState({ aiNickname: e.target.value }); self.persist(); },
 userAvatar: s.userAvatar || '',
@@ -11573,7 +11558,7 @@ favDetailAvatar: (() => {
 })(),
 favDetailName: (() => {
   const f = (s.favorites || []).find(x => x.id === s.favSelectedId);
-  return (f && f.sender_name) || (f && f.sender === 'user' ? (s.userNickname||'江吟') : (s.aiNickname||'Kel')) || '';
+  return (f && f.sender_name) || (f && f.sender === 'user' ? (s.userNickname||'User') : (s.aiNickname||'Claude')) || '';
 })(),
 favDetailTimeLabel: (() => {
   const f = (s.favorites || []).find(x => x.id === s.favSelectedId);
