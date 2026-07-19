@@ -167,6 +167,9 @@ pm2 list
 # 重启后端
 pm2 restart kel-server
 
+# 重启网易云 API
+pm2 restart netease-api
+
 # 查看后端日志
 pm2 logs kel-server --lines 50
 
@@ -175,6 +178,73 @@ pm2 logs kel-server --lines 50
 
 # 手动续签证书（acme.sh 会自动续，这是手动触发）
 ~/.acme.sh/acme.sh --renew -d kel-home.xyz --ecc
+```
+
+---
+
+## 网易云音乐 API（NeteaseCloudMusicApi）
+
+### 什么是这个
+
+给前端音乐播放器用的搜索/播放/歌词接口。原 GitHub 仓库因版权停维，但 npm 包 `NeteaseCloudMusicApi@4.32.0` 仍可安装。
+
+### 服务器上的位置
+
+```
+/home/netease-api/
+├── index.js          ← 启动入口（3行）
+├── package.json
+└── node_modules/     ← npm install 后生成
+```
+
+### 安装方法（换新服务器时）
+
+```bash
+mkdir -p /home/netease-api && cd /home/netease-api
+npm init -y
+npm install NeteaseCloudMusicApi
+
+# 写入口文件
+cat > index.js << 'JS'
+const { serveNcmApi } = require('NeteaseCloudMusicApi');
+serveNcmApi({
+  port: 3001,
+  host: '127.0.0.1'
+});
+JS
+
+# pm2 启动 + 保存
+pm2 start index.js --name netease-api
+pm2 save
+```
+
+### Nginx 反代
+
+在 `kel-home.xyz.conf` 的 HTTPS server 块中加：
+
+```nginx
+    # 网易云音乐 API
+    location /netease/ {
+        proxy_pass http://127.0.0.1:3001/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 30s;
+    }
+```
+
+然后 `nginx -s reload`。
+
+### 前端怎么用
+
+音乐设置里 API 地址填：`https://kel-home.xyz/netease`
+
+### 验证
+
+```bash
+curl -s https://kel-home.xyz/netease/search?keywords=test | head -c 100
+# 应返回 JSON
 ```
 
 ---

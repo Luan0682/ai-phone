@@ -233,21 +233,73 @@
 
 ---
 
-## 2026-07-19 收藏 / 聊天 Tab / 用户页 / 记忆库入口
+## 2026-07-19 收藏 / 聊天 Tab / 用户页 / 记忆库入口 / Finance Phase2 / 信箱 / 身体地图 / 残留清理 / 引用修复 / 网易云API
 
-### 改了
-- `Kel-Home-main/index.html`
-  - 长按菜单：去掉贴表情栏，新增「收藏」
-  - `KelFavorites` IndexedDB：save/load/delete；用户与 AI 分列
-  - 记忆库 Hub：记忆库（通栏）+ 收藏夹 + 信箱（预留）+ 回收站（通栏）
-  - Favorites 列表/详情；用户入口用聊天配色，记忆库入口用记忆库配色
-  - 聊天详情：去掉顶栏 Soul 按钮；底栏三 Tab 仅图标（聊天/Soul/用户）
-  - 用户 Tab：封面/头像/昵称/签名/性别/生日/我的收藏
-  - 旧头像弹窗仍保留在侧栏入口，未删逻辑
-  - `node --check` 通过；sc-if 155/155
-  - **未部署**（用户要求本地先看，一次做完再上传）
+### 改动汇总（一日）
 
-### 说明
-- 聊天设置仍从右上角更多菜单进入（不在底栏）
-- 信箱仅占位文案
+**记账 Finance Phase 1 + 2**
+- 首页入口、KelFinance IDB、仪表盘/历史/钱包、底栏三 Tab、自定义分类、AI 联动（发消息附加未同步流水）
+
+**收藏系统**
+- KelFavorites IDB；长按消息→收藏；记忆库/用户页双入口（分风格）；AI `save_favorite` 工具可自主收藏
+
+**聊天详情页 → Chats 壳层重构**
+- 底栏三 Tab（列表/Soulmate/User）挂在列表壳层而非对话详情
+- 对话详情纯净：无底栏
+- 聊天设置顶栏独立（Settings+返回对话，不误回列表）
+
+**Soulmate 页**
+- 封面+头像卡片；折叠栏点击→全屏编辑器
+- 英文标题 Soulmate
+
+**User 信息页**
+- 封面/头像/昵称/签名/性别/生日/我的收藏
+- 标题位置对齐 Chats
+
+**信箱 Letters**
+- KelMemories v3 `letters` 表；报纸森系 UI；邮箱口预览；全部已读
+- AI `send_letter` 工具；聊天提示
+
+**身体地图（18+ 成人）**
+- Memory 入口；占位像素人（白吊带可脱）；部位计数；插入/活塞/射精/横切透视
+- 置顶可拖分屏小窗；AI `body_act` 工具
+
+**首页 / 样式**
+- 复古森系字体：Cormorant Garamond 细斜标题 + Libre Baskerville 粗棕 Days
+- Google Fonts CDN 引入
+- 默认名 Claude / User；启动软纠正 Kel→Claude
+
+**清单小票**
+- 聊天页右上角入口→底部小票抽屉；纯前端 checklist + 可拖高度
+
+**音乐**
+- 设置改为居中弹窗（不再挤坏页面）
+- 网易云 API 默认地址 `https://kel-home.xyz/netease`
+
+**引用**
+- 修复双引用 bug：只保留小预览条；API 仍传引用上下文给 AI
+
+**Toast 提示**
+- 全局 toast UI 补上；保存/改名/换头像均有反馈
+
+**云备份**
+- 超约 28MB 自动瘦身（去大图）；不再每次 persist 弹「空间不足」
+
+**错误日志**
+- 从设置移到聊天页更多菜单
+
+**残留清理**
+- 删 reactionEmojis / isSoulPage / isMore / isWorldbookPage / 旧 navHome
+- 日记/引用/预览里写死的 Kel→aiNickname
+- periodTabMoney→跳 Finance
+
+**服务器**
+- 网易云音乐 API 部署（npm NeteaseCloudMusicApi）→ pm2 `netease-api` 端口 3001
+- nginx `/netease/` 反代已配
+- server-backup/README.md 已更新安装步骤
+
+### 状态
+- 本地 commit：09a784c（含 amend 链）
+- 线上 kel-home.xyz 已部署最新
+- 下一步可做：网易云扫码登录 + 歌词滚动；身体地图 PNG 美术替换；音乐 Phase 2
 
