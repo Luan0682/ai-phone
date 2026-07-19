@@ -598,9 +598,9 @@ button:active {
 <sc-if value="{{ isChatList }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;width:100%;background:var(--bg-main, #F5F3EE);">
 
-<!-- 会话列表 -->
+<!-- 会话列表（flex 子项，勿 absolute 盖住底栏） -->
 <sc-if value="{{ isChatShellList }}" hint-placeholder-val="{{ true }}">
-<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 90px;width:100%;">
+<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 20px 16px;width:100%;">
 
 <!-- 顶部：Chats + 右上角新建 -->
 <div style="padding:20px 0 16px;display:flex;align-items:center;justify-content:space-between;">
@@ -785,17 +785,17 @@ button:active {
 </sc-if>
 
 
-<!-- Chat shell bottom tabs: 列表 / Soul / 用户 -->
+<!-- Chat shell bottom tabs: 列表 / Soul / 用户（flex 底栏，可点） -->
 <sc-if value="{{ isChatShellTabsVisible }}" hint-placeholder-val="{{ true }}">
-<div style="flex:none;padding:8px 16px calc(env(safe-area-inset-bottom, 0px) + 10px);background:var(--bg-main, #F5F3EE);">
+<div style="flex:none;position:relative;z-index:20;padding:8px 16px calc(env(safe-area-inset-bottom, 0px) + 10px);background:var(--bg-main, #F5F3EE);">
   <div style="display:flex;gap:8px;background:var(--bg-card, #FFF);border:1px solid #EDE9E0;border-radius:20px;padding:8px;box-shadow:0 2px 10px rgba(43,38,30,.06);">
-    <button onClick="{{ navChatShellList }}" title="Chat" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabChatBg }};color:{{ chatTabChatFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <button type="button" onClick="{{ navChatShellList }}" title="Chat" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabChatBg }};color:{{ chatTabChatFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
-    <button onClick="{{ navChatShellSoul }}" title="Soul" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabSoulBg }};color:{{ chatTabSoulFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <button type="button" onClick="{{ navChatShellSoul }}" title="Soul" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabSoulBg }};color:{{ chatTabSoulFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12h3l2-5 4 10 2-5h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
-    <button onClick="{{ navChatShellUser }}" title="User" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabUserBg }};color:{{ chatTabUserFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <button type="button" onClick="{{ navChatShellUser }}" title="User" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabUserBg }};color:{{ chatTabUserFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
     </button>
   </div>
@@ -9617,9 +9617,9 @@ chatTabUserBg: s.chatShellTab === 'user' ? '#68544B' : '#F5F3EE',
 chatTabChatFg: (s.chatShellTab || 'list') === 'list' ? '#FFFFFF' : '#9A958B',
 chatTabSoulFg: s.chatShellTab === 'soul' ? '#FFFFFF' : '#9A958B',
 chatTabUserFg: s.chatShellTab === 'user' ? '#FFFFFF' : '#9A958B',
-navChatShellList: () => self.setState({ tab: 'chatlist', chatShellTab: 'list' }),
-navChatShellSoul: () => self.setState({ tab: 'chatlist', chatShellTab: 'soul' }),
-navChatShellUser: () => self.setState({ tab: 'chatlist', chatShellTab: 'user' }),
+navChatShellList: () => { self.setState({ tab: 'chatlist', chatShellTab: 'list' }); },
+navChatShellSoul: () => { self.setState({ tab: 'chatlist', chatShellTab: 'soul' }); },
+navChatShellUser: () => { self.setState({ tab: 'chatlist', chatShellTab: 'user' }); },
 // 兼容旧名：详情页返回列表 / 设置
 navChatDetailChat: () => self.setState({ tab: 'chatlist', chatShellTab: 'list', chatDetailTab: 'chat' }),
 navChatDetailSoul: () => self.setState({ tab: 'chatlist', chatShellTab: 'soul' }),
