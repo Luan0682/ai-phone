@@ -238,7 +238,7 @@ button:active {
 <!-- header -->
 <div style="flex:none;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:9px;">
 <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
-<div onClick="{{ navChatList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;white-space:nowrap;">Chat</div>
+<div onClick="{{ navChatShellList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;white-space:nowrap;">Chat</div>
 </div>
 <div style="display:flex;align-items:center;gap:8px;flex:none;position:relative;">
 <button onClick="{{ toggleChatMoreMenu }}" title="More" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;z-index:61;">
@@ -505,42 +505,11 @@ button:active {
 </sc-if>
 </sc-if>
 
-<!-- Chat detail Soul tab -->
-<sc-if value="{{ isChatDetailSoul }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 24px;">
-<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
-<div onClick="{{ uploadAiAvatar }}" style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#DFF2EC;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #E7E3DA;">
-<sc-if value="{{ hasAiAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ aiAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
-<sc-if value="{{ !hasAiAvatar }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#9A958B" stroke-width="1.5"/><path d="M5 19.5c0-3.5 3.5-6.5 7-6.5s7 3 7 6.5" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></sc-if>
-</div>
-<div style="flex:1;">
-<div style="font-size:18px;font-weight:600;color:#68544B;">{{ soulName }}</div>
-<div style="font-size:11px;color:#9A958B;margin-top:2px;">{{ soulCharCount }} 字</div>
-</div>
-<button onClick="{{ saveSoulPage }}" style="border:none;background:#68544B;color:#FFF;border-radius:18px;padding:8px 16px;font-size:13px;font-family:inherit;cursor:pointer;">保存</button>
-</div>
-<sc-for list="{{ soulSections }}" as="sec" hint-placeholder-count="4">
-<div style="background:var(--bg-card, #FFF);border-radius:16px;border:1px solid var(--border-card, #EDE9E0);margin-bottom:8px;overflow:hidden;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div onClick="{{ sec.toggle }}" style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;">
-<span style="flex:1;font-size:14px;font-weight:500;color:var(--text-primary, #1A1815);">{{ sec.title }}</span>
-<span style="font-size:11px;color:#B8B3A8;">{{ sec.charCount }}字</span>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="transform:rotate({{ sec.arrowRotate }}deg);transition:transform .2s;"><path d="M6 9l6 6 6-6" stroke="#B8B3A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<sc-if value="{{ sec.expanded }}" hint-placeholder-val="{{ false }}">
-<div style="padding:0 16px 14px;border-top:1px solid #F5F3EE;">
-<textarea value="{{ sec.content }}" onInput="{{ sec.onChange }}" placeholder="{{ sec.placeholder }}" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:10px 12px;font-size:13px;font-family:inherit;line-height:1.6;color:#1A1815;resize:vertical;min-height:100px;margin-top:12px;"></textarea>
-</div>
-</sc-if>
-</div>
-</sc-for>
-</div>
-</sc-if>
-
 <!-- Chat detail Settings -->
 <sc-if value="{{ isChatDetailSettings }}" hint-placeholder-val="{{ false }}">
 <div style="flex:1;min-height:0;display:flex;flex-direction:column;background:var(--bg-main, #F5F3EE);">
 <div style="flex:none;padding:8px 16px 12px;display:flex;align-items:center;gap:12px;">
-<button onClick="{{ navChatDetailChat }}" title="Back" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<button onClick="{{ backFromChatSettings }}" title="Back" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
 <div style="font-size:16px;font-weight:600;color:var(--text-primary, #1A1815);">聊天设置</div>
@@ -618,86 +587,20 @@ button:active {
 </sc-if>
 
 
-<!-- Chat detail User tab -->
-<sc-if value="{{ isChatDetailUser }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 0 24px;background:var(--bg-main, #F5F3EE);">
-  <div style="padding:10px 16px 0;">
-    <div onClick="{{ navChatDetailChat }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:var(--text-primary,#1A1815);cursor:pointer;">User</div>
-  </div>
-  <div onClick="{{ pickProfileBg }}" style="margin:12px 16px 0;height:180px;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;background:linear-gradient(135deg,#DFF2EC,#F5F3EE 45%,#E8E0D8);box-shadow:0 2px 10px rgba(43,38,30,.06);">
-    <sc-if value="{{ hasProfileBg }}" hint-placeholder-val="{{ false }}">
-      <img src="{{ profileBgUrl }}" style="width:100%;height:100%;object-fit:cover;" alt="">
-    </sc-if>
-    <div style="position:absolute;left:16px;bottom:14px;font-size:11px;color:rgba(26,24,21,.55);background:rgba(255,255,255,.55);backdrop-filter:blur(8px);padding:4px 8px;border-radius:999px;">点按更换封面</div>
-  </div>
-  <div style="padding:0 20px;margin-top:-28px;position:relative;z-index:2;display:flex;align-items:flex-end;gap:12px;">
-    <div onClick="{{ pickUserAvatar }}" style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid #F5F3EE;background:#ECEAE4;box-shadow:0 4px 14px rgba(43,38,30,.12);cursor:pointer;flex:none;">
-      <sc-if value="{{ hasUserAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ userAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
-      <sc-if value="{{ !hasUserAvatar }}" hint-placeholder-val="{{ true }}"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.5" stroke="#9A958B" stroke-width="1.5"/><path d="M5.5 19.5c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></div></sc-if>
-    </div>
-    <div style="flex:1;min-width:0;padding-bottom:6px;">
-      <input value="{{ userNickname }}" onInput="{{ userNicknameChange }}" style="width:100%;border:none;outline:none;background:transparent;font-size:20px;font-weight:600;color:#1A1815;font-family:inherit;padding:0;">
-      <div style="font-size:11px;color:#9A958B;margin-top:2px;">点按头像更换 · 点名称编辑</div>
-    </div>
-  </div>
-  <div style="margin:16px 16px 0;background:var(--bg-card,#FFF);border:1px solid var(--border-card,#EDE9E0);border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;">
-      <div style="font-size:11px;color:#9A958B;margin-bottom:6px;">签名</div>
-      <input value="{{ userSignature }}" onInput="{{ userSignatureChange }}" placeholder="写一句给自己" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;color:#1A1815;font-family:inherit;">
-    </div>
-    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;display:flex;align-items:center;gap:10px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#68544B" stroke-width="1.5"/><path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <div style="flex:1;">
-        <div style="font-size:11px;color:#9A958B;">性别</div>
-        <div style="display:flex;gap:8px;margin-top:6px;">
-          <button onClick="{{ setGenderFemale }}" style="border:none;background:{{ genderFemaleBg }};color:{{ genderFemaleFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">女</button>
-          <button onClick="{{ setGenderMale }}" style="border:none;background:{{ genderMaleBg }};color:{{ genderMaleFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">男</button>
-          <button onClick="{{ setGenderOther }}" style="border:none;background:{{ genderOtherBg }};color:{{ genderOtherFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">保密</button>
-        </div>
-      </div>
-    </div>
-    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;display:flex;align-items:center;gap:10px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <div style="flex:1;">
-        <div style="font-size:11px;color:#9A958B;margin-bottom:4px;">生日</div>
-        <input type="date" value="{{ userBirthday }}" onInput="{{ userBirthdayChange }}" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;color:#1A1815;font-family:inherit;">
-      </div>
-    </div>
-    <div onClick="{{ openUserFavorites }}" style="padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.9 7.2 18l.9-5.4L4.2 8.7l5.4-.8L12 3z" stroke="#68544B" stroke-width="1.5" stroke-linejoin="round"/></svg>
-      <div style="flex:1;font-size:14px;color:#1A1815;">我的收藏</div>
-      <span style="font-size:12px;color:#9A958B;">{{ favUserCount }}</span>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="1.8" stroke-linecap="round"/></svg>
-    </div>
-  </div>
-</div>
-</sc-if>
 
-<!-- Chat detail bottom tabs (page footer of 聊天详情, not floating overlay) -->
-<sc-if value="{{ isChatDetailTabsVisible }}" hint-placeholder-val="{{ true }}">
-<div style="flex:none;padding:8px 16px calc(env(safe-area-inset-bottom, 0px) + 10px);background:var(--bg-main, #F5F3EE);">
-  <div style="display:flex;gap:8px;background:var(--bg-card, #FFF);border:1px solid #EDE9E0;border-radius:20px;padding:8px;box-shadow:0 2px 10px rgba(43,38,30,.06);">
-    <button onClick="{{ navChatDetailChat }}" title="Chat" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabChatBg }};color:{{ chatTabChatFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button onClick="{{ navChatDetailSoul }}" title="Soul" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabSoulBg }};color:{{ chatTabSoulFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12h3l2-5 4 10 2-5h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button onClick="{{ navChatDetailUser }}" title="User" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabUserBg }};color:{{ chatTabUserFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-    </button>
-  </div>
-</div>
-</sc-if>
 
 
 </div>
 </sc-if>
 
 
-<!-- ========== CHAT LIST PAGE ========== -->
-<sc-if value="{{ isChatList }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 24px;width:100%;">
+<!-- ========== CHAT SHELL (列表 / Soul / 用户) ========== -->
+<sc-if value="{ isChatList }" hint-placeholder-val="{ false }">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;width:100%;background:var(--bg-main, #F5F3EE);">
+
+<!-- 会话列表 -->
+<sc-if value="{ isChatShellList }" hint-placeholder-val="{ true }">
+<div class="sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 20px 90px;width:100%;">
 
 <!-- 顶部：Chats + 右上角新建 -->
 <div style="padding:20px 0 16px;display:flex;align-items:center;justify-content:space-between;">
@@ -793,6 +696,115 @@ button:active {
 
 </div>
 </sc-if>
+
+<!-- Chat detail Soul tab -->
+<sc-if value="{{ isChatShellSoul }}" hint-placeholder-val="{{ false }}">
+<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 24px;">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
+<div onClick="{{ uploadAiAvatar }}" style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#DFF2EC;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #E7E3DA;">
+<sc-if value="{{ hasAiAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ aiAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
+<sc-if value="{{ !hasAiAvatar }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" stroke="#9A958B" stroke-width="1.5"/><path d="M5 19.5c0-3.5 3.5-6.5 7-6.5s7 3 7 6.5" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></sc-if>
+</div>
+<div style="flex:1;">
+<div style="font-size:18px;font-weight:600;color:#68544B;">{{ soulName }}</div>
+<div style="font-size:11px;color:#9A958B;margin-top:2px;">{{ soulCharCount }} 字</div>
+</div>
+<button onClick="{{ saveSoulPage }}" style="border:none;background:#68544B;color:#FFF;border-radius:18px;padding:8px 16px;font-size:13px;font-family:inherit;cursor:pointer;">保存</button>
+</div>
+<sc-for list="{{ soulSections }}" as="sec" hint-placeholder-count="4">
+<div style="background:var(--bg-card, #FFF);border-radius:16px;border:1px solid var(--border-card, #EDE9E0);margin-bottom:8px;overflow:hidden;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+<div onClick="{{ sec.toggle }}" style="display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;">
+<span style="flex:1;font-size:14px;font-weight:500;color:var(--text-primary, #1A1815);">{{ sec.title }}</span>
+<span style="font-size:11px;color:#B8B3A8;">{{ sec.charCount }}字</span>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="transform:rotate({{ sec.arrowRotate }}deg);transition:transform .2s;"><path d="M6 9l6 6 6-6" stroke="#B8B3A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<sc-if value="{{ sec.expanded }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 16px 14px;border-top:1px solid #F5F3EE;">
+<textarea value="{{ sec.content }}" onInput="{{ sec.onChange }}" placeholder="{{ sec.placeholder }}" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:10px 12px;font-size:13px;font-family:inherit;line-height:1.6;color:#1A1815;resize:vertical;min-height:100px;margin-top:12px;"></textarea>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+
+<!-- Chat detail User tab -->
+<sc-if value="{{ isChatShellUser }}" hint-placeholder-val="{{ false }}">
+<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 0 24px;background:var(--bg-main, #F5F3EE);">
+  <div style="padding:10px 16px 0;">
+    <div onClick="{{ navChatShellList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:var(--text-primary,#1A1815);cursor:pointer;">User</div>
+  </div>
+  <div onClick="{{ pickProfileBg }}" style="margin:12px 16px 0;height:180px;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;background:linear-gradient(135deg,#DFF2EC,#F5F3EE 45%,#E8E0D8);box-shadow:0 2px 10px rgba(43,38,30,.06);">
+    <sc-if value="{{ hasProfileBg }}" hint-placeholder-val="{{ false }}">
+      <img src="{{ profileBgUrl }}" style="width:100%;height:100%;object-fit:cover;" alt="">
+    </sc-if>
+    <div style="position:absolute;left:16px;bottom:14px;font-size:11px;color:rgba(26,24,21,.55);background:rgba(255,255,255,.55);backdrop-filter:blur(8px);padding:4px 8px;border-radius:999px;">点按更换封面</div>
+  </div>
+  <div style="padding:0 20px;margin-top:-28px;position:relative;z-index:2;display:flex;align-items:flex-end;gap:12px;">
+    <div onClick="{{ pickUserAvatar }}" style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid #F5F3EE;background:#ECEAE4;box-shadow:0 4px 14px rgba(43,38,30,.12);cursor:pointer;flex:none;">
+      <sc-if value="{{ hasUserAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ userAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
+      <sc-if value="{{ !hasUserAvatar }}" hint-placeholder-val="{{ true }}"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.5" stroke="#9A958B" stroke-width="1.5"/><path d="M5.5 19.5c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></div></sc-if>
+    </div>
+    <div style="flex:1;min-width:0;padding-bottom:6px;">
+      <input value="{{ userNickname }}" onInput="{{ userNicknameChange }}" style="width:100%;border:none;outline:none;background:transparent;font-size:20px;font-weight:600;color:#1A1815;font-family:inherit;padding:0;">
+      <div style="font-size:11px;color:#9A958B;margin-top:2px;">点按头像更换 · 点名称编辑</div>
+    </div>
+  </div>
+  <div style="margin:16px 16px 0;background:var(--bg-card,#FFF);border:1px solid var(--border-card,#EDE9E0);border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;">
+      <div style="font-size:11px;color:#9A958B;margin-bottom:6px;">签名</div>
+      <input value="{{ userSignature }}" onInput="{{ userSignatureChange }}" placeholder="写一句给自己" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;color:#1A1815;font-family:inherit;">
+    </div>
+    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;display:flex;align-items:center;gap:10px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#68544B" stroke-width="1.5"/><path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#9A958B;">性别</div>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button onClick="{{ setGenderFemale }}" style="border:none;background:{{ genderFemaleBg }};color:{{ genderFemaleFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">女</button>
+          <button onClick="{{ setGenderMale }}" style="border:none;background:{{ genderMaleBg }};color:{{ genderMaleFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">男</button>
+          <button onClick="{{ setGenderOther }}" style="border:none;background:{{ genderOtherBg }};color:{{ genderOtherFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">保密</button>
+        </div>
+      </div>
+    </div>
+    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;display:flex;align-items:center;gap:10px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#9A958B;margin-bottom:4px;">生日</div>
+        <input type="date" value="{{ userBirthday }}" onInput="{{ userBirthdayChange }}" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;color:#1A1815;font-family:inherit;">
+      </div>
+    </div>
+    <div onClick="{{ openUserFavorites }}" style="padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.9 7.2 18l.9-5.4L4.2 8.7l5.4-.8L12 3z" stroke="#68544B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <div style="flex:1;font-size:14px;color:#1A1815;">我的收藏</div>
+      <span style="font-size:12px;color:#9A958B;">{{ favUserCount }}</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+
+<!-- Chat shell bottom tabs: 列表 / Soul / 用户 -->
+<sc-if value="{{ isChatShellTabsVisible }}" hint-placeholder-val="{{ true }}">
+<div style="flex:none;padding:8px 16px calc(env(safe-area-inset-bottom, 0px) + 10px);background:var(--bg-main, #F5F3EE);">
+  <div style="display:flex;gap:8px;background:var(--bg-card, #FFF);border:1px solid #EDE9E0;border-radius:20px;padding:8px;box-shadow:0 2px 10px rgba(43,38,30,.06);">
+    <button onClick="{{ navChatShellList }}" title="Chat" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabChatBg }};color:{{ chatTabChatFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button onClick="{{ navChatShellSoul }}" title="Soul" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabSoulBg }};color:{{ chatTabSoulFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12h3l2-5 4 10 2-5h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button onClick="{{ navChatShellUser }}" title="User" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabUserBg }};color:{{ chatTabUserFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</div>
+</sc-if>
+
+</div>
+</sc-if>
+
 
 <!-- ========== HOME（新设计） ========== -->
 <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
@@ -3779,6 +3791,7 @@ memSearchQuery: '',
 soulActiveTab: 'personality',
 chatListSubTab: 'chats',
 chatDetailTab: 'chat',
+chatShellTab: 'list', // list | soul | user  (会话列表层三 Tab)
 petSectionOpen: false,
 soulSections: {
   personality: { expanded: false, content: saved.soulPersonality || '' },
@@ -9510,8 +9523,8 @@ sidebarShadow: s.sidebarOpen ? '4px 0 24px rgba(0,0,0,.12)' : 'none',
 navHome: () => self.setState({ sidebarOpen: true }),
 closeSidebar: () => self.setState({ sidebarOpen: false }),
 navHomeSidebar: () => { self.setState({ tab: 'home', sidebarOpen: false }); },
-navChatListSidebar: () => { self.setState({ tab: 'chatlist', sidebarOpen: false }); },
-navSoulSidebar: () => { if (self.state.currentChatId) self.setState({ tab: 'chat', chatDetailTab: 'soul', sidebarOpen: false }); else self.setState({ tab: 'chatlist', sidebarOpen: false }); },
+navChatListSidebar: () => { self.setState({ tab: 'chatlist', chatShellTab: 'list', sidebarOpen: false }); },
+navSoulSidebar: () => { self.setState({ tab: 'chatlist', chatShellTab: 'soul', sidebarOpen: false }); },
 navDiarySidebar: () => { const d=new Date(); const todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); self.setState({ tab:'diary', sidebarOpen:false, diarySelectedDate:todayStr, diaryWeekBase:null }); },
 navPeriodSidebar: () => { self.setState({ tab: 'period', sidebarOpen: false }); },
 navMemorySidebar: () => { self.setState({ tab: 'memory', sidebarOpen: false, memView: 'hub' }); },
@@ -9525,7 +9538,7 @@ navDiaryClass: s.tab === 'diary' ? 'active' : '',
 navMemClass: s.tab === 'memory' ? 'active' : '',
 navSettingsClass: s.tab === 'settings' ? 'active' : '',
 // ===== 新页面条件 =====
-isChatList: s.tab === 'chatlist',
+isChatList: s.tab === 'chatlist', // shell container (list/soul/user)
 isMCPPage: s.tab === 'mcp',
 // ===== MCP 页面数据 =====
 mcpStatusColor: s.mcpConnected ? '#34C759' : '#FF3B30',
@@ -9589,36 +9602,30 @@ navSoulSubTab: () => self.setState({ chatListSubTab: 'soul' }),
 navSettingsSubTab: () => self.setState({ chatListSubTab: 'settings' }),
 // ===== Chat Detail tabs =====
 chatDetailTab: s.chatDetailTab || 'chat',
-isChatDetailChat: (s.chatDetailTab || 'chat') === 'chat',
-isChatDetailSoul: (s.chatDetailTab || 'chat') === 'soul',
-isChatDetailUser: (s.chatDetailTab || 'chat') === 'user',
-isChatDetailTabsVisible: (s.chatDetailTab || 'chat') !== 'settings' && !s.multiSelectMode,
-isChatDetailSettings: (s.chatDetailTab || 'chat') === 'settings',
-chatDetailTabBgs: {
-  chat: (s.chatDetailTab || 'chat') === 'chat' ? '#68544B' : '#F5F3EE',
-  soul: (s.chatDetailTab || 'chat') === 'soul' ? '#68544B' : '#F5F3EE',
-  user: (s.chatDetailTab || 'chat') === 'user' ? '#68544B' : '#F5F3EE',
-  settings: (s.chatDetailTab || 'chat') === 'settings' ? '#68544B' : '#F5F3EE'
-},
-chatDetailTabFgs: {
-  chat: (s.chatDetailTab || 'chat') === 'chat' ? '#FFFFFF' : '#9A958B',
-  soul: (s.chatDetailTab || 'chat') === 'soul' ? '#FFFFFF' : '#9A958B',
-  user: (s.chatDetailTab || 'chat') === 'user' ? '#FFFFFF' : '#9A958B',
-  settings: (s.chatDetailTab || 'chat') === 'settings' ? '#FFFFFF' : '#9A958B'
-},
-chatTabChatColor: (s.chatDetailTab || 'chat') === 'chat' ? '#68544B' : '#B8B3A8',
-chatTabSoulColor: (s.chatDetailTab || 'chat') === 'soul' ? '#68544B' : '#B8B3A8',
-chatTabUserColor: (s.chatDetailTab || 'chat') === 'user' ? '#68544B' : '#B8B3A8',
-chatTabChatBg: (s.chatDetailTab || 'chat') === 'chat' ? '#68544B' : '#F5F3EE',
-chatTabSoulBg: (s.chatDetailTab || 'chat') === 'soul' ? '#68544B' : '#F5F3EE',
-chatTabUserBg: (s.chatDetailTab || 'chat') === 'user' ? '#68544B' : '#F5F3EE',
-chatTabChatFg: (s.chatDetailTab || 'chat') === 'chat' ? '#FFFFFF' : '#9A958B',
-chatTabSoulFg: (s.chatDetailTab || 'chat') === 'soul' ? '#FFFFFF' : '#9A958B',
-chatTabUserFg: (s.chatDetailTab || 'chat') === 'user' ? '#FFFFFF' : '#9A958B',
-navChatDetailChat: () => self.setState({ chatDetailTab: 'chat' }),
-navChatDetailSoul: () => self.setState({ chatDetailTab: 'soul' }),
-navChatDetailUser: () => self.setState({ chatDetailTab: 'user' }),
+chatShellTab: s.chatShellTab || 'list',
+// 会话列表层：list / soul / user
+isChatShellList: s.tab === 'chatlist' && (s.chatShellTab || 'list') === 'list',
+isChatShellSoul: s.tab === 'chatlist' && s.chatShellTab === 'soul',
+isChatShellUser: s.tab === 'chatlist' && s.chatShellTab === 'user',
+isChatShellTabsVisible: s.tab === 'chatlist',
+// 对话详情层：仅消息 + 设置
+isChatDetailChat: s.tab === 'chat' && (s.chatDetailTab || 'chat') !== 'settings',
+isChatDetailSettings: s.tab === 'chat' && (s.chatDetailTab || 'chat') === 'settings',
+chatTabChatBg: (s.chatShellTab || 'list') === 'list' ? '#68544B' : '#F5F3EE',
+chatTabSoulBg: s.chatShellTab === 'soul' ? '#68544B' : '#F5F3EE',
+chatTabUserBg: s.chatShellTab === 'user' ? '#68544B' : '#F5F3EE',
+chatTabChatFg: (s.chatShellTab || 'list') === 'list' ? '#FFFFFF' : '#9A958B',
+chatTabSoulFg: s.chatShellTab === 'soul' ? '#FFFFFF' : '#9A958B',
+chatTabUserFg: s.chatShellTab === 'user' ? '#FFFFFF' : '#9A958B',
+navChatShellList: () => self.setState({ tab: 'chatlist', chatShellTab: 'list' }),
+navChatShellSoul: () => self.setState({ tab: 'chatlist', chatShellTab: 'soul' }),
+navChatShellUser: () => self.setState({ tab: 'chatlist', chatShellTab: 'user' }),
+// 兼容旧名：详情页返回列表 / 设置
+navChatDetailChat: () => self.setState({ tab: 'chatlist', chatShellTab: 'list', chatDetailTab: 'chat' }),
+navChatDetailSoul: () => self.setState({ tab: 'chatlist', chatShellTab: 'soul' }),
+navChatDetailUser: () => self.setState({ tab: 'chatlist', chatShellTab: 'user' }),
 navChatDetailSettings: () => self.setState({ chatDetailTab: 'settings', chatMoreMenuOpen: false }),
+backFromChatSettings: () => self.setState({ chatDetailTab: 'chat' }),
 toggleChatMoreMenu: () => self.setState({ chatMoreMenuOpen: !self.state.chatMoreMenuOpen }),
 closeChatMoreMenu: () => self.setState({ chatMoreMenuOpen: false }),
 openChatSettingsFromMore: () => self.setState({ chatDetailTab: 'settings', chatMoreMenuOpen: false }),
@@ -9680,7 +9687,7 @@ soulActiveCharCount: (() => { try { const sec = s.soulSections[(s.soulActiveTab|
 navHome: () => self.setState({ tab: 'home' }),
 navMemory: () => self.setState({ tab: 'memory', memView: 'hub', memSelectedType: null, memSelectedId: null }),
 
-navChatList: () => self.setState({ tab: 'chatlist' }),
+navChatList: () => self.setState({ tab: 'chatlist', chatShellTab: 'list' }),
 navMCP: () => self.setState({ tab: 'mcp' }),
 navMusic: () => self.setState({ tab: 'music' }),
 navFinance: () => self.setState({ tab: 'finance', finView: 'dashboard', finMonth: s.finMonth || finCurrentMonth(), finHistMonth: s.finHistMonth || finCurrentMonth() }),
@@ -10622,7 +10629,7 @@ currentTime: s.currentTime,
 togetherDays: (() => { const start = new Date('2026-06-30T00:00:00'); const diff = Date.now() - start.getTime(); return Math.max(0, Math.floor(diff / (1000*60*60*24))); })(),
 togetherHours: (() => { const start = new Date('2026-06-30T00:00:00'); const diff = Date.now() - start.getTime(); return Math.max(0, Math.floor((diff % (1000*60*60*24)) / (1000*60*60))); })(),
 togetherMins: (() => { const start = new Date('2026-06-30T00:00:00'); const diff = Date.now() - start.getTime(); return Math.max(0, Math.floor((diff % (1000*60*60)) / (1000*60))); })(),
-navSoul: () => { if (self.state.currentChatId) self.setState({ tab: 'chat', chatDetailTab: 'soul', drawer: false }); else self.setState({ tab: 'chatlist', drawer: false }); },
+navSoul: () => { self.setState({ tab: 'chatlist', chatShellTab: 'soul', drawer: false }); },
 // Home 页数据
 homeTotalMsgs: (() => { let count = 0; for (const c of Object.values(s.chats)) { count += (c.messages || []).length; } return count; })(),
 homeTitleName: s.homeTitleName || 'Kel & 江吟',
@@ -11781,12 +11788,12 @@ this.setState({ tab: 'chat' });
 this.persist();
 },
 navChatList: () => {
-this.setState({ tab: 'chatlist' });
+this.setState({ tab: 'chatlist', chatShellTab: 'list' });
 this.persist();
 },
 navSoul: () => {
 // 独立 Persona 页已移除，统一走聊天详情 Soul
-if (this.state.currentChatId) this.setState({ tab: 'chat', chatDetailTab: 'soul' });
+if (this.state.currentChatId) this.setState({ tab: 'chatlist', chatShellTab: 'soul' });
 else this.setState({ tab: 'chatlist' });
 this.persist();
 },
