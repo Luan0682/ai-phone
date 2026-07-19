@@ -2836,7 +2836,7 @@ button:active {
 </div>
 </sc-if>
 
-<!-- ========== FINANCE PAGE (Phase 1 dashboard) ========== -->
+<!-- ========== FINANCE PAGE (Phase 2) ========== -->
 <sc-if value="{{ isFinancePage }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;background:#F5F3EE;display:flex;flex-direction:column;width:100%;">
   <div style="flex:none;padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;">
@@ -2845,7 +2845,10 @@ button:active {
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
   </div>
-  <div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:4px 20px 40px;">
+
+  <!-- DASHBOARD -->
+  <sc-if value="{{ isFinViewDashboard }}" hint-placeholder-val="{{ true }}">
+  <div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:4px 20px 100px;">
     <div style="font-size:15px;font-weight:600;color:#1A1815;margin:8px 0 14px;">{{ finDateTitle }}</div>
     <div style="display:flex;align-items:center;gap:16px;background:#FFFFFF;border-radius:16px;padding:16px;margin-bottom:18px;box-shadow:0 1px 3px rgba(43,38,30,.04);border:1px solid #EDE9E0;">
       <div style="position:relative;width:120px;height:120px;flex:none;">
@@ -2893,6 +2896,127 @@ button:active {
     <div style="text-align:center;padding:36px 0;font-size:13px;color:#9A958B;">今天什么也没做</div>
     </sc-if>
   </div>
+  </sc-if>
+
+  <!-- HISTORY -->
+  <sc-if value="{{ isFinViewHistory }}" hint-placeholder-val="{{ false }}">
+  <div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:4px 20px 100px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:8px 0 14px;">
+      <button onClick="{{ finHistPrev }}" style="width:36px;height:36px;border:none;background:#FFFFFF;border-radius:50%;box-shadow:0 0 0 1px #EDE9E0;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div style="font-size:15px;font-weight:600;color:#1A1815;">{{ finHistMonthLabel }}</div>
+      <button onClick="{{ finHistNext }}" style="width:36px;height:36px;border:none;background:#FFFFFF;border-radius:50%;box-shadow:0 0 0 1px #EDE9E0;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+      <div style="background:#FFFFFF;border:1px solid #EDE9E0;border-radius:14px;padding:12px 10px;text-align:center;">
+        <div style="font-size:11px;color:#9A958B;">总支出</div>
+        <div style="font-size:14px;font-weight:600;color:#FF3B30;margin-top:4px;">{{ finHistExpenseLabel }}</div>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid #EDE9E0;border-radius:14px;padding:12px 10px;text-align:center;">
+        <div style="font-size:11px;color:#9A958B;">总收入</div>
+        <div style="font-size:14px;font-weight:600;color:#34C759;margin-top:4px;">{{ finHistIncomeLabel }}</div>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid #EDE9E0;border-radius:14px;padding:12px 10px;text-align:center;">
+        <div style="font-size:11px;color:#9A958B;">净额</div>
+        <div style="font-size:14px;font-weight:600;color:{{ finHistNetColor }};margin-top:4px;">{{ finHistNetLabel }}</div>
+      </div>
+    </div>
+    <sc-for list="{{ finHistDayGroups }}" as="dg" hint-placeholder-count="3">
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:600;color:#9A958B;margin-bottom:8px;">{{ dg.title }}</div>
+      <sc-for list="{{ dg.items }}" as="ft" hint-placeholder-count="2">
+      <div onClick="{{ ft.open }}" style="background:#FFFFFF;border:1px solid #EDE9E0;border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:10px;">
+        <div style="display:inline-flex;align-items:center;gap:5px;background:#F5F3EE;border-radius:999px;padding:5px 10px;flex:none;">
+          <span style="display:flex;align-items:center;">{{ ft.iconHtml }}</span>
+          <span style="font-size:12px;color:#3A362F;">{{ ft.category }}</span>
+        </div>
+        <div style="flex:1;min-width:0;font-size:12px;color:#9A958B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ ft.note }}</div>
+        <div style="flex:none;text-align:right;">
+          <div style="font-size:14px;font-weight:600;color:{{ ft.amountColor }};">{{ ft.amountLabel }}</div>
+          <div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ ft.time }}</div>
+        </div>
+      </div>
+      </sc-for>
+    </div>
+    </sc-for>
+    <sc-if value="{{ finHistEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="text-align:center;padding:40px 0;font-size:13px;color:#9A958B;">这个月还没有记录</div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <!-- WALLET -->
+  <sc-if value="{{ isFinViewWallet }}" hint-placeholder-val="{{ false }}">
+  <div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:8px 20px 100px;">
+    <div onClick="{{ finPickWalletCover }}" style="position:relative;border-radius:16px;overflow:hidden;min-height:160px;background:{{ finWalletCoverBg }};box-shadow:0 8px 28px rgba(43,38,30,.12);cursor:pointer;margin-bottom:16px;">
+      <div style="padding:28px 22px 22px;position:relative;z-index:1;">
+        <div style="font-size:12px;color:rgba(255,255,255,.75);margin-bottom:8px;">总资产</div>
+        <div style="font-size:32px;font-weight:600;color:#FFFFFF;letter-spacing:.3px;">{{ finTotalBalanceLabel }}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:14px;">点按更换封面</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div style="font-size:12px;font-weight:600;color:#9A958B;">分类</div>
+      <button onClick="{{ openFinCatSheet }}" style="border:none;background:#FFFFFF;border:1px solid #EDE9E0;border-radius:12px;padding:6px 10px;font-size:11px;color:#68544B;font-family:inherit;cursor:pointer;">自定义</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+      <sc-for list="{{ finWalletCats }}" as="wc" hint-placeholder-count="8">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #EDE9E0;border-radius:999px;padding:8px 12px;">
+        <span style="display:flex;">{{ wc.iconHtml }}</span>
+        <span style="font-size:12px;color:#3A362F;">{{ wc.name }}</span>
+        <sc-if value="{{ wc.canDelete }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ wc.del }}" style="border:none;background:transparent;padding:0 0 0 2px;cursor:pointer;display:flex;align-items:center;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#B8B3A8" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        </sc-if>
+      </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- floating bottom tabs -->
+  <div style="position:absolute;left:16px;right:16px;bottom:18px;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid #EDE9E0;border-radius:20px;padding:8px 10px;display:flex;align-items:center;justify-content:space-around;box-shadow:0 8px 24px rgba(43,38,30,.08);">
+    <button onClick="{{ finGoDashboard }}" style="flex:1;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;cursor:pointer;font-family:inherit;color:{{ finTabDashColor }};transform:{{ finTabDashLift }};">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span style="font-size:10px;">仪表盘</span>
+    </button>
+    <button onClick="{{ finGoHistory }}" style="flex:1;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;cursor:pointer;font-family:inherit;color:{{ finTabHistColor }};transform:{{ finTabHistLift }};">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span style="font-size:10px;">历史</span>
+    </button>
+    <button onClick="{{ finGoWallet }}" style="flex:1;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;cursor:pointer;font-family:inherit;color:{{ finTabWalletColor }};transform:{{ finTabWalletLift }};">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 10h20M6 15h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span style="font-size:10px;">钱包</span>
+    </button>
+  </div>
+</div>
+</sc-if>
+
+<!-- Custom category sheet -->
+<sc-if value="{{ isFinCatSheet }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:280;">
+<div onClick="{{ closeFinCatSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.18);"></div>
+<div class="sa" style="position:absolute;bottom:0;left:0;right:0;background:#F5F3EE;border-radius:16px 16px 0 0;padding:12px 16px 30px;max-height:70%;overflow-y:auto;">
+<div style="width:36px;height:4px;border-radius:2px;background:#D1CCC2;margin:0 auto 14px;"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+<span style="font-size:15px;font-weight:600;color:#1A1815;">新分类</span>
+<button onClick="{{ saveFinCustomCat }}" style="border:none;background:#68544B;color:#FFF;border-radius:16px;padding:8px 14px;font-size:12px;font-family:inherit;cursor:pointer;">添加</button>
+</div>
+<div style="margin-bottom:12px;">
+<div style="font-size:11px;color:#9A958B;margin-bottom:6px;">名称</div>
+<input value="{{ finNewCatName }}" onInput="{{ finNewCatNameChange }}" placeholder="例如 咖啡" style="width:100%;border:none;outline:none;background:#FFFFFF;border-radius:12px;padding:12px 14px;font-family:inherit;font-size:14px;color:#1A1815;box-shadow:0 0 0 1px #EDE9E0;">
+</div>
+<div style="margin-bottom:8px;font-size:11px;color:#9A958B;">图标</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;">
+<sc-for list="{{ finIconPickList }}" as="ip" hint-placeholder-count="8">
+<button onClick="{{ ip.pick }}" style="width:40px;height:40px;border-radius:12px;border:1px solid {{ ip.bd }};background:{{ ip.bg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">{{ ip.iconHtml }}</button>
+</sc-for>
+</div>
+</div>
 </div>
 </sc-if>
 
@@ -3483,6 +3607,12 @@ finEditorNote: '',
 finEditorCategory: '餐饮',
 finEditorIcon: 'utensils',
 finEditorType: 'expense',
+finView: 'dashboard',
+finHistMonth: finCurrentMonth(),
+finWalletCover: '',
+finNewCatName: '',
+finNewCatIcon: 'more',
+finCatSheet: false,
 memView: 'hub',
 memSelectedType: null,
 memSelectedId: null,
@@ -4430,6 +4560,15 @@ if (quotedRef) {
   fullText = `> ${quotedRef.sender}：${quotedRef.text}\n\n${fullText}`;
   this.setState({ quotedMsg: null });
 }
+// Finance Phase2: append unsynced ledger lines to user message
+let finSyncIds = [];
+try {
+  const block = this.buildFinanceSyncBlock();
+  if (block && block.text) {
+    fullText = (fullText ? (fullText + '\n\n') : '') + block.text;
+    finSyncIds = block.ids || [];
+  }
+} catch (e) { console.warn('[Kel] finance sync block', e); }
 const newMsg = {
 id: genId(),
 role: 'user',
@@ -4466,6 +4605,9 @@ this.setState({
   pendingLines: [...(this.state.pendingLines || []), text || '']
 });
 this.persist();
+if (finSyncIds && finSyncIds.length) {
+  this.markTransactionsSynced(finSyncIds).catch(e => console.warn('[Kel] mark fin synced', e));
+}
 this.scrollToBottom();
 return true;
 }
@@ -5579,10 +5721,14 @@ async _loadFinanceIntoState() {
   try {
     const cats = await this._finSeedCategoriesIfNeeded();
     const txns = await this._finLoadAllTxns();
+    let cover = '';
+    try { cover = (await this._finGetSetting('wallet_cover')) || ''; } catch (e) {}
     this.setState({
       finCategories: (cats && cats.length) ? cats : FIN_DEFAULT_CATEGORIES.slice(),
       finTxns: txns || [],
-      finMonth: this.state.finMonth || finCurrentMonth()
+      finMonth: this.state.finMonth || finCurrentMonth(),
+      finHistMonth: this.state.finHistMonth || finCurrentMonth(),
+      finWalletCover: typeof cover === 'string' ? cover : ''
     });
   } catch (e) {
     console.warn('[Kel] _loadFinanceIntoState', e);
@@ -5650,6 +5796,127 @@ getMonthlySummary(month) {
     }
   }
   return { income, expense, aiExpense, net: income - expense };
+}
+
+getTotalBalance() {
+  let bal = 0;
+  for (const t of (this.state.finTxns || [])) bal += Number(t.amount) || 0;
+  return bal;
+}
+
+getUnsyncedTransactions() {
+  return (this.state.finTxns || []).filter(t => !t.synced).slice().sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+}
+
+async markTransactionsSynced(ids) {
+  const idSet = {};
+  (ids || []).forEach(id => { idSet[id] = true; });
+  const list = (this.state.finTxns || []).slice();
+  const changed = [];
+  for (let i = 0; i < list.length; i++) {
+    if (idSet[list[i].id] && !list[i].synced) {
+      const next = Object.assign({}, list[i], { synced: true });
+      list[i] = next;
+      changed.push(next);
+    }
+  }
+  for (const t of changed) {
+    try { await this._finPutTxn(t); } catch (e) {}
+  }
+  if (changed.length) this.setState({ finTxns: list });
+  return changed.length;
+}
+
+buildFinanceSyncBlock() {
+  const unsynced = this.getUnsyncedTransactions();
+  if (!unsynced.length) return { text: '', ids: [] };
+  // group by date
+  const byDate = {};
+  for (const t of unsynced) {
+    const d = t.date || finTodayYMD();
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(t);
+  }
+  const dates = Object.keys(byDate).sort();
+  const parts = [];
+  const ids = [];
+  for (const d of dates) {
+    const items = byDate[d];
+    parts.push('【' + finDateTitleCN(d) + ' 记账】');
+    let dayExpense = 0, dayIncome = 0;
+    for (const t of items) {
+      const a = Number(t.amount) || 0;
+      if (a < 0) dayExpense += Math.abs(a); else dayIncome += a;
+      const sign = a >= 0 ? '+' : '-';
+      const line = (t.time || '') + ' ' + (t.category || '其他') + ' ' + sign + '¥' + Math.abs(a) + (t.note ? (' ' + t.note) : '');
+      parts.push(line.trim());
+      ids.push(t.id);
+    }
+    const sumParts = [];
+    if (dayExpense) sumParts.push('支出 ¥' + dayExpense);
+    if (dayIncome) sumParts.push('收入 ¥' + dayIncome);
+    if (sumParts.length) parts.push('今日合计：' + sumParts.join(' / '));
+    parts.push('');
+  }
+  return { text: parts.join('\n').trim(), ids };
+}
+
+async saveCategory(category) {
+  const cat = {
+    id: category.id || ('cat_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5)),
+    name: (category.name || '').trim(),
+    icon: category.icon || 'more',
+    isCustom: category.isCustom !== false,
+    isIncome: !!category.isIncome
+  };
+  if (!cat.name) throw new Error('分类名不能为空');
+  const db = await this._openKelFinanceDB();
+  await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('categories', 'readwrite');
+      tx.objectStore('categories').put(cat);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  });
+  const list = (this.state.finCategories || []).filter(c => c.id !== cat.id);
+  list.push(cat);
+  this.setState({ finCategories: list });
+  return cat;
+}
+
+async deleteCategory(id) {
+  const prev = (this.state.finCategories || []).find(c => c.id === id);
+  if (!prev) return false;
+  if (!prev.isCustom) { this.show('固定分类不能删除'); return false; }
+  const db = await this._openKelFinanceDB();
+  await new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('categories', 'readwrite');
+      tx.objectStore('categories').delete(id);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  });
+  this.setState({ finCategories: (this.state.finCategories || []).filter(c => c.id !== id) });
+  return true;
+}
+
+async setWalletCover(dataUrl) {
+  await this._finSetSetting('wallet_cover', dataUrl || '');
+  this.setState({ finWalletCover: dataUrl || '' });
+}
+
+async saveCustomCategoryFromSheet() {
+  const name = (this.state.finNewCatName || '').trim();
+  if (!name) { this.show('请输入分类名'); return; }
+  try {
+    await this.saveCategory({ name, icon: this.state.finNewCatIcon || 'more', isCustom: true, isIncome: false });
+    this.setState({ finNewCatName: '', finCatSheet: false });
+    this.show('分类已添加');
+  } catch (e) {
+    this.show(e.message || '添加失败');
+  }
 }
 
 openFinanceEditor(id) {
@@ -9107,7 +9374,7 @@ navMemory: () => self.setState({ tab: 'memory', memView: 'hub', memSelectedType:
 navChatList: () => self.setState({ tab: 'chatlist' }),
 navMCP: () => self.setState({ tab: 'mcp' }),
 navMusic: () => self.setState({ tab: 'music' }),
-navFinance: () => self.setState({ tab: 'finance', finMonth: s.finMonth || finCurrentMonth() }),
+navFinance: () => self.setState({ tab: 'finance', finView: 'dashboard', finMonth: s.finMonth || finCurrentMonth(), finHistMonth: s.finHistMonth || finCurrentMonth() }),
 navTheme: () => self.setState({ tab: 'theme' }),
 navRegex: () => self.setState({ tab: 'regex' }),
 navSettings: () => self.setState({ tab: 'settings' }),
@@ -9116,6 +9383,19 @@ isHome: s.tab === 'home',
 isMore: s.tab === 'more',
 isMusicPage: s.tab === 'music',
 isFinancePage: s.tab === 'finance',
+isFinViewDashboard: s.tab === 'finance' && (s.finView || 'dashboard') === 'dashboard',
+isFinViewHistory: s.tab === 'finance' && s.finView === 'history',
+isFinViewWallet: s.tab === 'finance' && s.finView === 'wallet',
+isFinCatSheet: !!s.finCatSheet,
+finGoDashboard: () => self.setState({ finView: 'dashboard' }),
+finGoHistory: () => self.setState({ finView: 'history', finHistMonth: s.finHistMonth || s.finMonth || finCurrentMonth() }),
+finGoWallet: () => self.setState({ finView: 'wallet' }),
+finTabDashColor: (s.finView || 'dashboard') === 'dashboard' ? '#68544B' : '#9A958B',
+finTabHistColor: s.finView === 'history' ? '#68544B' : '#9A958B',
+finTabWalletColor: s.finView === 'wallet' ? '#68544B' : '#9A958B',
+finTabDashLift: (s.finView || 'dashboard') === 'dashboard' ? 'translateY(-2px)' : 'none',
+finTabHistLift: s.finView === 'history' ? 'translateY(-2px)' : 'none',
+finTabWalletLift: s.finView === 'wallet' ? 'translateY(-2px)' : 'none',
 isThemePage: s.tab === 'theme',
 isSoulPage: false,
 isPeriodPage: s.tab === 'period',
@@ -10390,6 +10670,126 @@ finCategoryOptions: (() => {
   });
 })(),
 finDateTitle: finDateTitleCN(finTodayYMD()),
+finHistMonthLabel: (() => {
+  const m = s.finHistMonth || finCurrentMonth();
+  const p = m.split('-');
+  return (p[0] || '') + '年' + parseInt(p[1] || '1', 10) + '月';
+})(),
+finHistPrev: () => {
+  const m = s.finHistMonth || finCurrentMonth();
+  const [y, mo] = m.split('-').map(Number);
+  const d = new Date(y, mo - 2, 1);
+  const next = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  self.setState({ finHistMonth: next });
+},
+finHistNext: () => {
+  const m = s.finHistMonth || finCurrentMonth();
+  const [y, mo] = m.split('-').map(Number);
+  const d = new Date(y, mo, 1);
+  const next = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  self.setState({ finHistMonth: next });
+},
+finHistExpenseLabel: (() => {
+  const sum = self.getMonthlySummary(s.finHistMonth || finCurrentMonth());
+  return finFormatAbsMoney(sum.expense);
+})(),
+finHistIncomeLabel: (() => {
+  const sum = self.getMonthlySummary(s.finHistMonth || finCurrentMonth());
+  return finFormatAbsMoney(sum.income);
+})(),
+finHistNetLabel: (() => {
+  const sum = self.getMonthlySummary(s.finHistMonth || finCurrentMonth());
+  return finFormatMoney(sum.net);
+})(),
+finHistNetColor: (() => {
+  const sum = self.getMonthlySummary(s.finHistMonth || finCurrentMonth());
+  return sum.net >= 0 ? '#34C759' : '#FF3B30';
+})(),
+finHistDayGroups: (() => {
+  const month = s.finHistMonth || finCurrentMonth();
+  const list = self.loadTransactionsByMonth(month);
+  const map = {};
+  for (const t of list) {
+    const d = t.date || '';
+    if (!map[d]) map[d] = [];
+    map[d].push(t);
+  }
+  const week = ['日','一','二','三','四','五','六'];
+  return Object.keys(map).sort().reverse().map(date => {
+    let title = date;
+    try {
+      const p = date.split('-');
+      const dt = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+      title = parseInt(p[1], 10) + '月' + parseInt(p[2], 10) + '日 周' + week[dt.getDay()];
+    } catch (e) {}
+    return {
+      title,
+      items: map[date].map(t => {
+        const a = Number(t.amount) || 0;
+        return {
+          id: t.id,
+          category: t.category || '其他',
+          note: t.note || '',
+          time: t.time || '',
+          iconHtml: finIconSvg(t.icon || 'more', 12, '#68544B'),
+          amountLabel: (a >= 0 ? '+' : '') + finFormatMoney(a),
+          amountColor: a >= 0 ? '#34C759' : '#1A1815',
+          open: () => self.openFinanceEditor(t.id)
+        };
+      })
+    };
+  });
+})(),
+finHistEmpty: (() => {
+  return self.loadTransactionsByMonth(s.finHistMonth || finCurrentMonth()).length === 0;
+})(),
+finTotalBalanceLabel: finFormatMoney(self.getTotalBalance()),
+finWalletCoverBg: s.finWalletCover
+  ? ('center/cover no-repeat url(' + s.finWalletCover + ')')
+  : 'linear-gradient(135deg,#3A362F 0%,#68544B 55%,#8B7355 100%)',
+finPickWalletCover: () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const data = String(reader.result || '');
+      // soft limit ~1.2MB data url
+      if (data.length > 1600000) { self.show('图片太大，请换一张'); return; }
+      self.setWalletCover(data).then(() => self.show('封面已更新')).catch(() => self.show('封面保存失败'));
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+},
+finWalletCats: (() => {
+  const cats = (s.finCategories && s.finCategories.length) ? s.finCategories : FIN_DEFAULT_CATEGORIES;
+  return cats.map(c => ({
+    name: c.name,
+    iconHtml: finIconSvg(c.icon, 12, '#68544B'),
+    canDelete: !!c.isCustom,
+    del: (e) => { if (e && e.stopPropagation) e.stopPropagation(); self.deleteCategory(c.id).then(() => self.show('已删除分类')); }
+  }));
+})(),
+openFinCatSheet: () => self.setState({ finCatSheet: true, finNewCatName: '', finNewCatIcon: 'more' }),
+closeFinCatSheet: () => self.setState({ finCatSheet: false }),
+saveFinCustomCat: () => self.saveCustomCategoryFromSheet(),
+finNewCatName: s.finNewCatName || '',
+finNewCatNameChange: (e) => self.setState({ finNewCatName: e.target.value }),
+finIconPickList: (() => {
+  const keys = ['utensils','bus','bag','gamepad','home','phone','bot','more'];
+  const cur = s.finNewCatIcon || 'more';
+  return keys.map(k => ({
+    iconHtml: finIconSvg(k, 16, cur === k ? '#FFFFFF' : '#68544B'),
+    bg: cur === k ? '#68544B' : '#FFFFFF',
+    bd: cur === k ? '#68544B' : '#EDE9E0',
+    pick: () => self.setState({ finNewCatIcon: k })
+  }));
+})(),
+finDateTitle: finDateTitleCN(finTodayYMD()),
 finTodayList: (() => {
   const today = finTodayYMD();
   return (s.finTxns || []).filter(t => t.date === today).map(t => {
@@ -10962,7 +11362,7 @@ navMemory: () => self.setState({ tab: 'memory', drawer: false, memView: 'hub' })
 navMCP: () => self.setState({ tab: 'mcp', drawer: false }),
 navDiary: () => { const d=new Date(); const todayStr=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); self.setState({ tab:'diary', drawer:false, diarySelectedDate:todayStr, diaryWeekBase:null }); },
 navMusic: () => self.setState({ tab: 'music', drawer: false }),
-navFinance: () => self.setState({ tab: 'finance', drawer: false, finMonth: self.state.finMonth || finCurrentMonth() }),
+navFinance: () => self.setState({ tab: 'finance', drawer: false, finView: 'dashboard', finMonth: self.state.finMonth || finCurrentMonth() }),
 navTheme: () => self.setState({ tab: 'theme', drawer: false }),
 navRegex: () => self.setState({ tab: 'regex', drawer: false }),
 // ===== 导航函数 =====
@@ -11007,7 +11407,7 @@ this.setState({ tab: 'period' });
 this.persist();
 },
 navFinance: () => {
-this.setState({ tab: 'finance', finMonth: this.state.finMonth || finCurrentMonth() });
+this.setState({ tab: 'finance', finView: 'dashboard', finMonth: this.state.finMonth || finCurrentMonth() });
 this.persist();
 },
 
