@@ -241,7 +241,6 @@ button:active {
 <div onClick="{{ navChatList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;white-space:nowrap;">Chat</div>
 </div>
 <div style="display:flex;align-items:center;gap:8px;flex:none;position:relative;">
-<button onClick="{{ navChatDetailSoul }}" title="Soul" style="height:36px;border:none;background:{{ chatDetailTabBgs.soul }};color:{{ chatDetailTabFgs.soul }};border-radius:18px;padding:0 12px;font-size:12px;font-family:inherit;cursor:pointer;box-shadow:0 0 0 1px rgba(43,38,30,.05);">Soul</button>
 <button onClick="{{ toggleChatMoreMenu }}" title="More" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;z-index:61;">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="6" r="1.2" fill="var(--text-secondary, #48453E)"/><circle cx="12" cy="12" r="1.2" fill="var(--text-secondary, #48453E)"/><circle cx="12" cy="18" r="1.2" fill="var(--text-secondary, #48453E)"/></svg>
 </button>
@@ -263,7 +262,7 @@ button:active {
 <div style="flex:1;min-height:0;position:relative;">
 <div style="position:absolute;top:0;left:0;right:0;height:0px;pointer-events:none;"></div>
 <div style="position:absolute;bottom:0;left:0;right:0;height:0px;pointer-events:none;"></div>
-<div class="sa" id="kel-msg-scroll" onScroll="{{ onMsgScroll }}" style="position:absolute;inset:0;overflow-y:auto;padding:10px var(--chat-side-pad, 6px) 10px;">
+<div class="sa" id="kel-msg-scroll" onScroll="{{ onMsgScroll }}" style="position:absolute;inset:0;overflow-y:auto;padding:10px var(--chat-side-pad, 6px) 80px;">
 
 <div style="position:sticky;top:50%;left:50%;transform:translate(-50%,-50%);width:0;height:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
 <svg width="48" height="48" viewBox="0 0 64 64" fill="none" style="opacity:.06;">
@@ -388,6 +387,76 @@ button:active {
 </div>
 </sc-if>
 
+<!-- Chat detail User tab -->
+<sc-if value="{{ isChatDetailUser }}" hint-placeholder-val="{{ false }}">
+<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 0 90px;background:var(--bg-main, #F5F3EE);">
+  <div style="padding:10px 16px 0;">
+    <div onClick="{{ navChatDetailChat }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:var(--text-primary,#1A1815);cursor:pointer;">User</div>
+  </div>
+  <div onClick="{{ pickProfileBg }}" style="margin:12px 16px 0;height:180px;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;background:linear-gradient(135deg,#DFF2EC,#F5F3EE 45%,#E8E0D8);box-shadow:0 2px 10px rgba(43,38,30,.06);">
+    <sc-if value="{{ hasProfileBg }}" hint-placeholder-val="{{ false }}">
+      <img src="{{ profileBgUrl }}" style="width:100%;height:100%;object-fit:cover;" alt="">
+    </sc-if>
+    <div style="position:absolute;left:16px;bottom:14px;font-size:11px;color:rgba(26,24,21,.55);background:rgba(255,255,255,.55);backdrop-filter:blur(8px);padding:4px 8px;border-radius:999px;">点按更换封面</div>
+  </div>
+  <div style="padding:0 20px;margin-top:-28px;position:relative;z-index:2;display:flex;align-items:flex-end;gap:12px;">
+    <div onClick="{{ pickUserAvatar }}" style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid #F5F3EE;background:#ECEAE4;box-shadow:0 4px 14px rgba(43,38,30,.12);cursor:pointer;flex:none;">
+      <sc-if value="{{ hasUserAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ userAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
+      <sc-if value="{{ !hasUserAvatar }}" hint-placeholder-val="{{ true }}"><div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="3.5" stroke="#9A958B" stroke-width="1.5"/><path d="M5.5 19.5c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke="#9A958B" stroke-width="1.5" stroke-linecap="round"/></svg></div></sc-if>
+    </div>
+    <div style="flex:1;min-width:0;padding-bottom:6px;">
+      <input value="{{ userNickname }}" onInput="{{ userNicknameChange }}" style="width:100%;border:none;outline:none;background:transparent;font-size:20px;font-weight:600;color:#1A1815;font-family:inherit;padding:0;">
+      <div style="font-size:11px;color:#9A958B;margin-top:2px;">点按头像更换 · 点名称编辑</div>
+    </div>
+  </div>
+  <div style="margin:16px 16px 0;background:var(--bg-card,#FFF);border:1px solid var(--border-card,#EDE9E0);border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;">
+      <div style="font-size:11px;color:#9A958B;margin-bottom:6px;">签名</div>
+      <input value="{{ userSignature }}" onInput="{{ userSignatureChange }}" placeholder="写一句给自己" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;color:#1A1815;font-family:inherit;">
+    </div>
+    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;display:flex;align-items:center;gap:10px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#68544B" stroke-width="1.5"/><path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#9A958B;">性别</div>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button onClick="{{ setGenderFemale }}" style="border:none;background:{{ genderFemaleBg }};color:{{ genderFemaleFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">女</button>
+          <button onClick="{{ setGenderMale }}" style="border:none;background:{{ genderMaleBg }};color:{{ genderMaleFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">男</button>
+          <button onClick="{{ setGenderOther }}" style="border:none;background:{{ genderOtherBg }};color:{{ genderOtherFg }};border-radius:10px;padding:6px 12px;font-size:12px;font-family:inherit;cursor:pointer;">保密</button>
+        </div>
+      </div>
+    </div>
+    <div style="padding:12px 14px;border-bottom:1px solid #F0EDE6;display:flex;align-items:center;gap:10px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="#68544B" stroke-width="1.5"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#9A958B;margin-bottom:4px;">生日</div>
+        <input type="date" value="{{ userBirthday }}" onInput="{{ userBirthdayChange }}" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;color:#1A1815;font-family:inherit;">
+      </div>
+    </div>
+    <div onClick="{{ openUserFavorites }}" style="padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.9 7.2 18l.9-5.4L4.2 8.7l5.4-.8L12 3z" stroke="#68544B" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <div style="flex:1;font-size:14px;color:#1A1815;">我的收藏</div>
+      <span style="font-size:12px;color:#9A958B;">{{ favUserCount }}</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#C7C7CC" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- Chat detail floating bottom tabs -->
+<sc-if value="{{ isChatDetailTabsVisible }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom, 0px) + 12px);z-index:40;display:flex;gap:8px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid #EDE9E0;border-radius:20px;padding:8px;box-shadow:0 8px 24px rgba(43,38,30,.08);">
+  <button onClick="{{ navChatDetailChat }}" title="Chat" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabChatBg }};color:{{ chatTabChatFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button onClick="{{ navChatDetailSoul }}" title="Soul" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabSoulBg }};color:{{ chatTabSoulFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12h3l2-5 4 10 2-5h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button onClick="{{ navChatDetailUser }}" title="User" style="flex:1;height:42px;border:none;border-radius:14px;background:{{ chatTabUserBg }};color:{{ chatTabUserFg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+  </button>
+</div>
+</sc-if>
+
 <!-- user actions -->
 <sc-if value="{{ m.showUserActions }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;opacity:.35;">
@@ -473,7 +542,7 @@ button:active {
 </div>
 </sc-if>
 
-<div class="{{ composerBoxClass }}" style="background:var(--bg-input, #FBFAF7);border:1px solid var(--border-input, #E7E3DA);border-radius:24px;padding:12px 16px 8px;box-shadow:0 -2px 12px rgba(43,38,30,.06),0 1px 4px rgba(43,38,30,.04);">
+<div class="{{ composerBoxClass }}" style="background:var(--bg-input, #FBFAF7);border:1px solid var(--border-input, #E7E3DA);border-radius:24px;padding:12px 16px 8px;margin-bottom:62px;box-shadow:0 -2px 12px rgba(43,38,30,.06),0 1px 4px rgba(43,38,30,.04);">
 <textarea class="composer-textarea" id="kel-composer-input" placeholder="发送消息..." rows="1" onKeyDown="{{ composerKey }}"></textarea>
 <div style="display:flex;align-items:center;justify-content:space-between;">
 <div style="display:flex;align-items:center;gap:8px;min-width:0;">
@@ -508,7 +577,7 @@ button:active {
 
 <!-- Chat detail Soul tab -->
 <sc-if value="{{ isChatDetailSoul }}" hint-placeholder-val="{{ false }}">
-<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 24px;">
+<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 90px;">
 <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:8px;">
 <div onClick="{{ uploadAiAvatar }}" style="width:48px;height:48px;border-radius:50%;overflow:hidden;background:#DFF2EC;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #E7E3DA;">
 <sc-if value="{{ hasAiAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ aiAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
@@ -1375,15 +1444,29 @@ button:active {
 <div style="font-size:28px;font-weight:300;color:#1A1A1A;font-family:'Newsreader',serif;">{{ memHubToday }}</div>
 </div>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
-<div onClick="{{ memGoLibrary }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+<div onClick="{{ memGoLibrary }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;grid-column:1 / -1;">
 <div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#1A1A1A" stroke-width="1.5"/></svg>
 </div>
 <div style="font-size:15px;font-weight:600;color:#1A1A1A;">记忆库</div>
 <div style="font-size:11px;color:#8E8E93;">分类 · 心情 · 列表</div>
 </div>
-<div onClick="{{ memGoRecycle }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
+<div onClick="{{ memGoFavorites }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
+<div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.9 7.2 18l.9-5.4L4.2 8.7l5.4-.8L12 3z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg>
+</div>
+<div style="font-size:15px;font-weight:600;color:#1A1A1A;">收藏夹</div>
+<div style="font-size:11px;color:#8E8E93;">收藏 · {{ favTotalCount }}条</div>
+</div>
+<div onClick="{{ memGoInbox }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
+<div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4V6z" stroke="#1A1A1A" stroke-width="1.5"/><path d="M4 8l8 6 8-6" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<div style="font-size:15px;font-weight:600;color:#1A1A1A;">信箱</div>
+<div style="font-size:11px;color:#8E8E93;">预留 · 0</div>
+</div>
+<div onClick="{{ memGoRecycle }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;grid-column:1 / -1;">
 <div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/><path d="M10 11v6M14 11v6" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/></svg>
 </div>
@@ -1404,6 +1487,53 @@ button:active {
 <sc-if value="{{ memHubRecentEmpty }}" hint-placeholder-val="{{ false }}">
 <div style="text-align:center;padding:28px 0;font-size:13px;color:#8E8E93;">还没有记忆</div>
 </sc-if>
+</sc-if>
+
+<!-- ===== FAVORITES ===== -->
+<sc-if value="{{ isMemViewFavorites }}" hint-placeholder-val="{{ false }}">
+<div style="margin:0 -20px;padding:0 20px 40px;min-height:100%;background:{{ favPageBg }};color:{{ favPageText }};">
+<div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+<div onClick="{{ memGoHub }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:{{ favPageText }};cursor:pointer;">Favorites</div>
+<div style="display:flex;gap:6px;">
+<button onClick="{{ favFilterUser }}" style="border:none;background:{{ favFilterUserBg }};color:{{ favFilterUserFg }};border-radius:12px;padding:6px 10px;font-size:11px;font-family:inherit;cursor:pointer;">用户</button>
+<button onClick="{{ favFilterAi }}" style="border:none;background:{{ favFilterAiBg }};color:{{ favFilterAiFg }};border-radius:12px;padding:6px 10px;font-size:11px;font-family:inherit;cursor:pointer;">AI</button>
+</div>
+</div>
+<input value="{{ favSearch }}" onInput="{{ favSearchChange }}" placeholder="搜索收藏" style="width:100%;border:none;outline:none;background:{{ favCardBg }};border-radius:12px;padding:10px 12px;font-family:inherit;font-size:13px;color:{{ favPageText }};margin-bottom:12px;box-shadow:0 0 0 1px {{ favCardBd }};">
+<sc-if value="{{ isFavViewList }}" hint-placeholder-val="{{ true }}">
+<sc-for list="{{ favListCards }}" as="fc" hint-placeholder-count="3">
+<div onClick="{{ fc.open }}" style="background:{{ favCardBg }};border:1px solid {{ favCardBd }};border-radius:8px;padding:12px 14px;margin-bottom:10px;cursor:pointer;min-height:80px;display:flex;flex-direction:column;justify-content:space-between;">
+<div style="font-size:13px;color:{{ favPageText }};line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">{{ fc.preview }}</div>
+<div style="font-size:11px;color:{{ favMuted }};text-align:right;margin-top:10px;">{{ fc.dateLabel }}</div>
+</div>
+</sc-for>
+<sc-if value="{{ favListEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:36px 0;font-size:13px;color:#8E8E93;">还没有收藏</div>
+</sc-if>
+</sc-if>
+<sc-if value="{{ isFavViewDetail }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ favBackList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:18px;color:#1A1A1A;cursor:pointer;margin-bottom:14px;">Back</div>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+<div style="width:40px;height:40px;border-radius:50%;overflow:hidden;background:#EBEBEB;display:flex;align-items:center;justify-content:center;">
+<sc-if value="{{ favDetailHasAvatar }}" hint-placeholder-val="{{ false }}"><img src="{{ favDetailAvatar }}" style="width:100%;height:100%;object-fit:cover;"></sc-if>
+</div>
+<div>
+<div style="font-size:13px;font-weight:600;color:#1A1A1A;">{{ favDetailName }}</div>
+<div style="font-size:11px;color:#8E8E93;margin-top:2px;">{{ favDetailTimeLabel }}</div>
+</div>
+</div>
+<div style="background:{{ favCardBg }};border:1px solid {{ favCardBd }};border-radius:12px;padding:14px;font-size:14px;line-height:1.7;color:{{ favPageText }};white-space:pre-wrap;margin-bottom:16px;">{{ favDetailContent }}</div>
+<button onClick="{{ favUnfavorite }}" style="width:100%;border:none;background:transparent;color:#FF3B30;padding:12px;font-size:13px;font-family:inherit;cursor:pointer;">取消收藏</button>
+</sc-if>
+</div>
+</sc-if>
+
+<!-- ===== INBOX placeholder ===== -->
+<sc-if value="{{ isMemViewInbox }}" hint-placeholder-val="{{ false }}">
+<div style="padding:18px 0 12px;">
+<div onClick="{{ memGoHub }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:#1A1A1A;cursor:pointer;">Inbox</div>
+</div>
+<div style="text-align:center;padding:48px 0;font-size:13px;color:#8E8E93;">信箱功能预留中</div>
 </sc-if>
 
 <!-- ===== LIBRARY ===== -->
@@ -2465,15 +2595,9 @@ button:active {
 <!-- Context menu -->
 <sc-if value="{{ contextMenuOpen }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;z-index:500;" onClick="{{ closeContextMenu }}">
-<!-- reaction emoji bar -->
-<div style="position:absolute;top:{{ contextMenuReactionTop }};left:50%;transform:translateX(-50%);background:var(--bg-card, #FFF);border-radius:20px;padding:5px 9px;box-shadow:0 4px 20px rgba(0,0,0,.15);display:flex;gap:4px;animation:fadeUp .15s ease both;" onClick="{{ stopProp }}">
-<sc-for list="{{ reactionEmojis }}" as="re" hint-placeholder-count="8">
-<button onClick="{{ re.pick }}" style="width:34px;height:34px;border:none;background:transparent;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;">{{ re.emoji }}</button>
-</sc-for>
-<button onClick="{{ openReactionInput }}" style="width:34px;height:34px;border:none;background:#F2EFE8;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;color:#6B665E;">+</button>
-</div>
-<!-- action buttons -->
-<div style="position:absolute;top:{{ contextMenuTop }};left:50%;transform:translateX(-50%);background:#1A1815;border-radius:14px;padding:5px;box-shadow:0 8px 30px rgba(0,0,0,.3);display:flex;gap:2px;animation:fadeUp .15s ease both;flex-wrap:wrap;max-width:300px;justify-content:center;" onClick="{{ stopProp }}">
+<!-- action buttons (no reaction stickers) -->
+<div style="position:absolute;top:{{ contextMenuTop }};left:50%;transform:translateX(-50%);background:#1A1815;border-radius:14px;padding:5px;box-shadow:0 8px 30px rgba(0,0,0,.3);display:flex;gap:2px;animation:fadeUp .15s ease both;flex-wrap:wrap;max-width:320px;justify-content:center;" onClick="{{ stopProp }}">
+<button onClick="{{ ctxFavorite }}" style="border:none;background:transparent;color:#DFF2EC;padding:9px 13px;font-size:12px;font-family:inherit;cursor:pointer;border-radius:10px;">收藏</button>
 <button onClick="{{ ctxCopy }}" style="border:none;background:transparent;color:#F5F3EE;padding:9px 13px;font-size:12px;font-family:inherit;cursor:pointer;border-radius:10px;">复制</button>
 <button onClick="{{ ctxQuote }}" style="border:none;background:transparent;color:#F5F3EE;padding:9px 13px;font-size:12px;font-family:inherit;cursor:pointer;border-radius:10px;">引用</button>
 <button onClick="{{ ctxEdit }}" style="border:none;background:transparent;color:#F5F3EE;padding:9px 13px;font-size:12px;font-family:inherit;cursor:pointer;border-radius:10px;">编辑</button>
@@ -3701,6 +3825,15 @@ homeCardGap: saved.homeCardGap || 12,
 homeCardSize: saved.homeCardSize || 56,
 userNickname: saved.userNickname || '江吟',
 aiNickname: saved.aiNickname || 'Kel',
+userGender: saved.userGender || '',
+userBirthday: saved.userBirthday || '',
+userSignature: saved.userSignature || '',
+favorites: [],
+favView: 'list', // list | detail
+favFilter: 'user', // user | ai  (which collection)
+favSelectedId: null,
+favSearch: '',
+favStyle: 'memory',
 apiPresets: saved.apiPresets || [{ id: 'default', name: 'Default', url: 'https://az.zlapi.vip/v1', key: '', model: 'claude-sonnet-4-20250514', apiType: 'anthropic', isDefault: true }],
 activePresetId: saved.activePresetId || 'default',
 personas: saved.personas || [{ id: 'default', name: 'Kel', content: '' }],
@@ -4032,6 +4165,8 @@ try {
 
 // Finance Phase 1 boot
 try { await this._loadFinanceIntoState(); } catch (e) { console.warn('[Kel] finance load failed', e); }
+// Favorites boot
+try { await this._loadFavoritesIntoState(); } catch (e) { console.warn('[Kel] favorites load failed', e); }
 
 // 启动时：如果 soulSections 全空但 persona 有内容，从 persona 同步一次
 const activePer = this.state.personas.find(p => p.id === this.state.activePersonaId) || this.state.personas[0];
@@ -4730,6 +4865,9 @@ homeCardGap: s.homeCardGap,
 homeCardSize: s.homeCardSize,
 userNickname: s.userNickname,
 aiNickname: s.aiNickname,
+userGender: s.userGender,
+userBirthday: s.userBirthday,
+userSignature: s.userSignature,
 memories: s.memories,
 userAvatar: '',
 aiAvatar: '',
@@ -5989,6 +6127,159 @@ async deleteFinanceEditor() {
     this.show('删除失败');
   }
 }
+
+// ====== Favorites IDB (KelFavorites v1) ======
+_openKelFavoritesDB() {
+  return new Promise((resolve, reject) => {
+    try {
+      const req = indexedDB.open('KelFavorites', 1);
+      req.onerror = () => reject(req.error || new Error('open KelFavorites failed'));
+      req.onsuccess = () => resolve(req.result);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('favorites')) {
+          const store = db.createObjectStore('favorites', { keyPath: 'id' });
+          try { store.createIndex('timestamp', 'timestamp', { unique: false }); } catch (err) {}
+          try { store.createIndex('sender', 'sender', { unique: false }); } catch (err) {}
+          try { store.createIndex('message_id', 'message_id', { unique: false }); } catch (err) {}
+        }
+      };
+    } catch (err) { reject(err); }
+  });
+}
+
+_favLoadAll() {
+  return this._openKelFavoritesDB().then(db => new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('favorites', 'readonly');
+      const req = tx.objectStore('favorites').getAll();
+      req.onsuccess = () => {
+        const list = (req.result || []).slice().sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        resolve(list);
+      };
+      req.onerror = () => reject(req.error);
+    } catch (e) { reject(e); }
+  }));
+}
+
+_favPut(rec) {
+  return this._openKelFavoritesDB().then(db => new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('favorites', 'readwrite');
+      tx.objectStore('favorites').put(rec);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  }));
+}
+
+_favDelete(id) {
+  return this._openKelFavoritesDB().then(db => new Promise((resolve, reject) => {
+    try {
+      const tx = db.transaction('favorites', 'readwrite');
+      tx.objectStore('favorites').delete(id);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    } catch (e) { reject(e); }
+  }));
+}
+
+async _loadFavoritesIntoState() {
+  try {
+    const list = await this._favLoadAll();
+    this.setState({ favorites: list || [] });
+  } catch (e) {
+    console.warn('[Kel] load favorites failed', e);
+    this.setState({ favorites: [] });
+  }
+}
+
+async saveFavorite(record) {
+  const now = Date.now();
+  const d = new Date(record.timestamp || now);
+  const date = record.date || (d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
+  const time = record.time || (String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'));
+  const rec = {
+    id: record.id || ('fav_' + now + '_' + Math.random().toString(36).slice(2, 6)),
+    message_id: record.message_id || '',
+    chat_id: record.chat_id || '',
+    content: record.content || '',
+    sender: record.sender === 'user' ? 'user' : 'ai',
+    sender_name: record.sender_name || '',
+    sender_avatar: record.sender_avatar || '',
+    timestamp: record.timestamp || now,
+    date,
+    time,
+    msg_timestamp: record.msg_timestamp || ''
+  };
+  await this._favPut(rec);
+  const list = (this.state.favorites || []).filter(x => x.id !== rec.id);
+  list.unshift(rec);
+  list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  this.setState({ favorites: list });
+  return rec;
+}
+
+async deleteFavorite(id) {
+  await this._favDelete(id);
+  const patch = { favorites: (this.state.favorites || []).filter(x => x.id !== id) };
+  if (this.state.favSelectedId === id) {
+    patch.favSelectedId = null;
+    patch.favView = 'list';
+  }
+  this.setState(patch);
+  return true;
+}
+
+loadAllFavorites() {
+  return (this.state.favorites || []).slice().sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+}
+
+searchFavorites(keyword) {
+  const k = (keyword || '').trim().toLowerCase();
+  const list = this.loadAllFavorites();
+  if (!k) return list;
+  return list.filter(f => (f.content || '').toLowerCase().includes(k) || (f.sender_name || '').toLowerCase().includes(k));
+}
+
+async favoriteCurrentContextMessage() {
+  const idx = this.state.contextMenuIdx;
+  const chatId = this.state.currentChatId;
+  const chat = this.state.chats[chatId];
+  if (!chat || idx < 0 || !chat.messages || !chat.messages[idx]) {
+    this.show('没有可收藏的消息');
+    return;
+  }
+  const m = chat.messages[idx];
+  const text = m.variants ? (m.variants[m.variantIdx || 0] || m.text || '') : (m.text || '');
+  if (!(text || '').trim() && !(m.images && m.images.length) && !m.image) {
+    this.show('空消息无法收藏');
+    return;
+  }
+  const isUser = m.role === 'user';
+  // prevent exact duplicate of same message_id
+  if (m.id && (this.state.favorites || []).some(f => f.message_id === m.id)) {
+    this.setState({ contextMenuIdx: -1 });
+    this.show('已经收藏过了');
+    return;
+  }
+  try {
+    await this.saveFavorite({
+      message_id: m.id || '',
+      chat_id: chatId || '',
+      content: text || (m.images && m.images.length ? '[图片]' : (m.image ? '[图片]' : '')),
+      sender: isUser ? 'user' : 'ai',
+      sender_name: isUser ? (this.state.userNickname || '江吟') : (this.state.aiNickname || 'Kel'),
+      sender_avatar: isUser ? (this.state.userAvatar || '') : (this.state.aiAvatar || ''),
+      msg_timestamp: m.timestamp || ''
+    });
+    this.setState({ contextMenuIdx: -1 });
+    this.show('已收藏');
+  } catch (e) {
+    this.show('收藏失败');
+  }
+}
+
 
 async _loadMemSettingsIntoState() {
   try {
@@ -9296,19 +9587,33 @@ navSettingsSubTab: () => self.setState({ chatListSubTab: 'settings' }),
 chatDetailTab: s.chatDetailTab || 'chat',
 isChatDetailChat: (s.chatDetailTab || 'chat') === 'chat',
 isChatDetailSoul: (s.chatDetailTab || 'chat') === 'soul',
+isChatDetailUser: (s.chatDetailTab || 'chat') === 'user',
+isChatDetailTabsVisible: (s.chatDetailTab || 'chat') !== 'settings' && !s.multiSelectMode,
 isChatDetailSettings: (s.chatDetailTab || 'chat') === 'settings',
 chatDetailTabBgs: {
-  chat: (s.chatDetailTab || 'chat') === 'chat' ? '#68544B' : 'transparent',
-  soul: (s.chatDetailTab || 'chat') === 'soul' ? '#68544B' : 'transparent',
-  settings: (s.chatDetailTab || 'chat') === 'settings' ? '#68544B' : 'transparent'
+  chat: (s.chatDetailTab || 'chat') === 'chat' ? '#68544B' : '#F5F3EE',
+  soul: (s.chatDetailTab || 'chat') === 'soul' ? '#68544B' : '#F5F3EE',
+  user: (s.chatDetailTab || 'chat') === 'user' ? '#68544B' : '#F5F3EE',
+  settings: (s.chatDetailTab || 'chat') === 'settings' ? '#68544B' : '#F5F3EE'
 },
 chatDetailTabFgs: {
   chat: (s.chatDetailTab || 'chat') === 'chat' ? '#FFFFFF' : '#9A958B',
   soul: (s.chatDetailTab || 'chat') === 'soul' ? '#FFFFFF' : '#9A958B',
+  user: (s.chatDetailTab || 'chat') === 'user' ? '#FFFFFF' : '#9A958B',
   settings: (s.chatDetailTab || 'chat') === 'settings' ? '#FFFFFF' : '#9A958B'
 },
+chatTabChatColor: (s.chatDetailTab || 'chat') === 'chat' ? '#68544B' : '#B8B3A8',
+chatTabSoulColor: (s.chatDetailTab || 'chat') === 'soul' ? '#68544B' : '#B8B3A8',
+chatTabUserColor: (s.chatDetailTab || 'chat') === 'user' ? '#68544B' : '#B8B3A8',
+chatTabChatBg: (s.chatDetailTab || 'chat') === 'chat' ? '#68544B' : '#F5F3EE',
+chatTabSoulBg: (s.chatDetailTab || 'chat') === 'soul' ? '#68544B' : '#F5F3EE',
+chatTabUserBg: (s.chatDetailTab || 'chat') === 'user' ? '#68544B' : '#F5F3EE',
+chatTabChatFg: (s.chatDetailTab || 'chat') === 'chat' ? '#FFFFFF' : '#9A958B',
+chatTabSoulFg: (s.chatDetailTab || 'chat') === 'soul' ? '#FFFFFF' : '#9A958B',
+chatTabUserFg: (s.chatDetailTab || 'chat') === 'user' ? '#FFFFFF' : '#9A958B',
 navChatDetailChat: () => self.setState({ chatDetailTab: 'chat' }),
 navChatDetailSoul: () => self.setState({ chatDetailTab: 'soul' }),
+navChatDetailUser: () => self.setState({ chatDetailTab: 'user' }),
 navChatDetailSettings: () => self.setState({ chatDetailTab: 'settings', chatMoreMenuOpen: false }),
 toggleChatMoreMenu: () => self.setState({ chatMoreMenuOpen: !self.state.chatMoreMenuOpen }),
 closeChatMoreMenu: () => self.setState({ chatMoreMenuOpen: false }),
@@ -10298,6 +10603,8 @@ memRecycleNext: () => {
 memGoHub: () => self.setState({ memView: 'hub', memSelectedType: null, memSelectedId: null }),
 memGoLibrary: () => self.setState({ memView: 'library', memListLimit: 20 }),
 memGoRecycle: () => self.setState({ memView: 'recycle', memRecyclePageIdx: 0 }),
+memGoFavorites: () => self.setState({ memView: 'favorites', favView: 'list', favFilter: 'ai', favSelectedId: null, favSearch: '', favStyle: 'memory' }),
+memGoInbox: () => self.setState({ memView: 'inbox' }),
 memOpenSettings: () => self.setState({ memView: 'settings' }),
 memCloseSettings: () => self.setState({ memView: s.memView === 'settings' ? 'library' : (s.memView || 'hub') }),
 
@@ -11193,6 +11500,101 @@ diaryCommentText: s.diaryCommentText || '',
 contextMenuOpen: s.contextMenuIdx >= 0,
 contextMenuTop: Math.max(60, s.contextMenuY) + 'px',
 contextMenuReactionTop: Math.max(20, s.contextMenuY - 55) + 'px',
+ctxFavorite: () => self.favoriteCurrentContextMessage(),
+// favorites nav/helpers
+favTotalCount: String((s.favorites || []).length),
+favUserCount: String((s.favorites || []).filter(f => f.sender === 'user').length),
+favAiCount: String((s.favorites || []).filter(f => f.sender === 'ai').length),
+memGoFavorites: () => self.setState({ memView: 'favorites', favView: 'list', favFilter: 'ai', favSelectedId: null, favSearch: '', favStyle: 'memory' }),
+memGoInbox: () => self.setState({ memView: 'inbox' }),
+isMemViewFavorites: s.memView === 'favorites',
+isMemViewInbox: s.memView === 'inbox',
+favFilterUser: () => self.setState({ favFilter: 'user', favView: 'list', favSelectedId: null }),
+favFilterAi: () => self.setState({ favFilter: 'ai', favView: 'list', favSelectedId: null }),
+favFilterUserBg: (s.favFilter || 'user') === 'user' ? '#1A1A1A' : '#F5F5F7',
+favFilterUserFg: (s.favFilter || 'user') === 'user' ? '#FFFFFF' : '#1A1A1A',
+favFilterAiBg: s.favFilter === 'ai' ? '#1A1A1A' : '#F5F5F7',
+favFilterAiFg: s.favFilter === 'ai' ? '#FFFFFF' : '#1A1A1A',
+favSearch: s.favSearch || '',
+favSearchChange: (e) => self.setState({ favSearch: e.target.value }),
+favPageBg: (s.favStyle || 'memory') === 'chat' ? 'var(--bg-main, #F5F3EE)' : '#FFFFFF',
+favPageText: (s.favStyle || 'memory') === 'chat' ? 'var(--text-primary, #1A1815)' : '#1A1A1A',
+favCardBg: (s.favStyle || 'memory') === 'chat' ? 'var(--bg-card, #FFF)' : '#F5F5F7',
+favCardBd: (s.favStyle || 'memory') === 'chat' ? 'var(--border-card, #EDE9E0)' : 'transparent',
+favMuted: (s.favStyle || 'memory') === 'chat' ? '#9A958B' : '#8E8E93',
+isFavViewList: (s.favView || 'list') === 'list',
+isFavViewDetail: s.favView === 'detail',
+favListCards: (() => {
+  const filter = s.favFilter || 'user';
+  let list = (s.favorites || []).filter(f => f.sender === filter);
+  const q = (s.favSearch || '').trim().toLowerCase();
+  if (q) list = list.filter(f => (f.content || '').toLowerCase().includes(q));
+  list = list.slice().sort((a,b) => (b.timestamp||0)-(a.timestamp||0));
+  return list.map(f => {
+    let dateLabel = f.date || '';
+    try {
+      const p = (f.date || '').split('-');
+      if (p.length === 3) dateLabel = parseInt(p[1],10) + '月' + parseInt(p[2],10) + '日';
+    } catch (e) {}
+    const preview = (f.content || '').slice(0, 48) + ((f.content || '').length > 48 ? '…' : '');
+    return {
+      preview: preview || '[空]',
+      dateLabel,
+      open: () => self.setState({ favView: 'detail', favSelectedId: f.id })
+    };
+  });
+})(),
+favListEmpty: (() => {
+  const filter = s.favFilter || 'user';
+  let list = (s.favorites || []).filter(f => f.sender === filter);
+  const q = (s.favSearch || '').trim().toLowerCase();
+  if (q) list = list.filter(f => (f.content || '').toLowerCase().includes(q));
+  return list.length === 0;
+})(),
+favBackList: () => self.setState({ favView: 'list', favSelectedId: null }),
+favDetailHasAvatar: (() => {
+  const f = (s.favorites || []).find(x => x.id === s.favSelectedId);
+  return !!(f && f.sender_avatar);
+})(),
+favDetailAvatar: (() => {
+  const f = (s.favorites || []).find(x => x.id === s.favSelectedId);
+  return (f && f.sender_avatar) || '';
+})(),
+favDetailName: (() => {
+  const f = (s.favorites || []).find(x => x.id === s.favSelectedId);
+  return (f && f.sender_name) || (f && f.sender === 'user' ? (s.userNickname||'江吟') : (s.aiNickname||'Kel')) || '';
+})(),
+favDetailTimeLabel: (() => {
+  const f = (s.favorites || []).find(x => x.id === s.favSelectedId);
+  if (!f) return '';
+  try {
+    const d = new Date(f.timestamp || Date.now());
+    return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日 ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  } catch (e) { return f.date || ''; }
+})(),
+favDetailContent: (() => {
+  const f = (s.favorites || []).find(x => x.id === s.favSelectedId);
+  return (f && f.content) || '';
+})(),
+favUnfavorite: () => {
+  const id = s.favSelectedId;
+  if (!id) return;
+  self.deleteFavorite(id).then(() => self.show('已取消收藏'));
+},
+userSignature: s.userSignature || '',
+userSignatureChange: (e) => { self.setState({ userSignature: e.target.value }); self.persist(); },
+userBirthday: s.userBirthday || '',
+userBirthdayChange: (e) => { self.setState({ userBirthday: e.target.value }); self.persist(); },
+setGenderFemale: () => { self.setState({ userGender: 'female' }); self.persist(); },
+setGenderMale: () => { self.setState({ userGender: 'male' }); self.persist(); },
+setGenderOther: () => { self.setState({ userGender: 'other' }); self.persist(); },
+genderFemaleBg: s.userGender === 'female' ? '#68544B' : '#F5F3EE',
+genderFemaleFg: s.userGender === 'female' ? '#FFFFFF' : '#9A958B',
+genderMaleBg: s.userGender === 'male' ? '#68544B' : '#F5F3EE',
+genderMaleFg: s.userGender === 'male' ? '#FFFFFF' : '#9A958B',
+genderOtherBg: s.userGender === 'other' || !s.userGender ? '#68544B' : '#F5F3EE',
+genderOtherFg: s.userGender === 'other' || !s.userGender ? '#FFFFFF' : '#9A958B',
+openUserFavorites: () => self.setState({ tab: 'memory', memView: 'favorites', favView: 'list', favFilter: 'user', favSelectedId: null, favStyle: 'chat', favSearch: '' }),
 multiSelectMode: s.multiSelectMode,
 multiSelectCount: s.multiSelectedIds.length,
 exitMultiSelect: () => self.setState({ multiSelectMode: false, multiSelectedIds: [] }),
