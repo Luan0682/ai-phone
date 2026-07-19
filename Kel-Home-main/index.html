@@ -9956,6 +9956,74 @@ navChatDetailSoul: () => self.setState({ tab: 'chatlist', chatShellTab: 'soul' }
 navChatDetailUser: () => self.setState({ tab: 'chatlist', chatShellTab: 'user' }),
 navChatDetailSettings: () => self.setState({ chatDetailTab: 'settings', chatMoreMenuOpen: false }),
 backFromChatSettings: () => self.setState({ chatDetailTab: 'chat' }),
+openChecklistSheet: () => self.setState({ checklistSheetOpen: true, chatMoreMenuOpen: false }),
+closeChecklistSheet: () => self.setState({ checklistSheetOpen: false, checklistDraft: '', checklistDraftTime: '' }),
+checklistSheetOpen: !!s.checklistSheetOpen,
+checklistSnapLabel: (s.checklistSnap || 0.55) > 0.7 ? '半屏' : '加高',
+checklistSheetHeight: ((s.checklistSnap || 0.55) * 100).toFixed(0) + 'vh',
+toggleChecklistSnap: () => self.setState({ checklistSnap: (s.checklistSnap || 0.55) > 0.7 ? 0.55 : 0.88 }),
+checklistDraft: s.checklistDraft || '',
+checklistDraftTime: s.checklistDraftTime || '',
+checklistDraftChange: (e) => self.setState({ checklistDraft: e.target.value }),
+checklistDraftTimeChange: (e) => self.setState({ checklistDraftTime: e.target.value }),
+checklistAppName: 'KEL RECEIPT',
+checklistClerkLine: '柜员 ' + (s.aiNickname || 'Claude') + ' · ' + (s.userNickname || 'User'),
+checklistUserName: s.userNickname || 'User',
+checklistDateLine: (() => { const d=new Date(); return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0')+'  '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); })(),
+checklistEmpty: !(s.checklistItems && s.checklistItems.length),
+checklistRenderList: (() => {
+  try {
+    const rows = self._getChecklistRenderedItems() || [];
+    return rows.map(item => {
+      const overdue = !!item.isOverdue;
+      return {
+        body: item.body || '',
+        check: item.done ? '[*]' : '[ ]',
+        strike: item.done ? 'line-through' : 'none',
+        opacity: item.done ? '0.55' : '1',
+        by: item.created_by === 'assistant' ? (s.aiNickname || 'Claude') : (s.userNickname || 'User'),
+        hasBadge: !!item.badgeText,
+        badge: (overdue ? '! ' : '') + (item.badgeText || ''),
+        badgeColor: overdue ? '#C45C4A' : '#86806E',
+        toggle: () => self._toggleChecklistItem(item.id),
+        del: () => { self._deleteChecklistItem(item.id); self.show('已删除'); }
+      };
+    });
+  } catch (e) { return []; }
+})(),
+checklistAddOnce: () => {
+  const body = (s.checklistDraft || '').trim();
+  if (!body) { self.show('先写一点内容'); return; }
+  let trigger = null;
+  const tm = (s.checklistDraftTime || '').trim();
+  const mm = tm.match(/^(\d{1,2}):(\d{2})$/);
+  if (mm) {
+    const d = new Date(); d.setSeconds(0,0);
+    d.setHours(parseInt(mm[1],10), parseInt(mm[2],10), 0, 0);
+    if (d.getTime() <= Date.now()) d.setDate(d.getDate()+1);
+    trigger = d.getTime();
+  }
+  self._addChecklistItem(body, false, trigger);
+  self.setState({ checklistDraft: '', checklistDraftTime: '' });
+  self.show(trigger ? '已添加（含提醒）' : '已添加');
+},
+checklistAddFixed: () => {
+  const body = (s.checklistDraft || '').trim();
+  if (!body) { self.show('先写一点内容'); return; }
+  let trigger = null;
+  const tm = (s.checklistDraftTime || '').trim();
+  const mm = tm.match(/^(\d{1,2}):(\d{2})$/);
+  if (mm) {
+    const d = new Date(); d.setSeconds(0,0);
+    d.setHours(parseInt(mm[1],10), parseInt(mm[2],10), 0, 0);
+    if (d.getTime() <= Date.now()) d.setDate(d.getDate()+1);
+    trigger = d.getTime();
+  }
+  self._addChecklistItem(body, true, trigger);
+  self.setState({ checklistDraft: '', checklistDraftTime: '' });
+  self.show('已添加每日项');
+},
+
 toggleChatMoreMenu: () => self.setState({ chatMoreMenuOpen: !self.state.chatMoreMenuOpen }),
 closeChatMoreMenu: () => self.setState({ chatMoreMenuOpen: false }),
 openChatSettingsFromMore: () => self.setState({ chatDetailTab: 'settings', chatMoreMenuOpen: false }),
