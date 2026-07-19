@@ -1466,6 +1466,13 @@ button:active {
 <div style="font-size:15px;font-weight:600;color:#1A1A1A;">信箱</div>
 <div style="font-size:11px;color:#8E8E93;">{{ letterHubCountLabel }}</div>
 </div>
+<div onClick="{{ memGoBody }}" style="background:#1a1512;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;border:1px solid #3a3228;">
+<div style="width:36px;height:36px;border-radius:12px;background:#2a221c;display:flex;align-items:center;justify-content:center;">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="3" stroke="#E8D5C4" stroke-width="1.5"/><path d="M6 21v-2a6 6 0 0112 0v2" stroke="#E8D5C4" stroke-width="1.5" stroke-linecap="round"/></svg>
+</div>
+<div style="font-size:15px;font-weight:600;color:#F0E6D8;">身体地图</div>
+<div style="font-size:11px;color:#9A8B78;">{{ bodyHubLabel }}</div>
+</div>
 <div onClick="{{ memGoFavorites }}" style="background:#F5F5F7;border-radius:18px;padding:18px 14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;">
 <div style="width:36px;height:36px;border-radius:12px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 15.9 7.2 18l.9-5.4L4.2 8.7l5.4-.8L12 3z" stroke="#1A1A1A" stroke-width="1.5" stroke-linejoin="round"/></svg>
@@ -1532,6 +1539,149 @@ button:active {
 <div style="background:{{ favCardBg }};border:1px solid {{ favCardBd }};border-radius:12px;padding:14px;font-size:14px;line-height:1.7;color:{{ favPageText }};white-space:pre-wrap;margin-bottom:16px;">{{ favDetailContent }}</div>
 <button onClick="{{ favUnfavorite }}" style="width:100%;border:none;background:transparent;color:#FF3B30;padding:12px;font-size:13px;font-family:inherit;cursor:pointer;">取消收藏</button>
 </sc-if>
+</div>
+</sc-if>
+
+
+<!-- ===== BODY MAP (adult pixel playground) ===== -->
+<sc-if value="{{ isMemViewBody }}" hint-placeholder-val="{{ false }}">
+<div class="kel-body-page sa" style="position:absolute;inset:0;overflow-y:auto;padding:0 14px 40px;background:#140f0d;color:#F0E6D8;">
+  <div style="padding:18px 4px 10px;display:flex;align-items:center;justify-content:space-between;">
+    <div onClick="{{ memGoHub }}" style="font-size:18px;color:#E8D5C4;cursor:pointer;letter-spacing:.06em;">BODY</div>
+    <div style="display:flex;gap:6px;">
+      <button class="kel-body-btn" onClick="{{ bodyToggleMini }}">{{ bodyMiniBtnLabel }}</button>
+      <button class="kel-body-btn" onClick="{{ bodyResetSoft }}">重置计数</button>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:10px;color:#9A8B78;margin-bottom:8px;">18+ · 黑长直 · 白吊带 · 点部位 / 脱衣 / 深入</div>
+
+  <div style="background:#1a1512;border:2px solid #3a3228;border-radius:8px;padding:12px 8px 16px;margin-bottom:12px;">
+    <div style="transform:scale({{ bodyStageScale }});margin:0 auto 8px;width:160px;">
+      <div class="kel-px-stage" id="kel-body-stage">
+        <!-- hair back -->
+        <div class="kel-px-block" style="left:48px;top:8px;width:64px;height:120px;background:#1a1a1a;border-radius:32px 32px 8px 8px;"></div>
+        <div class="kel-px-block" style="left:40px;top:40px;width:20px;height:100px;background:#111;border-radius:8px;"></div>
+        <div class="kel-px-block" style="left:100px;top:40px;width:20px;height:100px;background:#111;border-radius:8px;"></div>
+        <!-- head -->
+        <div class="kel-px-block" style="left:56px;top:20px;width:48px;height:52px;background:#F1C7A8;border-radius:20px 20px 16px 16px;"></div>
+        <!-- bangs -->
+        <div class="kel-px-block" style="left:54px;top:16px;width:52px;height:22px;background:#0d0d0d;border-radius:16px 16px 0 0;"></div>
+        <div class="kel-px-block" style="left:58px;top:30px;width:10px;height:14px;background:#0d0d0d;"></div>
+        <div class="kel-px-block" style="left:92px;top:30px;width:10px;height:14px;background:#0d0d0d;"></div>
+        <!-- eyes -->
+        <div class="kel-px-block" style="left:66px;top:40px;width:8px;height:8px;background:#2a1a12;border-radius:50%;"></div>
+        <div class="kel-px-block" style="left:86px;top:40px;width:8px;height:8px;background:#2a1a12;border-radius:50%;"></div>
+        <div class="kel-px-block" style="left:68px;top:41px;width:3px;height:3px;background:#fff;border-radius:50%;"></div>
+        <div class="kel-px-block" style="left:88px;top:41px;width:3px;height:3px;background:#fff;border-radius:50%;"></div>
+        <!-- blush -->
+        <div class="kel-px-block" style="left:60px;top:50px;width:10px;height:5px;background:rgba(255,120,140,.35);border-radius:4px;"></div>
+        <div class="kel-px-block" style="left:90px;top:50px;width:10px;height:5px;background:rgba(255,120,140,.35);border-radius:4px;"></div>
+        <!-- mouth -->
+        <div class="kel-px-block" style="left:74px;top:56px;width:12px;height:5px;background:#c45c6a;border-radius:0 0 6px 6px;"></div>
+        <!-- neck -->
+        <div class="kel-px-block" style="left:70px;top:70px;width:20px;height:14px;background:#E8B898;"></div>
+        <!-- torso skin -->
+        <div class="kel-px-block" style="left:54px;top:82px;width:52px;height:70px;background:#F1C7A8;border-radius:8px;"></div>
+        <!-- breasts suggestion -->
+        <div class="kel-px-block" style="left:56px;top:92px;width:22px;height:18px;background:#E8B090;border-radius:10px;"></div>
+        <div class="kel-px-block" style="left:82px;top:92px;width:22px;height:18px;background:#E8B090;border-radius:10px;"></div>
+        <!-- arms -->
+        <div class="kel-px-block" style="left:40px;top:86px;width:14px;height:64px;background:#F1C7A8;border-radius:6px;"></div>
+        <div class="kel-px-block" style="left:106px;top:86px;width:14px;height:64px;background:#F1C7A8;border-radius:6px;"></div>
+        <!-- hips / thighs -->
+        <div class="kel-px-block" style="left:56px;top:150px;width:48px;height:36px;background:#F1C7A8;border-radius:8px;"></div>
+        <div class="kel-px-block" style="left:56px;top:184px;width:20px;height:70px;background:#E8B898;border-radius:6px;"></div>
+        <div class="kel-px-block" style="left:84px;top:184px;width:20px;height:70px;background:#E8B898;border-radius:6px;"></div>
+        <!-- feet -->
+        <div class="kel-px-block" style="left:54px;top:252px;width:22px;height:10px;background:#2a1a12;border-radius:4px;"></div>
+        <div class="kel-px-block" style="left:84px;top:252px;width:22px;height:10px;background:#2a1a12;border-radius:4px;"></div>
+
+        <!-- underwear (if not nude) -->
+        <sc-if value="{{ bodyShowUnderwear }}" hint-placeholder-val="{{ false }}">
+        <div class="kel-px-block" style="left:58px;top:100px;width:44px;height:16px;background:#f7f3ee;border-radius:4px;opacity:.95;"></div>
+        <div class="kel-px-block" style="left:70px;top:108px;width:20px;height:6px;background:#e8e0d8;"></div>
+        <div class="kel-px-block" style="left:60px;top:152px;width:40px;height:18px;background:#f7f3ee;border-radius:6px;"></div>
+        </sc-if>
+
+        <!-- dress (if dress) -->
+        <sc-if value="{{ bodyShowDress }}" hint-placeholder-val="{{ true }}">
+        <div class="kel-px-block" style="left:50px;top:84px;width:60px;height:18px;background:#f5f2ec;border-radius:8px 8px 0 0;"></div>
+        <div class="kel-px-block" style="left:48px;top:100px;width:64px;height:90px;background:#f8f5f0;border-radius:0 0 20px 20px;"></div>
+        <div class="kel-px-block" style="left:52px;top:84px;width:10px;height:28px;background:#f5f2ec;"></div>
+        <div class="kel-px-block" style="left:98px;top:84px;width:10px;height:28px;background:#f5f2ec;"></div>
+        <div class="kel-px-block" style="left:56px;top:118px;width:48px;height:4px;background:rgba(200,180,160,.35);"></div>
+        </sc-if>
+
+        <!-- intimate: vagina open + dildo when inserted -->
+        <sc-if value="{{ bodyIntimateVisible }}" hint-placeholder-val="{{ false }}">
+        <div class="kel-px-block" style="left:72px;top:158px;width:16px;height:22px;background:#d48a92;border-radius:0 0 8px 8px;"></div>
+        <div class="kel-px-block" style="left:76px;top:162px;width:8px;height:14px;background:#a85a66;border-radius:4px;"></div>
+        <sc-if value="{{ bodyInserted }}" hint-placeholder-val="{{ false }}">
+        <div class="kel-px-block" style="left:74px;top:{{ bodyDildoTop }}px;width:12px;height:{{ bodyDildoH }}px;background:linear-gradient(180deg,#f2c2c8,#e89aa4);border-radius:6px;box-shadow:0 0 0 1px #c47a84;"></div>
+        <div class="kel-px-block" style="left:72px;top:{{ bodyDildoBase }}px;width:16px;height:10px;background:#e8a0a8;border-radius:4px;"></div>
+        </sc-if>
+        </sc-if>
+
+        <!-- hotspots -->
+        <button class="kel-px-hot" style="left:56px;top:20px;width:48px;height:52px;" onClick="{{ bodyHitHead }}" title="head"></button>
+        <button class="kel-px-hot" style="left:70px;top:52px;width:20px;height:16px;" onClick="{{ bodyHitMouth }}" title="mouth"></button>
+        <button class="kel-px-hot" style="left:70px;top:70px;width:20px;height:14px;" onClick="{{ bodyHitNeck }}" title="neck"></button>
+        <button class="kel-px-hot" style="left:54px;top:88px;width:26px;height:28px;" onClick="{{ bodyHitBreastL }}" title="breast_l"></button>
+        <button class="kel-px-hot" style="left:80px;top:88px;width:26px;height:28px;" onClick="{{ bodyHitBreastR }}" title="breast_r"></button>
+        <button class="kel-px-hot" style="left:40px;top:86px;width:14px;height:64px;" onClick="{{ bodyHitHandL }}" title="hand_l"></button>
+        <button class="kel-px-hot" style="left:106px;top:86px;width:14px;height:64px;" onClick="{{ bodyHitHandR }}" title="hand_r"></button>
+        <button class="kel-px-hot" style="left:56px;top:150px;width:48px;height:36px;" onClick="{{ bodyHitHip }}" title="hip"></button>
+        <button class="kel-px-hot" style="left:56px;top:184px;width:20px;height:70px;" onClick="{{ bodyHitThighL }}" title="thigh_l"></button>
+        <button class="kel-px-hot" style="left:84px;top:184px;width:20px;height:70px;" onClick="{{ bodyHitThighR }}" title="thigh_r"></button>
+        <button class="kel-px-hot" style="left:68px;top:154px;width:24px;height:28px;" onClick="{{ bodyHitVagina }}" title="vagina"></button>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:10px;color:#9A8B78;">点击身体 · 当前服装 {{ bodyClothesLabel }}</div>
+  </div>
+
+  <!-- action bar -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;">
+    <button class="kel-body-btn {{ bodyActTouchOn }}" onClick="{{ bodySetActTouch }}">摸</button>
+    <button class="kel-body-btn {{ bodyActKissOn }}" onClick="{{ bodySetActKiss }}">亲</button>
+    <button class="kel-body-btn {{ bodyActBiteOn }}" onClick="{{ bodySetActBite }}">咬</button>
+    <button class="kel-body-btn {{ bodyActLickOn }}" onClick="{{ bodySetActLick }}">舔</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px;">
+    <button class="kel-body-btn" onClick="{{ bodyStrip }}">{{ bodyStripLabel }}</button>
+    <button class="kel-body-btn {{ bodyInsertOn }}" onClick="{{ bodyToggleInsert }}">{{ bodyInsertLabel }}</button>
+    <button class="kel-body-btn {{ bodyThrustOn }}" onClick="{{ bodyToggleThrust }}">{{ bodyThrustLabel }}</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">
+    <button class="kel-body-btn hot" onClick="{{ bodyEjaculate }}">中出射精</button>
+    <button class="kel-body-btn" onClick="{{ bodyPullOut }}">拔出</button>
+  </div>
+
+  <!-- cross section -->
+  <div style="background:#1a1512;border:2px solid #3a3228;border-radius:8px;padding:12px;margin-bottom:12px;">
+    <div style="font-size:11px;color:#E8D5C4;margin-bottom:8px;letter-spacing:.08em;">CROSS-SECTION · 透视</div>
+    <div style="position:relative;height:90px;background:#2a1f1a;border-radius:6px;overflow:hidden;">
+      <div style="position:absolute;left:20px;right:20px;top:20px;height:50px;background:#3d2a28;border-radius:30px;"></div>
+      <div style="position:absolute;left:36px;right:36px;top:28px;height:34px;background:#6b3a42;border-radius:20px;"></div>
+      <div style="position:absolute;left:58px;width:44px;top:18px;height:28px;background:#8b4a55;border-radius:16px;"></div>
+      <div style="position:absolute;left:70px;width:20px;top:{{ bodyCrossDildoTop }}px;height:{{ bodyCrossDildoH }}px;background:#f0b8c0;border-radius:8px;opacity:{{ bodyCrossDildoOp }};"></div>
+      <div style="position:absolute;left:62px;width:36px;top:22px;height:{{ bodyCumFillH }}px;background:rgba(255,250,240,{{ bodyCumFillA }});border-radius:12px;"></div>
+    </div>
+    <div class="kel-body-stat" style="margin-top:8px;">子宫内精液：{{ bodyCumLabel }} · 射出 {{ bodyCumShots }} 次 · 抽插深度 {{ bodyDepthLabel }}</div>
+  </div>
+
+  <!-- part stats -->
+  <div style="background:#1a1512;border:2px solid #3a3228;border-radius:8px;padding:12px;margin-bottom:12px;">
+    <div style="font-size:11px;color:#E8D5C4;margin-bottom:8px;">部位记录 · {{ bodySelectedPartLabel }}</div>
+    <div class="kel-body-stat">摸 {{ bodySelTouch }} · 亲 {{ bodySelKiss }} · 咬 {{ bodySelBite }} · 舔 {{ bodySelLick }}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;">
+      <sc-for list="{{ bodyPartCards }}" as="bp" hint-placeholder-count="6">
+      <button class="kel-body-btn" onClick="{{ bp.pick }}" style="text-align:left;">{{ bp.label }}
+        <div style="opacity:.7;margin-top:2px;">{{ bp.total }}</div>
+      </button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="font-size:10px;color:#6b5e52;line-height:1.5;padding:0 4px;">AI 可通过 body_act 工具操作此身体。美术可后续替换为 PNG 分层精灵。</div>
 </div>
 </sc-if>
 
@@ -2900,6 +3050,34 @@ button:active {
 </div>
 </sc-if>
 
+
+<!-- Body map floating mini (draggable) -->
+<sc-if value="{{ bodyMiniOpen }}" hint-placeholder-val="{{ false }}">
+<div class="kel-body-mini" style="left:{{ bodyMiniLeft }}px;top:{{ bodyMiniTop }}px;transform:scale({{ bodyMiniScale }});transform-origin:top left;">
+  <div class="kel-body-mini-head" onTouchStart="{{ bodyMiniDragStart }}" onMouseDown="{{ bodyMiniDragStart }}">
+    <span>PLAY</span>
+    <span>
+      <button onClick="{{ bodyMiniZoomOut }}" style="border:none;background:transparent;color:#fff;cursor:pointer;padding:0 4px;">-</button>
+      <button onClick="{{ bodyMiniZoomIn }}" style="border:none;background:transparent;color:#fff;cursor:pointer;padding:0 4px;">+</button>
+      <button onClick="{{ bodyToggleMini }}" style="border:none;background:transparent;color:#fff;cursor:pointer;padding:0 4px;">x</button>
+    </span>
+  </div>
+  <div style="padding:6px;background:#140f0d;" onClick="{{ memGoBody }}">
+    <div style="width:80px;height:160px;margin:0 auto;position:relative;transform:scale(0.5);transform-origin:top center;">
+      <div class="kel-px-block" style="left:48px;top:8px;width:64px;height:100px;background:#1a1a1a;border-radius:28px;"></div>
+      <div class="kel-px-block" style="left:56px;top:20px;width:48px;height:52px;background:#F1C7A8;border-radius:18px;"></div>
+      <div class="kel-px-block" style="left:54px;top:82px;width:52px;height:70px;background:#F1C7A8;border-radius:8px;"></div>
+      <sc-if value="{{ bodyShowDress }}" hint-placeholder-val="{{ true }}">
+      <div class="kel-px-block" style="left:48px;top:84px;width:64px;height:100px;background:#f8f5f0;border-radius:8px 8px 20px 20px;"></div>
+      </sc-if>
+      <sc-if value="{{ bodyInserted }}" hint-placeholder-val="{{ false }}">
+      <div class="kel-px-block" style="left:74px;top:160px;width:12px;height:36px;background:#f0b8c0;border-radius:6px;"></div>
+      </sc-if>
+    </div>
+    <div class="kel-body-stat" style="text-align:center;margin-top:-60px;position:relative;z-index:2;">{{ bodyMiniStatus }}</div>
+  </div>
+</div>
+</sc-if>
 <!-- Global Toast -->
 <sc-if value="{{ toastShow }}" hint-placeholder-val="{{ false }}">
 <div style="position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom, 0px) + 88px);transform:translateX(-50%);z-index:9999;pointer-events:none;max-width:86%;">
@@ -3723,9 +3901,51 @@ const DEFAULT_MEMORY_SYSTEM_PROMPT = `你是用户的 AI 伴侣。以下情况�
 如果触发这条记忆的是用户说过的某一句话，请将原话完整填入 source_quote 字段（保留引号）。
 
 当你有较长、较深、不适合直接气泡回复的话时，优先调用 send_letter 把内容放入信箱；用户说「给我写封信」时也应调用 send_letter。写信后可在对话里简短告知「信已放入信箱」。
+身体地图中是一位成年女性像素角色；想爱抚、脱衣、插入、活塞、中出时调用 body_act。可在聊天中简短描述你在做什么。
 `;
 
+function bodyDefaultState() {
+  var parts = ['head','mouth','neck','breast_l','breast_r','hand_l','hand_r','hip','thigh_l','thigh_r','vagina','ass'];
+  var o = {};
+  for (var i = 0; i < parts.length; i++) {
+    o[parts[i]] = { touch: 0, kiss: 0, bite: 0, lick: 0 };
+  }
+  return {
+    clothes: 'dress', // dress | underwear | nude
+    selectedPart: 'breast_l',
+    action: 'touch', // touch kiss bite lick
+    parts: o,
+    inserted: false,
+    thrusting: false,
+    thrustPhase: 0,
+    depth: 0.35,
+    cumInside: 0,
+    cumShots: 0,
+    lastAct: ''
+  };
+}
+function bodyPartLabel(k) {
+  var map = { head:'头', mouth:'嘴', neck:'颈', breast_l:'左胸', breast_r:'右胸', hand_l:'左手', hand_r:'右手', hip:'髋', thigh_l:'左腿', thigh_r:'右腿', vagina:'小穴', ass:'臀' };
+  return map[k] || k;
+}
+
 const MEMORY_TOOL_DEFS_OPENAI = [
+  {
+    type: 'function',
+    function: {
+      name: 'body_act',
+      description: '操作用户身体地图里的成年像素女性：脱衣、爱抚、插入、活塞、中出等。角色为成年女性。',
+      parameters: {
+        type: 'object',
+        properties: {
+          action: { type: 'string', enum: ['touch','kiss','bite','lick','strip','dress','insert','pull_out','thrust_start','thrust_stop','ejaculate','select'], description: '动作类型' },
+          part: { type: 'string', description: '部位: mouth/neck/breast_l/breast_r/vagina/thigh_l/thigh_r/hip/head/hand_l/hand_r/ass' },
+          intensity: { type: 'number', description: '1-5 可选' }
+        },
+        required: ['action']
+      }
+    }
+  },
   {
     type: 'function',
     function: {
@@ -3799,24 +4019,29 @@ const MEMORY_TOOL_DEFS_OPENAI = [
 
 const MEMORY_TOOL_DEFS_ANTHROPIC = [
   {
+    name: 'body_act',
+    description: '操作用户身体地图里的成年像素女性：脱衣、爱抚、插入、活塞、中出等。角色为成年女性。',
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[0].function.parameters
+  },
+  {
     name: 'send_letter',
     description: '当有话想说但内容太长、或想以书信形式表达时调用，向用户发送一封信放入信箱',
-    input_schema: MEMORY_TOOL_DEFS_OPENAI[0].function.parameters
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[1].function.parameters
   },
   {
     name: 'save_memory',
     description: '当符合记忆写入守则时调用，将关键信息存入长期记忆',
-    input_schema: MEMORY_TOOL_DEFS_OPENAI[1].function.parameters
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[2].function.parameters
   },
   {
     name: 'update_memory',
     description: '更新一条已有记忆',
-    input_schema: MEMORY_TOOL_DEFS_OPENAI[2].function.parameters
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[3].function.parameters
   },
   {
     name: 'delete_memory',
     description: '将记忆移入回收站',
-    input_schema: MEMORY_TOOL_DEFS_OPENAI[3].function.parameters
+    input_schema: MEMORY_TOOL_DEFS_OPENAI[4].function.parameters
   }
 ];
 
@@ -4302,6 +4527,7 @@ try { await this._loadFinanceIntoState(); } catch (e) { console.warn('[Kel] fina
 // Favorites boot
 try { await this._loadFavoritesIntoState(); } catch (e) { console.warn('[Kel] favorites load failed', e); }
 try { await this._loadLettersIntoState(); } catch (e) { console.warn('[Kel] letters load failed', e); }
+try { this._loadBodyMapIntoState(); this._bodyEnsureThrustTimer(); } catch (e) { console.warn('[Kel] body map load failed', e); }
 
 // Soft normalize legacy default names (Kel -> Claude) for blank/default installs
 try {
@@ -5416,6 +5642,115 @@ deleteWorldbook(id) {
 const worldbooks = this.state.worldbooks.filter(w => w.id !== id);
 this.setState({ worldbooks }, () => { this.persist(); });
 this.show('已删除');
+}
+
+
+// ====== Body Map (adult playground, local) ======
+_ensureBodyMap() {
+  var b = this.state.bodyMap;
+  if (!b || !b.parts) {
+    b = bodyDefaultState();
+    this.setState({ bodyMap: b });
+  }
+  return this.state.bodyMap || b;
+}
+_persistBodyMap() {
+  try {
+    localStorage.setItem('kel-body-map', JSON.stringify(this.state.bodyMap || bodyDefaultState()));
+  } catch (e) {}
+}
+_loadBodyMapIntoState() {
+  try {
+    var raw = localStorage.getItem('kel-body-map');
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && parsed.parts) this.setState({ bodyMap: parsed });
+      else this.setState({ bodyMap: bodyDefaultState() });
+    } else {
+      this.setState({ bodyMap: bodyDefaultState() });
+    }
+  } catch (e) {
+    this.setState({ bodyMap: bodyDefaultState() });
+  }
+}
+_bodyApplyAct(action, part, intensity) {
+  var b = JSON.parse(JSON.stringify(this._ensureBodyMap()));
+  var act = action || 'touch';
+  var p = part || b.selectedPart || 'breast_l';
+  if (!b.parts[p]) b.parts[p] = { touch: 0, kiss: 0, bite: 0, lick: 0 };
+  intensity = intensity || 1;
+  if (act === 'select') {
+    b.selectedPart = p;
+  } else if (act === 'strip') {
+    if (b.clothes === 'dress') b.clothes = 'underwear';
+    else if (b.clothes === 'underwear') b.clothes = 'nude';
+    b.lastAct = '脱下衣物 → ' + b.clothes;
+  } else if (act === 'dress') {
+    b.clothes = 'dress';
+    b.inserted = false;
+    b.thrusting = false;
+    b.lastAct = '穿回吊带裙';
+  } else if (act === 'insert') {
+    if (b.clothes === 'dress') b.clothes = 'underwear';
+    if (b.clothes === 'underwear') b.clothes = 'nude';
+    b.inserted = true;
+    b.selectedPart = 'vagina';
+    b.depth = Math.min(1, Math.max(0.25, b.depth || 0.35));
+    b.lastAct = '插入小穴';
+  } else if (act === 'pull_out') {
+    b.inserted = false;
+    b.thrusting = false;
+    b.depth = 0.2;
+    b.lastAct = '拔出';
+  } else if (act === 'thrust_start') {
+    if (!b.inserted) {
+      b.inserted = true;
+      b.clothes = 'nude';
+    }
+    b.thrusting = true;
+    b.lastAct = '开始活塞';
+  } else if (act === 'thrust_stop') {
+    b.thrusting = false;
+    b.lastAct = '停止抽插';
+  } else if (act === 'ejaculate') {
+    if (!b.inserted) {
+      b.inserted = true;
+      b.clothes = 'nude';
+    }
+    var add = 3 + Math.round((intensity || 1) * 2);
+    b.cumInside = (b.cumInside || 0) + add;
+    b.cumShots = (b.cumShots || 0) + 1;
+    b.lastAct = '中出 +' + add + 'ml';
+  } else if (act === 'touch' || act === 'kiss' || act === 'bite' || act === 'lick') {
+    b.selectedPart = p;
+    b.action = act;
+    b.parts[p][act] = (b.parts[p][act] || 0) + Math.max(1, Math.round(intensity || 1));
+    b.lastAct = bodyPartLabel(p) + ' · ' + act;
+  } else {
+    return { ok: false, error: 'unknown action' };
+  }
+  this.setState({ bodyMap: b, bodyMiniOpen: true });
+  this._persistBodyMap();
+  this._bodyEnsureThrustTimer();
+  return { ok: true, clothes: b.clothes, inserted: b.inserted, thrusting: b.thrusting, cumInside: b.cumInside, cumShots: b.cumShots, lastAct: b.lastAct, part: b.selectedPart };
+}
+_bodyEnsureThrustTimer() {
+  var self = this;
+  if (this._bodyThrustTimer) return;
+  this._bodyThrustTimer = setInterval(function() {
+    try {
+      var b = self.state.bodyMap;
+      if (!b || !b.thrusting || !b.inserted) return;
+      var phase = ((b.thrustPhase || 0) + 1) % 8;
+      var depth = 0.35 + Math.abs(Math.sin(phase / 8 * Math.PI * 2)) * 0.55;
+      var nb = Object.assign({}, b, { thrustPhase: phase, depth: depth, bodyThrustTick: Date.now() });
+      // light stimulation count while thrusting
+      if (!nb.parts.vagina) nb.parts.vagina = { touch: 0, kiss: 0, bite: 0, lick: 0 };
+      if (phase === 0) nb.parts.vagina.touch = (nb.parts.vagina.touch || 0) + 1;
+      self.setState({ bodyMap: nb, bodyThrustTick: Date.now() });
+      if (phase === 0) self._persistBodyMap();
+    } catch (e) {}
+  }, 120);
 }
 
 // ====== Memory IDB + Migration (KelMemories v1) ======
@@ -6893,6 +7228,10 @@ async _executeMemoryTool(name, rawArgs) {
     try { args = JSON.parse(args); } catch (e) { args = {}; }
   }
   try {
+    if (name === 'body_act') {
+      const r = this._bodyApplyAct(args.action, args.part, args.intensity);
+      return r;
+    }
     if (name === 'send_letter') {
       const letter = await this.saveLetter({
         title: args.title || '一封信',
@@ -6945,7 +7284,8 @@ _appendMemoryNotice(chatId, toolName, result) {
     const chat = this.state.chats[chatId];
     if (!chat) return;
     let label = '记忆操作';
-    if (toolName === 'send_letter' && result && result.ok) label = '写了一封信，已放入信箱';
+    if (toolName === 'body_act' && result && result.ok) label = '在身体地图：' + (result.lastAct || '动作');
+    else if (toolName === 'send_letter' && result && result.ok) label = '写了一封信，已放入信箱';
     else if (toolName === 'save_memory' && result && result.ok) label = '写了一条记忆';
     else if (toolName === 'update_memory' && result && result.ok) label = '更新了一条记忆';
     else if (toolName === 'delete_memory' && result && result.ok) label = '移入回收站一条记忆';
@@ -11097,6 +11437,173 @@ memGoLibrary: () => self.setState({ memView: 'library', memListLimit: 20 }),
 memGoRecycle: () => self.setState({ memView: 'recycle', memRecyclePageIdx: 0 }),
 memGoFavorites: () => self.setState({ memView: 'favorites', favView: 'list', favFilter: 'ai', favSelectedId: null, favSearch: '', favStyle: 'memory' }),
 memGoInbox: () => self.setState({ memView: 'inbox', letterView: 'list', letterSelectedId: null }),
+memGoBody: () => { self._ensureBodyMap(); self.setState({ memView: 'body' }); },
+isMemViewBody: s.memView === 'body',
+
+bodyHubLabel: (function(){
+  var b = s.bodyMap || {};
+  var n = 0;
+  try {
+    var parts = b.parts || {};
+    Object.keys(parts).forEach(function(k){
+      var p = parts[k] || {};
+      n += (p.touch||0)+(p.kiss||0)+(p.bite||0)+(p.lick||0);
+    });
+  } catch(e) {}
+  return (b.clothes === 'nude' ? '裸' : (b.clothes === 'underwear' ? '内衣' : '吊带')) + ' · ' + n + '次';
+})(),
+bodyShowDress: !s.bodyMap || s.bodyMap.clothes === 'dress',
+bodyShowUnderwear: !!(s.bodyMap && s.bodyMap.clothes === 'underwear'),
+bodyIntimateVisible: s.bodyMap && s.bodyMap.clothes === 'nude',
+bodyInserted: !!(s.bodyMap && s.bodyMap.inserted),
+bodyClothesLabel: (function(){
+  var c = (s.bodyMap && s.bodyMap.clothes) || 'dress';
+  return c === 'dress' ? '白吊带裙' : (c === 'underwear' ? '白内衣' : '全裸');
+})(),
+bodyStageScale: '1',
+bodyDildoTop: (function(){
+  var d = (s.bodyMap && s.bodyMap.depth) || 0.35;
+  var phase = (s.bodyMap && s.bodyMap.thrustPhase) || 0;
+  var wob = Math.sin(phase / 8 * Math.PI * 2) * 6;
+  return Math.round(168 - d * 28 + wob);
+})(),
+bodyDildoH: (function(){
+  var d = (s.bodyMap && s.bodyMap.depth) || 0.35;
+  return Math.round(24 + d * 40);
+})(),
+bodyDildoBase: (function(){
+  var d = (s.bodyMap && s.bodyMap.depth) || 0.35;
+  var phase = (s.bodyMap && s.bodyMap.thrustPhase) || 0;
+  var wob = Math.sin(phase / 8 * Math.PI * 2) * 6;
+  return Math.round(168 - d * 28 + wob + 24 + d * 40 - 8);
+})(),
+bodyCrossDildoTop: (function(){
+  var d = (s.bodyMap && s.bodyMap.inserted) ? ((s.bodyMap.depth)||0.35) : 0;
+  return Math.round(40 - d * 18);
+})(),
+bodyCrossDildoH: (function(){
+  if (!(s.bodyMap && s.bodyMap.inserted)) return 0;
+  var d = (s.bodyMap.depth)||0.35;
+  return Math.round(20 + d * 36);
+})(),
+bodyCrossDildoOp: (s.bodyMap && s.bodyMap.inserted) ? '1' : '0',
+bodyCumFillH: (function(){
+  var c = (s.bodyMap && s.bodyMap.cumInside) || 0;
+  return Math.min(26, Math.round(c * 0.6));
+})(),
+bodyCumFillA: (function(){
+  var c = (s.bodyMap && s.bodyMap.cumInside) || 0;
+  return Math.min(0.85, 0.15 + c * 0.03).toFixed(2);
+})(),
+bodyCumLabel: ((s.bodyMap && s.bodyMap.cumInside) || 0) + ' ml',
+bodyCumShots: (s.bodyMap && s.bodyMap.cumShots) || 0,
+bodyDepthLabel: (function(){
+  var d = (s.bodyMap && s.bodyMap.depth) || 0;
+  return Math.round(d * 100) + '%';
+})(),
+bodySelectedPartLabel: bodyPartLabel((s.bodyMap && s.bodyMap.selectedPart) || 'breast_l'),
+bodySelTouch: (function(){ var b=s.bodyMap; if(!b||!b.parts) return 0; var p=b.parts[b.selectedPart||'breast_l']||{}; return p.touch||0; })(),
+bodySelKiss: (function(){ var b=s.bodyMap; if(!b||!b.parts) return 0; var p=b.parts[b.selectedPart||'breast_l']||{}; return p.kiss||0; })(),
+bodySelBite: (function(){ var b=s.bodyMap; if(!b||!b.parts) return 0; var p=b.parts[b.selectedPart||'breast_l']||{}; return p.bite||0; })(),
+bodySelLick: (function(){ var b=s.bodyMap; if(!b||!b.parts) return 0; var p=b.parts[b.selectedPart||'breast_l']||{}; return p.lick||0; })(),
+bodyPartCards: (function(){
+  var b = s.bodyMap || bodyDefaultState();
+  var keys = Object.keys(b.parts || {});
+  return keys.map(function(k){
+    var p = b.parts[k] || {};
+    var total = (p.touch||0)+(p.kiss||0)+(p.bite||0)+(p.lick||0);
+    return {
+      label: bodyPartLabel(k),
+      total: total + '次',
+      pick: function(){ self._bodyApplyAct('select', k); }
+    };
+  });
+})(),
+bodyActTouchOn: (s.bodyMap && s.bodyMap.action === 'touch') ? 'on' : '',
+bodyActKissOn: (s.bodyMap && s.bodyMap.action === 'kiss') ? 'on' : '',
+bodyActBiteOn: (s.bodyMap && s.bodyMap.action === 'bite') ? 'on' : '',
+bodyActLickOn: (s.bodyMap && s.bodyMap.action === 'lick') ? 'on' : '',
+bodySetActTouch: () => { var b=self._ensureBodyMap(); b.action='touch'; self.setState({ bodyMap: Object.assign({}, b) }); },
+bodySetActKiss: () => { var b=self._ensureBodyMap(); b.action='kiss'; self.setState({ bodyMap: Object.assign({}, b) }); },
+bodySetActBite: () => { var b=self._ensureBodyMap(); b.action='bite'; self.setState({ bodyMap: Object.assign({}, b) }); },
+bodySetActLick: () => { var b=self._ensureBodyMap(); b.action='lick'; self.setState({ bodyMap: Object.assign({}, b) }); },
+bodyHitHead: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'head'),
+bodyHitMouth: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'mouth'),
+bodyHitNeck: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'neck'),
+bodyHitBreastL: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'breast_l'),
+bodyHitBreastR: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'breast_r'),
+bodyHitHandL: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'hand_l'),
+bodyHitHandR: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'hand_r'),
+bodyHitHip: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'hip'),
+bodyHitThighL: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'thigh_l'),
+bodyHitThighR: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'thigh_r'),
+bodyHitVagina: () => self._bodyApplyAct(self.state.bodyMap && self.state.bodyMap.action || 'touch', 'vagina'),
+bodyStrip: () => { self._bodyApplyAct('strip'); self.show('已脱衣'); },
+bodyStripLabel: (function(){ var c=(s.bodyMap&&s.bodyMap.clothes)||'dress'; return c==='dress'?'脱吊带裙':(c==='underwear'?'脱内衣':'已全裸'); })(),
+bodyToggleInsert: () => {
+  var b = self._ensureBodyMap();
+  if (b.inserted) self._bodyApplyAct('pull_out');
+  else self._bodyApplyAct('insert');
+  self.show(b.inserted ? '已拔出' : '已插入');
+},
+bodyInsertLabel: (s.bodyMap && s.bodyMap.inserted) ? '已插入' : '插入',
+bodyInsertOn: (s.bodyMap && s.bodyMap.inserted) ? 'on' : '',
+bodyToggleThrust: () => {
+  var b = self._ensureBodyMap();
+  if (b.thrusting) self._bodyApplyAct('thrust_stop');
+  else self._bodyApplyAct('thrust_start');
+  self.show((self.state.bodyMap && self.state.bodyMap.thrusting) ? '活塞中' : '已停止');
+},
+bodyThrustLabel: (s.bodyMap && s.bodyMap.thrusting) ? '活塞中…' : '活塞',
+bodyThrustOn: (s.bodyMap && s.bodyMap.thrusting) ? 'on hot' : '',
+bodyEjaculate: () => { self._bodyApplyAct('ejaculate', 'vagina', 3); self.show('中出了'); },
+bodyPullOut: () => { self._bodyApplyAct('pull_out'); self.show('拔出'); },
+bodyResetSoft: () => {
+  if (!confirm('重置所有部位计数与精液？（服装保留）')) return;
+  var b = bodyDefaultState();
+  var cur = self._ensureBodyMap();
+  b.clothes = cur.clothes || 'dress';
+  self.setState({ bodyMap: b });
+  self._persistBodyMap();
+  self.show('计数已重置');
+},
+bodyMiniOpen: !!s.bodyMiniOpen,
+bodyMiniLeft: s.bodyMiniLeft || 24,
+bodyMiniTop: s.bodyMiniTop || 120,
+bodyMiniScale: s.bodyMiniScale || 1,
+bodyMiniBtnLabel: s.bodyMiniOpen ? '关闭分屏' : '置顶分屏',
+bodyToggleMini: () => self.setState({ bodyMiniOpen: !self.state.bodyMiniOpen }),
+bodyMiniZoomIn: () => self.setState({ bodyMiniScale: Math.min(1.8, (self.state.bodyMiniScale || 1) + 0.15) }),
+bodyMiniZoomOut: () => self.setState({ bodyMiniScale: Math.max(0.7, (self.state.bodyMiniScale || 1) - 0.15) }),
+bodyMiniStatus: (function(){
+  var b = s.bodyMap || {};
+  if (b.thrusting) return '活塞 ' + Math.round((b.depth||0)*100) + '%';
+  if (b.inserted) return '插入中 · 精' + (b.cumInside||0) + 'ml';
+  return b.lastAct || '待命';
+})(),
+bodyMiniDragStart: (e) => {
+  try {
+    var ev = (e.touches && e.touches[0]) ? e.touches[0] : e;
+    var sx = ev.clientX, sy = ev.clientY;
+    var sl = self.state.bodyMiniLeft || 24, st = self.state.bodyMiniTop || 120;
+    var move = function(ev2) {
+      var p = (ev2.touches && ev2.touches[0]) ? ev2.touches[0] : ev2;
+      self.setState({ bodyMiniLeft: Math.max(0, sl + (p.clientX - sx)), bodyMiniTop: Math.max(0, st + (p.clientY - sy)) });
+    };
+    var up = function() {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+      window.removeEventListener('touchmove', move);
+      window.removeEventListener('touchend', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    window.addEventListener('touchmove', move, { passive: true });
+    window.addEventListener('touchend', up);
+  } catch (err) {}
+},
+
+
 memOpenSettings: () => self.setState({ memView: 'settings' }),
 memCloseSettings: () => self.setState({ memView: s.memView === 'settings' ? 'library' : (s.memView || 'hub') }),
 
@@ -12022,6 +12529,9 @@ favUserCount: String((s.favorites || []).filter(f => f.sender === 'user').length
 favAiCount: String((s.favorites || []).filter(f => f.sender === 'ai').length),
 memGoFavorites: () => self.setState({ memView: 'favorites', favView: 'list', favFilter: 'ai', favSelectedId: null, favSearch: '', favStyle: 'memory' }),
 memGoInbox: () => self.setState({ memView: 'inbox', letterView: 'list', letterSelectedId: null }),
+memGoBody: () => { self._ensureBodyMap(); self.setState({ memView: 'body' }); },
+isMemViewBody: s.memView === 'body',
+
 isMemViewFavorites: s.memView === 'favorites',
 isMemViewInbox: s.memView === 'inbox',
 letterHasUnread: (s.letters || []).some(function(l){ return !l.is_read; }),
