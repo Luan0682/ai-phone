@@ -188,3 +188,29 @@
 - 线上 kel-home.xyz 已部署最新
 - 下一步：Termux MCP 对接（用户自己搞）/ 更深残留清理
 
+---
+
+## 2026-07-19 记账 Finance Phase 1
+
+### 背景
+- 首页新增独立 App：Finance（记账），蓝图全量延后
+- 本轮范围：入口卡 + 仪表盘 + 录入编辑删除 + KelFinance IndexedDB
+- 不做：历史/钱包/底栏三 Tab/自定义分类/AI 发消息附加
+
+### 改了
+- `Kel-Home-main/index.html`
+  - 首页卡片：Diary 后插入 Finance（钱包线性图标）
+  - 全屏页 `tab: finance`，英文 Finance 点回 Home
+  - 仪表盘：本月 SVG 圆盘 + 收入/支出/AI 支出 + 今日流水
+  - 底部 sheet 记一笔/编辑/删除
+  - 新库 `KelFinance` v1：transactions / categories / settings；8 个固定分类 seed
+  - 分类图标用 React.createElement（dc-runtime 可渲染 isValidElement）
+  - `node --check` 通过；sc-if 138/138
+
+### 部署
+- 本地已实现；**scp 待你明确授权后再部署**到 kel-home.xyz
+- 部署前建议先导出/云备份（避免空状态覆盖）
+
+### 下一步 Phase 2
+- 历史月视图、钱包封面、底栏三 Tab、自定义分类、发消息附加未同步流水
+
