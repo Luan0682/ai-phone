@@ -254,6 +254,11 @@ button:active {
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
 <span style="font-size:13px;color:#1A1815;font-weight:500;">聊天设置</span>
 </button>
+<button onClick="{{ openErrorLogFromMore }}" style="width:100%;border:none;background:transparent;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;font-family:inherit;text-align:left;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#68544B" stroke-width="1.5"/><path d="M12 8v5M12 16h.01" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
+<span style="font-size:13px;color:#1A1815;font-weight:500;">错误日志</span>
+<span style="margin-left:auto;font-size:11px;color:#9A958B;">{{ errorLogCount }}</span>
+</button>
 </div>
 </sc-if>
 </div>
@@ -942,185 +947,6 @@ button:active {
 </div>
 
 <!-- Pet 模块 (可折叠) + 位置调节 -->
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div onClick="{{ togglePetSection }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<div style="width:40px;height:40px;border-radius:12px;background:#DFF2EC;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-<img src="{{ petGif }}" width="32" height="32" style="image-rendering:pixelated;" alt="">
-</div>
-<div>
-<div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">小可宝宝</div>
-<div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ petStatus }} · {{ petSizeLabel }}</div>
-</div>
-</div>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="transform:rotate({{ petSectionRotate }}deg);transition:transform .2s;"><path d="M6 9l6 6 6-6" stroke="#9A958B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<sc-if value="{{ petSectionOpen }}" hint-placeholder-val="{{ false }}">
-<div style="padding:0 18px 16px;border-top:1px solid #ECE8DF;">
-<!-- 显示宠物开关 -->
-<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;">
-<span style="font-size:14px;color:#3A362F;">显示宠物</span>
-<div onClick="{{ togglePet }}" style="width:44px;height:24px;border-radius:12px;background:{{ petToggleBg }};cursor:pointer;position:relative;transition:background .2s;">
-<div style="width:20px;height:20px;border-radius:50%;background:#FFF;position:absolute;top:2px;left:{{ petToggleLeft }};transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
-</div>
-</div>
-<!-- 大小滑动条 -->
-<div style="padding:8px 0 14px;">
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-<span style="font-size:14px;color:#3A362F;">大小</span>
-<span style="font-size:13px;font-weight:600;color:#68544B;">{{ petSizeSliderLabel }}px</span>
-</div>
-<input type="range" min="32" max="128" step="8" value="{{ petSizeSliderVal }}" onInput="{{ petSizeSliderChange }}" style="width:100%;height:4px;border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,#DFF2EC {{ petSizeSliderPercent }},#F2EFE8 {{ petSizeSliderPercent }});">
-<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>小</span><span>大</span></div>
-</div>
-<!-- 上下位置滑动条 -->
-<div style="padding:8px 0 14px;border-top:1px solid #F5F3EE;">
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-<span style="font-size:14px;color:#3A362F;">上下位置</span>
-<span style="font-size:13px;font-weight:600;color:#68544B;">离底{{ petPosBottom }}px</span>
-</div>
-<input type="range" min="10" max="400" value="{{ petPosBottom }}" onInput="{{ petPosBottomChange }}" style="width:100%;height:4px;border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,#DFF2EC {{ petPosBottomPercent }},#F2EFE8 {{ petPosBottomPercent }});">
-<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>靠下</span><span>靠上</span></div>
-</div>
-<!-- 左右位置滑动条 -->
-<div style="padding:8px 0 4px;border-top:1px solid #F5F3EE;">
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-<span style="font-size:14px;color:#3A362F;">左右位置</span>
-<span style="font-size:13px;font-weight:600;color:#68544B;">离右{{ petPosRight }}px</span>
-</div>
-<input type="range" min="0" max="340" value="{{ petPosRight }}" onInput="{{ petPosRightChange }}" style="width:100%;height:4px;border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,#DFF2EC {{ petPosRightPercent }},#F2EFE8 {{ petPosRightPercent }});">
-<div style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#B8B3A8;"><span>靠右</span><span>靠左</span></div>
-</div>
-</div>
-</sc-if>
-</div>
-
-<!-- API 设置 -->
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div onClick="{{ openApiSheet }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">API 设置</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ activeModel }}</div></div>
-</div>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-</div>
-
-<!-- 后台保活 -->
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;">
-<span style="font-size:14px;color:#3A362F;">后台保活</span>
-<div onClick="{{ toggleKeepAlive }}" style="width:44px;height:24px;border-radius:12px;background:{{ keepAliveBg }};cursor:pointer;position:relative;transition:background .2s;">
-<div style="width:20px;height:20px;border-radius:50%;background:#FFF;position:absolute;top:2px;left:{{ keepAliveLeft }};transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
-</div>
-</div>
-<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
-<div style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;">
-<span style="font-size:14px;color:#3A362F;">提示音</span>
-<div onClick="{{ toggleSound }}" style="width:44px;height:24px;border-radius:12px;background:{{ soundBg }};cursor:pointer;position:relative;transition:background .2s;">
-<div style="width:20px;height:20px;border-radius:50%;background:#FFF;position:absolute;top:2px;left:{{ soundLeft }};transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>
-</div>
-</div>
-</div>
-
-<!-- 记忆迁移状态 -->
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;">
-<div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" stroke="#68544B" stroke-width="1.5"/></svg>
-<div style="min-width:0;">
-<div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">记忆库迁移</div>
-<div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ memMigrationStatusLabel }}</div>
-</div>
-</div>
-<sc-if value="{{ memMigrationFailed }}" hint-placeholder-val="{{ false }}">
-<button onClick="{{ retryMemoryMigration }}" style="border:none;background:#68544B;color:#FFF;border-radius:14px;padding:8px 12px;font-size:12px;font-family:inherit;cursor:pointer;flex:none;">重试</button>
-</sc-if>
-</div>
-</div>
-
-<!-- 数据管理 -->
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div onClick="{{ exportData }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3v12M8 7l4-4 4 4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 15v3a3 3 0 003 3h8a3 3 0 003-3v-3" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">完整导出</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">全部数据 JSON</div></div>
-</div>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
-<div onClick="{{ openSelectiveExport }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">选择性导出</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">勾选要导出的部分</div></div>
-</div>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
-<div onClick="{{ importData }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 15V3M8 11l4 4 4-4" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 15v3a3 3 0 003 3h8a3 3 0 003-3v-3" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">导入备份</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">从 JSON 恢复</div></div>
-</div>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
-<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
-<div onClick="{{ cloudBackupNow }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 18a4 4 0 010-8 5.5 5.5 0 0110.7-1.5A3.5 3.5 0 0119 18H7z" stroke="#68544B" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 14v-6M9.5 10.5L12 8l2.5 2.5" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">云备份到服务器</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ cloudBackupStatus }}</div></div>
-</div>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
-<div onClick="{{ openCloudBackupList }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">云备份列表 / 恢复</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">从服务器恢复历史备份</div></div>
-</div>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
-<div onClick="{{ clearAllData }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke="#C84A3F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="#C84A3F" stroke-width="1.5" stroke-linecap="round"/></svg>
-<div><div style="font-size:15px;font-weight:500;color:#C84A3F;">清空所有数据</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">重置为初始状态</div></div>
-</div>
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-</div>
-<!-- 聊天相关（原更多菜单） -->
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-  <div onClick="{{ openPromptSheet }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-    <div style="display:flex;align-items:center;gap:14px;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3c-4.97 0-9 3.58-9 8 0 1.5.5 2.9 1.3 4.1L3 21l5.5-1.5C10 20.2 11 20.5 12 20.5c4.97 0 9-3.58 9-8s-4.03-8-9-8Z" stroke="#68544B" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 11h.01M12 11h.01M15 11h.01" stroke="#68544B" stroke-width="2" stroke-linecap="round"/></svg>
-      <div>
-        <div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">Prompt 模板</div>
-        <div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ promptCount }}</div>
-      </div>
-    </div>
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </div>
-  <div style="height:1px;background:#ECE8DF;margin:0 18px;"></div>
-  <div onClick="{{ cycleMemoryCount }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-    <div style="display:flex;align-items:center;gap:14px;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 4v16M8 6c0 3 4 4 4 8M16 6c0 3-4 4-4 8" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="20" r="1" fill="#68544B"/></svg>
-      <div>
-        <div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">Memory count</div>
-        <div style="font-size:11px;color:#B8B3A8;margin-top:2px;">读取历史条数</div>
-      </div>
-    </div>
-    <span style="font-size:13px;color:#9A958B;">{{ memoryCountLabel }}</span>
-  </div>
-</div>
-
-<!-- 错误日志 -->
-<div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
-<div onClick="{{ openErrorLog }}" style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-<div style="display:flex;align-items:center;gap:14px;">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#68544B" stroke-width="1.5"/><path d="M12 8v4M12 16h.01" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
-<div><div style="font-size:15px;font-weight:500;color:var(--text-primary, #1A1815);">错误日志</div><div style="font-size:11px;color:#B8B3A8;margin-top:2px;">{{ errorLogCount }}</div></div>
 </div>
 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#D1CCC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </div>
@@ -1494,7 +1320,7 @@ button:active {
 <sc-if value="{{ isMemViewFavorites }}" hint-placeholder-val="{{ false }}">
 <div style="margin:0 -20px;padding:0 20px 40px;min-height:100%;background:{{ favPageBg }};color:{{ favPageText }};">
 <div style="padding:18px 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
-<div onClick="{{ memGoHub }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:{{ favPageText }};cursor:pointer;">Favorites</div>
+<div onClick="{{ favGoBack }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;color:{{ favPageText }};cursor:pointer;">Favorites</div>
 <div style="display:flex;gap:6px;">
 <button onClick="{{ favFilterUser }}" style="border:none;background:{{ favFilterUserBg }};color:{{ favFilterUserFg }};border-radius:12px;padding:6px 10px;font-size:11px;font-family:inherit;cursor:pointer;">用户</button>
 <button onClick="{{ favFilterAi }}" style="border:none;background:{{ favFilterAiBg }};color:{{ favFilterAiFg }};border-radius:12px;padding:6px 10px;font-size:11px;font-family:inherit;cursor:pointer;">AI</button>
@@ -2845,9 +2671,16 @@ button:active {
 </div>
 </sc-if>
 
+<!-- Global Toast -->
+<sc-if value="{{ toastShow }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom, 0px) + 88px);transform:translateX(-50%);z-index:9999;pointer-events:none;max-width:86%;">
+  <div style="background:rgba(26,24,21,.92);color:#F5F3EE;border-radius:16px;padding:10px 16px;font-size:13px;line-height:1.4;box-shadow:0 8px 28px rgba(0,0,0,.2);text-align:center;animation:fadeUp .18s ease both;">{{ toastText }}</div>
+</div>
+</sc-if>
+
 <!-- Error Log Modal -->
 <sc-if value="{{ errorLogOpen }}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;inset:0;z-index:350;">
+<div style="position:absolute;inset:0;z-index:700;">
 <div onClick="{{ closeErrorLog }}" style="position:absolute;inset:0;background:rgba(0,0,0,.25);animation:fadeIn .15s ease both;"></div>
 <div style="position:absolute;bottom:0;left:0;right:0;background:var(--bg-main, #F5F3EE);border-radius:16px 16px 0 0;padding:12px 16px 30px;animation:slideUp .25s ease both;max-height:80%;display:flex;flex-direction:column;">
 <div style="width:36px;height:4px;border-radius:2px;background:#D1CCC2;margin:0 auto 14px;flex:none;"></div>
@@ -5031,6 +4864,10 @@ console.error('[Kel] IndexedDB 也写入失败:', e);
 }
 
 logError(error) {
+  try {
+    const msg = typeof error === 'string' ? error : (error && error.message) || String(error);
+    if (msg) this.show('出错了: ' + String(msg).slice(0, 80));
+  } catch (e) {}
   const logs = [...(this.state.errorLogs || [])];
   logs.unshift({
     id: genId(),
@@ -5046,8 +4883,9 @@ logError(error) {
 
 show(text) {
 if (this._t) clearTimeout(this._t);
-this.setState({ toastShow: true, toastText: text });
-this._t = setTimeout(() => this.setState({ toastShow: false }), 1800);
+const msg = (text == null ? '' : String(text));
+this.setState({ toastShow: true, toastText: msg });
+this._t = setTimeout(() => this.setState({ toastShow: false }), 2200);
 }
 _sexAddCustomTag() {
   const raw = (this.state.sexTagDraft || '').trim();
@@ -6640,6 +6478,7 @@ _saveSoulPage() {
   );
   this.setState({ personas, soulSections: ss });
   this.persist();
+try { this.show('已保存'); } catch(e) {}
   // 验证写入成功
   setTimeout(() => {
     try {
@@ -7462,6 +7301,11 @@ async _buildFullBackupObject() {
     chatSidePad: s.chatSidePad,
     userNickname: s.userNickname,
     aiNickname: s.aiNickname,
+    homeTitleName: s.homeTitleName,
+    letters: s.letters || [],
+    favorites: s.favorites || [],
+    finTxns: s.finTxns || [],
+    finCategories: s.finCategories || [],
     petEnabled: s.petEnabled,
     petSizeIdx: s.petSizeIdx,
     soundEnabled: s.soundEnabled,
@@ -7473,16 +7317,46 @@ async cloudBackupNow() {
   if (this.state.cloudBackupBusy) return;
   this.setState({ cloudBackupBusy: true, cloudBackupStatus: '备份中…' });
   try {
-    const payload = await this._buildFullBackupObject();
+    let payload = await this._buildFullBackupObject();
+    // 云备份体积保护：超过约 28MB 时去掉超大 base64（头像/封面等），避免 30MB 失败
+    const MAX = 28 * 1024 * 1024;
+    let bodyObj = { label: 'manual', data: payload };
+    let raw = JSON.stringify(bodyObj);
+    let stripped = false;
+    if (raw.length > MAX) {
+      payload = Object.assign({}, payload);
+      const dropKeys = ['userAvatar', 'aiAvatar', 'profileBgUrl', 'soulBgUrl', 'localFontData'];
+      dropKeys.forEach(k => { if (payload[k]) { delete payload[k]; stripped = true; } });
+      // 再清消息里可能残留的大字段
+      if (payload.chats) {
+        const chats2 = {};
+        for (const [id, chat] of Object.entries(payload.chats)) {
+          chats2[id] = Object.assign({}, chat, {
+            messages: (chat.messages || []).map(m => {
+              const c = Object.assign({}, m);
+              delete c.image; delete c.imageMime; delete c.imageUrl; delete c.images;
+              if (c.file && (c.file.isImage || (c.file.data && String(c.file.data).length > 50000))) delete c.file;
+              return c;
+            })
+          });
+        }
+        payload.chats = chats2;
+      }
+      bodyObj = { label: 'manual-lite', data: payload };
+      raw = JSON.stringify(bodyObj);
+    }
+    if (raw.length > MAX) {
+      throw new Error('备份仍超过约 ' + Math.round(raw.length/1024/1024) + 'MB，请先本地导出或清理大图后重试');
+    }
     const res = await fetch('/api/backup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ label: 'manual', data: payload })
+      body: raw
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
     this.setState({ cloudBackupStatus: '已备份 ' + (data.id || ''), cloudBackupBusy: false });
-    this.show('云备份成功');
+    this.show(stripped ? '云备份成功（已省略大图/头像）' : '云备份成功');
     try { await this.refreshCloudBackupList(); } catch (e) {}
   } catch (e) {
     this.setState({ cloudBackupStatus: '备份失败', cloudBackupBusy: false });
@@ -8132,6 +8006,7 @@ req.onsuccess = resolve;
 req.onerror = () => reject(req.error);
 });
 this.setState({ userAvatar: dataUrl });
+      try { this.show('头像已更新'); } catch (e) {}
 localStorage.setItem('kel-avatar-user', '1');
 this.persist();
 this.show('头像已更新');
@@ -8164,6 +8039,7 @@ req.onsuccess = resolve;
 req.onerror = () => reject(req.error);
 });
 this.setState({ aiAvatar: dataUrl });
+      try { this.show('头像已更新'); } catch (e) {}
 localStorage.setItem('kel-avatar-ai', '1');
 this.persist();
 this.show('AI 头像已更新');
@@ -10492,6 +10368,7 @@ pickSoulBg: () => {
       const dataUrl = String(reader.result || '');
       if (dataUrl.length > 1600000) { self.show('图片太大，请换一张'); return; }
       self.setState({ soulBgUrl: dataUrl });
+      try { self.show('封面已更新'); } catch (e) {}
       try {
         const db = await self._openAvatarDB();
         const tx = db.transaction('avatars', 'readwrite');
@@ -10877,7 +10754,7 @@ navSoul: () => { self.setState({ tab: 'chatlist', chatShellTab: 'soul', drawer: 
 // Home 页数据
 homeTotalMsgs: (() => { let count = 0; for (const c of Object.values(s.chats)) { count += (c.messages || []).length; } return count; })(),
 homeTitleName: (s.homeTitleName != null && s.homeTitleName !== '') ? s.homeTitleName : 'Claude & User',
-homeTitleNameChange: (e) => { self.setState({ homeTitleName: e.target.value }); self.persist(); },
+homeTitleNameChange: (e) => { self.setState({ homeTitleName: e.target.value }); self.persist(); self.show('已修改'); },
 homeTotalRounds: (() => { let count = 0; for (const c of Object.values(s.chats)) { count += (c.messages || []).filter(m => m.role === 'user').length; } return count; })(),
 homeLastTime: (() => { const c = self.currentChat; const last = c.messages && c.messages.length > 0 ? c.messages[c.messages.length-1] : null; return last && last.timestamp ? last.timestamp.slice(11, 16) : ''; })(),
 homeLastOneLine: (() => { const c = self.currentChat; const msgs = (c.messages || []); if (msgs.length === 0) return '还没有对话'; const last = msgs[msgs.length - 1]; const text = (last.variants ? last.variants[last.variantIdx||0] : last.text) || ''; return (last.role === 'user' ? '你：' : 'Kel：') + text.slice(0, 40); })(),
@@ -11022,12 +10899,13 @@ memLayerOptions:
 avatarSize: s.avatarSize || 36,
 userNickname: s.userNickname || 'User',
 aiNickname: s.aiNickname || 'Claude',
-userNicknameChange: (e) => { self.setState({ userNickname: e.target.value }); self.persist(); },
+userNicknameChange: (e) => { self.setState({ userNickname: e.target.value }); self.persist(); self.show('已修改'); },
 aiNicknameChange: (e) => {
   const v = e.target.value;
   const personas = (self.state.personas || []).map(p => (p && p.id === 'default') ? { ...p, name: v || 'Claude' } : p);
   self.setState({ aiNickname: v, personas });
   self.persist();
+  self.show('已修改');
 },
 userAvatar: s.userAvatar || '',
 aiAvatar: s.aiAvatar || '',
@@ -11124,6 +11002,7 @@ pickProfileBg: () => {
     reader.onload = async () => {
       const dataUrl = reader.result;
       self.setState({ profileBgUrl: dataUrl });
+      try { self.show('封面已更新'); } catch (e) {}
       self.persist();
       try {
         const db = await self._openAvatarDB();
@@ -11813,6 +11692,14 @@ favListEmpty: (() => {
   return list.length === 0;
 })(),
 favBackList: () => self.setState({ favView: 'list', favSelectedId: null }),
+favGoBack: () => {
+  // AI/记忆库入口 -> Memory hub；用户页入口 -> 用户信息页
+  if ((s.favStyle || 'memory') === 'chat') {
+    self.setState({ tab: 'chatlist', chatShellTab: 'user', memView: 'hub', favView: 'list', favSelectedId: null });
+  } else {
+    self.setState({ memView: 'hub', favView: 'list', favSelectedId: null });
+  }
+},
 favDetailHasAvatar: (() => {
   const f = (s.favorites || []).find(x => x.id === s.favSelectedId);
   return !!(f && f.sender_avatar);
@@ -11843,12 +11730,12 @@ favUnfavorite: () => {
   self.deleteFavorite(id).then(() => self.show('已取消收藏'));
 },
 userSignature: s.userSignature || '',
-userSignatureChange: (e) => { self.setState({ userSignature: e.target.value }); self.persist(); },
+userSignatureChange: (e) => { self.setState({ userSignature: e.target.value }); self.persist(); self.show('已修改'); },
 userBirthday: s.userBirthday || '',
-userBirthdayChange: (e) => { self.setState({ userBirthday: e.target.value }); self.persist(); },
-setGenderFemale: () => { self.setState({ userGender: 'female' }); self.persist(); },
-setGenderMale: () => { self.setState({ userGender: 'male' }); self.persist(); },
-setGenderOther: () => { self.setState({ userGender: 'other' }); self.persist(); },
+userBirthdayChange: (e) => { self.setState({ userBirthday: e.target.value }); self.persist(); self.show('已修改'); },
+setGenderFemale: () => { self.setState({ userGender: 'female' }); self.persist(); self.show('已修改'); },
+setGenderMale: () => { self.setState({ userGender: 'male' }); self.persist(); self.show('已修改'); },
+setGenderOther: () => { self.setState({ userGender: 'other' }); self.persist(); self.show('已修改'); },
 genderFemaleBg: s.userGender === 'female' ? '#68544B' : '#F5F3EE',
 genderFemaleFg: s.userGender === 'female' ? '#FFFFFF' : '#9A958B',
 genderMaleBg: s.userGender === 'male' ? '#68544B' : '#F5F3EE',
