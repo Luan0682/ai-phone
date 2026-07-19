@@ -754,11 +754,10 @@ button:active {
 <span style="font-size:11px;color:#B8B3A8;">{{ sec.charCount }}字</span>
 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="transform:rotate({{ sec.arrowRotate }}deg);transition:transform .2s;"><path d="M6 9l6 6 6-6" stroke="#B8B3A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </div>
-<sc-if value="{{ sec.expanded }}" hint-placeholder-val="{{ false }}">
-<div style="padding:0 16px 14px;border-top:1px solid #F5F3EE;">
-<textarea value="{{ sec.content }}" onInput="{{ sec.onChange }}" placeholder="{{ sec.placeholder }}" style="display:block;width:100%;border:none;outline:none;background:#F7F5F0;border-radius:12px;padding:10px 12px;font-size:13px;font-family:inherit;line-height:1.6;color:#1A1815;resize:vertical;min-height:100px;margin-top:12px;"></textarea>
+<div style="padding:0 16px 12px;border-top:1px solid #F5F3EE;">
+<div style="margin-top:10px;font-size:12px;color:#9A958B;line-height:1.5;max-height:48px;overflow:hidden;">{{ sec.preview }}</div>
+<div style="margin-top:8px;font-size:11px;color:#68544B;">点击整行全屏编辑</div>
 </div>
-</sc-if>
 </div>
 </sc-for>
 </div>
@@ -3090,6 +3089,22 @@ button:active {
   </div>
 </div>
 </sc-if>
+
+<!-- Soul section fullscreen editor -->
+<sc-if value="{{ soulEditorOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:720;display:flex;flex-direction:column;background:var(--bg-main, #F5F3EE);">
+  <div style="flex:none;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #ECE8DF;">
+    <button onClick="{{ closeSoulEditor }}" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card,#FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:20px;color:#1A1815;">{{ soulEditorTitle }}</div>
+    <button onClick="{{ saveSoulEditor }}" style="border:none;background:#68544B;color:#FFF;border-radius:16px;padding:8px 14px;font-size:13px;font-family:inherit;cursor:pointer;">保存</button>
+  </div>
+  <div style="flex:1;min-height:0;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 16px);">
+    <textarea value="{{ soulEditorDraft }}" onInput="{{ soulEditorDraftChange }}" placeholder="在这里写完整内容…" style="display:block;width:100%;height:100%;min-height:60vh;border:none;outline:none;background:var(--bg-card,#FFF);border-radius:16px;padding:16px;font-family:inherit;font-size:15px;line-height:1.75;color:#1A1815;resize:none;box-shadow:0 1px 4px rgba(43,38,30,.04);border:1px solid #EDE9E0;"></textarea>
+  </div>
+</div>
+</sc-if>
 <!-- Global Toast -->
 <sc-if value="{{ toastShow }}" hint-placeholder-val="{{ false }}">
 <div style="position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom, 0px) + 88px);transform:translateX(-50%);z-index:9999;pointer-events:none;max-width:86%;">
@@ -3167,15 +3182,18 @@ button:active {
     </div>
   </div>
 
-  <!-- 音乐设置面板 -->
+  <!-- 音乐设置：居中弹窗，不挤占页面布局 -->
   <sc-if value="{{ musicSettingsOpen }}" hint-placeholder-val="{{ false }}">
-  <div style="flex:none;margin:14px 16px 0;background:var(--bg-card,#FFF);border:1px solid var(--border-card,#EDE9E0);border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
+  <div style="position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div onClick="{{ closeMusicSettings }}" style="position:absolute;inset:0;background:rgba(0,0,0,.28);"></div>
+    <div class="sa" style="position:relative;z-index:1;width:100%;max-width:400px;max-height:min(78vh,640px);overflow-y:auto;background:var(--bg-card,#FFF);border:1px solid var(--border-card,#EDE9E0);border-radius:18px;padding:16px 16px 18px;box-shadow:0 16px 48px rgba(43,38,30,.18);">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <div style="font-size:14px;font-weight:600;color:#1A1815;">音乐设置</div>
-      <button onClick="{{ openMusicSettings }}" style="border:none;background:#F2EFE8;border-radius:12px;padding:4px 10px;font-size:11px;color:#6B665E;cursor:pointer;font-family:inherit;">收起</button>
+      <div style="font-size:15px;font-weight:600;color:#1A1815;">音乐设置</div>
+      <button onClick="{{ closeMusicSettings }}" style="width:32px;height:32px;border:none;background:#F2EFE8;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
     </div>
-
-    <div style="margin-bottom:14px;">
+<div style="margin-bottom:14px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
         <span style="font-size:12px;color:#6B665E;">音量</span>
         <span style="font-size:11px;color:#B8B3A8;">{{ musicVolumeLabel }}</span>
@@ -3185,7 +3203,7 @@ button:active {
 
     <div style="height:1px;background:#ECE8DF;margin:0 0 14px;"></div>
     <div style="font-size:12px;font-weight:600;color:#68544B;margin-bottom:8px;">网易云 API</div>
-    <div style="font-size:11px;color:#9A958B;line-height:1.5;margin-bottom:10px;">填写自建 NeteaseCloudMusicApi 地址，例如 https://your-api.example.com。不填只能用本地文件。</div>
+    <div style="font-size:11px;color:#9A958B;line-height:1.5;margin-bottom:10px;">需要自建或使用可用的 NeteaseCloudMusicApi 服务地址（浏览器不能直接扫官方二维码）。扫码登录需该 API 支持 /login/qr 接口；当前页可用 Cookie（MUSIC_U）或搜索加歌。歌词可后续接 lyric 接口。</div>
 
     <div style="margin-bottom:10px;">
       <div style="font-size:11px;color:#B8B3A8;margin-bottom:5px;">API 地址</div>
@@ -3222,6 +3240,7 @@ button:active {
     <sc-if value="{{ musicSearchEmpty }}" hint-placeholder-val="{{ false }}">
     <div style="text-align:center;padding:12px 0;font-size:12px;color:#B8B3A8;">没有搜索结果</div>
     </sc-if>
+    </div>
   </div>
   </sc-if>
 
@@ -11137,14 +11156,14 @@ soulSections: [
     title: '人格',
     expanded: !!(s.soulSections && s.soulSections.personality && s.soulSections.personality.expanded),
     content: (s.soulSections && s.soulSections.personality && s.soulSections.personality.content) || '',
+    preview: (() => { const c=(s.soulSections && s.soulSections.personality && s.soulSections.personality.content) || ''; const s2=c.replace(/\s+/g,' ').trim(); return s2 ? (s2.length>80?s2.slice(0,80)+'…':s2) : '（空）'; })(),
     placeholder: '你是谁？什么性格？怎么说话？',
     charCount: ((s.soulSections && s.soulSections.personality && s.soulSections.personality.content) || '').length,
     arrowRotate: (s.soulSections && s.soulSections.personality && s.soulSections.personality.expanded) ? 180 : 0,
     toggle: () => {
-      const ss = { ...s.soulSections };
-      if (!ss.personality || typeof ss.personality !== 'object') ss.personality = { expanded: false, content: '' };
-      ss.personality = { ...ss.personality, expanded: !ss.personality.expanded };
-      self.setState({ soulSections: ss });
+      const ss = s.soulSections || {};
+      const cur = (ss.personality && typeof ss.personality === 'object') ? (ss.personality.content || '') : '';
+      self.setState({ soulEditorKey: 'personality', soulEditorTitle: '人格', soulEditorDraft: cur });
     },
     onChange: (e) => {
       const ss = { ...s.soulSections };
@@ -11158,14 +11177,14 @@ soulSections: [
     title: '规则',
     expanded: !!(s.soulSections && s.soulSections.rules && s.soulSections.rules.expanded),
     content: (s.soulSections && s.soulSections.rules && s.soulSections.rules.content) || '',
+    preview: (() => { const c=(s.soulSections && s.soulSections.rules && s.soulSections.rules.content) || ''; const s2=c.replace(/\s+/g,' ').trim(); return s2 ? (s2.length>80?s2.slice(0,80)+'…':s2) : '（空）'; })(),
     placeholder: '对话规则、行为准则、底线',
     charCount: ((s.soulSections && s.soulSections.rules && s.soulSections.rules.content) || '').length,
     arrowRotate: (s.soulSections && s.soulSections.rules && s.soulSections.rules.expanded) ? 180 : 0,
     toggle: () => {
-      const ss = { ...s.soulSections };
-      if (!ss.rules || typeof ss.rules !== 'object') ss.rules = { expanded: false, content: '' };
-      ss.rules = { ...ss.rules, expanded: !ss.rules.expanded };
-      self.setState({ soulSections: ss });
+      const ss = s.soulSections || {};
+      const cur = (ss.rules && typeof ss.rules === 'object') ? (ss.rules.content || '') : '';
+      self.setState({ soulEditorKey: 'rules', soulEditorTitle: '规则', soulEditorDraft: cur });
     },
     onChange: (e) => {
       const ss = { ...s.soulSections };
@@ -11179,14 +11198,14 @@ soulSections: [
     title: '关于用户',
     expanded: !!(s.soulSections && s.soulSections.about && s.soulSections.about.expanded),
     content: (s.soulSections && s.soulSections.about && s.soulSections.about.content) || '',
+    preview: (() => { const c=(s.soulSections && s.soulSections.about && s.soulSections.about.content) || ''; const s2=c.replace(/\s+/g,' ').trim(); return s2 ? (s2.length>80?s2.slice(0,80)+'…':s2) : '（空）'; })(),
     placeholder: '我的信息、偏好、习惯',
     charCount: ((s.soulSections && s.soulSections.about && s.soulSections.about.content) || '').length,
     arrowRotate: (s.soulSections && s.soulSections.about && s.soulSections.about.expanded) ? 180 : 0,
     toggle: () => {
-      const ss = { ...s.soulSections };
-      if (!ss.about || typeof ss.about !== 'object') ss.about = { expanded: false, content: '' };
-      ss.about = { ...ss.about, expanded: !ss.about.expanded };
-      self.setState({ soulSections: ss });
+      const ss = s.soulSections || {};
+      const cur = (ss.about && typeof ss.about === 'object') ? (ss.about.content || '') : '';
+      self.setState({ soulEditorKey: 'about', soulEditorTitle: '关于用户', soulEditorDraft: cur });
     },
     onChange: (e) => {
       const ss = { ...s.soulSections };
@@ -11200,14 +11219,14 @@ soulSections: [
     title: '其他',
     expanded: !!(s.soulSections && s.soulSections.other && s.soulSections.other.expanded),
     content: (s.soulSections && s.soulSections.other && s.soulSections.other.content) || '',
+    preview: (() => { const c=(s.soulSections && s.soulSections.other && s.soulSections.other.content) || ''; const s2=c.replace(/\s+/g,' ').trim(); return s2 ? (s2.length>80?s2.slice(0,80)+'…':s2) : '（空）'; })(),
     placeholder: '自定义补充内容',
     charCount: ((s.soulSections && s.soulSections.other && s.soulSections.other.content) || '').length,
     arrowRotate: (s.soulSections && s.soulSections.other && s.soulSections.other.expanded) ? 180 : 0,
     toggle: () => {
-      const ss = { ...s.soulSections };
-      if (!ss.other || typeof ss.other !== 'object') ss.other = { expanded: false, content: '' };
-      ss.other = { ...ss.other, expanded: !ss.other.expanded };
-      self.setState({ soulSections: ss });
+      const ss = s.soulSections || {};
+      const cur = (ss.other && typeof ss.other === 'object') ? (ss.other.content || '') : '';
+      self.setState({ soulEditorKey: 'other', soulEditorTitle: '其他', soulEditorDraft: cur });
     },
     onChange: (e) => {
       const ss = { ...s.soulSections };
@@ -11236,6 +11255,21 @@ soulSections: [
     }
   }
 ],
+soulEditorOpen: !!s.soulEditorKey,
+soulEditorTitle: s.soulEditorTitle || '编辑',
+soulEditorDraft: s.soulEditorDraft || '',
+soulEditorDraftChange: (e) => self.setState({ soulEditorDraft: e.target.value }),
+closeSoulEditor: () => self.setState({ soulEditorKey: null, soulEditorDraft: '', soulEditorTitle: '' }),
+saveSoulEditor: () => {
+  const key = s.soulEditorKey;
+  if (!key) return;
+  const ss = { ...(s.soulSections || {}) };
+  if (!ss[key] || typeof ss[key] !== 'object') ss[key] = { expanded: false, content: '' };
+  ss[key] = { ...ss[key], content: s.soulEditorDraft || '', expanded: false };
+  self.setState({ soulSections: ss, soulEditorKey: null, soulEditorDraft: '', soulEditorTitle: '' });
+  self.persist();
+  self.show('已保存');
+},
 saveSoulPage: () => {
   self._saveSoulPage();
   // 同步 Style 折叠栏内容
@@ -13223,6 +13257,7 @@ toggleKeepAlive: () => {
 },
 toggleMusicPlayer: () => self.setState(v => ({ musicPlayerOpen: !v.musicPlayerOpen })),
 openMusicSettings: () => self.setState({ musicSettingsOpen: !s.musicSettingsOpen }),
+closeMusicSettings: () => self.setState({ musicSettingsOpen: false }),
 musicSettingsOpen: !!s.musicSettingsOpen,
 musicVolumePercent: Math.round((typeof s.musicVolume === 'number' ? s.musicVolume : (self._musicVolume || 0.5)) * 100),
 musicVolumeLabel: Math.round((typeof s.musicVolume === 'number' ? s.musicVolume : (self._musicVolume || 0.5)) * 100) + '%',
