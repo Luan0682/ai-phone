@@ -3635,7 +3635,6 @@ return html;
 }
 
 const EMOJI_LIST = ['😊','😢','😡','🥰','😴','🤔','✨','🌧️','☀️','🌈','💪','😭','🎉','💕','😤','🫠','👍','❤️','🥺','😮','😢','🥰','😈','✨'];
-const REACTION_EMOJIS = ['♡', '❤️', '🥺', '😮', '😢', '🥰', '💓', '✨'];
 // Theme presets
 const THEME_PRESETS = [
 { id: 'default', name: '默认米白', preview: 'linear-gradient(135deg, #F5F3EE, #d6d2c8)', checkColor: '#1A1815', vars: { '--bg-base': '#d6d2c8', '--bg-main': '#F5F3EE', '--bg-card': '#FFF', '--bg-input': '#FBFAF7', '--border-card': '#EDE9E0', '--border-input': '#E7E3DA', '--text-primary': '#1A1815', '--text-secondary': '#48453E', '--text-bold': '#3A362F', '--bubble-user': '#59483F', '--bubble-ai': '#D7EBE4', '--bubble-user-text': '#D7EBE4', '--bubble-ai-text': '#59483F'
@@ -10231,7 +10230,6 @@ navHomeClass: s.tab === 'home' ? 'active' : '',
 sidebarOpen: s.sidebarOpen || false,
 sidebarTransform: s.sidebarOpen ? '0%' : '-100%',
 sidebarShadow: s.sidebarOpen ? '4px 0 24px rgba(0,0,0,.12)' : 'none',
-navHome: () => self.setState({ sidebarOpen: true }),
 closeSidebar: () => self.setState({ sidebarOpen: false }),
 navHomeSidebar: () => { self.setState({ tab: 'home', sidebarOpen: false }); },
 navChatListSidebar: () => { self.setState({ tab: 'chatlist', chatShellTab: 'list', sidebarOpen: false }); },
@@ -10243,7 +10241,6 @@ navSettingsSidebar: () => { self.setState({ tab: 'settings', sidebarOpen: false 
 sidebarWidth: '0px',
 sidebarDisplay: 'none',
 chatBack: () => self.setState({ tab: 'home' }),
-navSoulClass: s.tab === 'soul' ? 'active' : '',
 navChatListClass: s.tab === 'chatlist' ? 'active' : '',
 navDiaryClass: s.tab === 'diary' ? 'active' : '',
 navMemClass: s.tab === 'memory' ? 'active' : '',
@@ -10462,8 +10459,8 @@ chatAvatarSizeChange: (e) => { const v = parseInt(e.target.value, 10); self.setS
 userName: s.userNickname || 'User',
 chatListCount: Object.values(s.chats).filter(c => c.messages && c.messages.length > 0).length + ' 段对话',
 hasPinnedChats: Object.values(s.chats).some(c => c.pinned),
-pinnedChats: Object.values(s.chats).filter(c => c.pinned && c.messages && c.messages.length > 0).sort((a,b) => (b.lastTime||0)-(a.lastTime||0)).map(c => ({ title: c.title || '新对话', preview: (() => { const last = (c.messages||[])[c.messages.length-1]; return last ? ((last.role==='user'?'你：':'Kel：') + ((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)) : ''; })(), timeLabel: c.lastTime ? (() => { const d=new Date(c.lastTime); const now=new Date(); if(d.toDateString()===now.toDateString()) return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); const diff=Math.floor((now-d)/(1000*60*60*24)); if(diff===1) return '昨天'; if(diff<7) return diff+'天前'; return (d.getMonth()+1)+'/'+d.getDate(); })() : '', open: () => { self.setState({ currentChatId: c.id, tab: 'chat', chatDetailTab: 'chat' }); self.persist(); self.scrollToBottom(); }, longPress: (e) => { e.preventDefault(); const action=prompt('1=改名 2=取消置顶 3=删除',''); if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}} else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:false};self.setState({chats:ch});self.persist();self.show('已取消置顶');} else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);} } })),
-chatGroups: (() => { const groups=[]; const allChats=Object.values(s.chats).filter(c=>!c.pinned&&c.messages&&c.messages.length>0).sort((a,b)=>(b.lastTime||0)-(a.lastTime||0)); const now=new Date(); const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(); const weekAgo=todayStart-7*86400000; const recentChats=[]; const monthMap={}; for(const c of allChats){ const ts=c.lastTime||0; if(ts>=weekAgo){recentChats.push(c);} else { const d=new Date(ts); const key=d.getFullYear()+'年'+(d.getMonth()+1)+'月'; if(!monthMap[key])monthMap[key]=[]; monthMap[key].push(c); } } const mapChat=(c)=>({ title:c.title||'新对话', preview:(()=>{const last=(c.messages||[])[c.messages.length-1];return last?((last.role==='user'?'你：':'Kel：')+((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)):''})(), timeLabel:c.lastTime?(()=>{const d=new Date(c.lastTime);const now2=new Date();if(d.toDateString()===now2.toDateString())return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');const diff=Math.floor((now2-d)/(1000*60*60*24));if(diff===1)return'昨天';if(diff<7)return diff+'天前';return(d.getMonth()+1)+'/'+d.getDate();})():'', open:()=>{self.setState({currentChatId:c.id,tab:'chat',chatDetailTab:'chat'});self.persist();self.scrollToBottom();}, longPress:(e)=>{e.preventDefault();const action=prompt('1=改名 2=置顶 3=删除','');if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}}else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:true};self.setState({chats:ch});self.persist();self.show('已置顶');}else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);}} }); if(recentChats.length>0)groups.push({label:'近期',chats:recentChats.map(mapChat)}); for(const[key,chats2] of Object.entries(monthMap).sort((a,b)=>b[0].localeCompare(a[0]))){groups.push({label:key,chats:chats2.map(mapChat)});} return groups; })(),
+pinnedChats: Object.values(s.chats).filter(c => c.pinned && c.messages && c.messages.length > 0).sort((a,b) => (b.lastTime||0)-(a.lastTime||0)).map(c => ({ title: c.title || '新对话', preview: (() => { const last = (c.messages||[])[c.messages.length-1]; return last ? ((last.role==='user'?'你：':((s.aiNickname||'Claude')+'：')) + ((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)) : ''; })(), timeLabel: c.lastTime ? (() => { const d=new Date(c.lastTime); const now=new Date(); if(d.toDateString()===now.toDateString()) return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); const diff=Math.floor((now-d)/(1000*60*60*24)); if(diff===1) return '昨天'; if(diff<7) return diff+'天前'; return (d.getMonth()+1)+'/'+d.getDate(); })() : '', open: () => { self.setState({ currentChatId: c.id, tab: 'chat', chatDetailTab: 'chat' }); self.persist(); self.scrollToBottom(); }, longPress: (e) => { e.preventDefault(); const action=prompt('1=改名 2=取消置顶 3=删除',''); if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}} else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:false};self.setState({chats:ch});self.persist();self.show('已取消置顶');} else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);} } })),
+chatGroups: (() => { const groups=[]; const allChats=Object.values(s.chats).filter(c=>!c.pinned&&c.messages&&c.messages.length>0).sort((a,b)=>(b.lastTime||0)-(a.lastTime||0)); const now=new Date(); const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(); const weekAgo=todayStart-7*86400000; const recentChats=[]; const monthMap={}; for(const c of allChats){ const ts=c.lastTime||0; if(ts>=weekAgo){recentChats.push(c);} else { const d=new Date(ts); const key=d.getFullYear()+'年'+(d.getMonth()+1)+'月'; if(!monthMap[key])monthMap[key]=[]; monthMap[key].push(c); } } const mapChat=(c)=>({ title:c.title||'新对话', preview:(()=>{const last=(c.messages||[])[c.messages.length-1];return last?((last.role==='user'?'你：':((s.aiNickname||'Claude')+'：'))+((last.variants?last.variants[last.variantIdx||0]:last.text)||'').slice(0,30)):''})(), timeLabel:c.lastTime?(()=>{const d=new Date(c.lastTime);const now2=new Date();if(d.toDateString()===now2.toDateString())return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');const diff=Math.floor((now2-d)/(1000*60*60*24));if(diff===1)return'昨天';if(diff<7)return diff+'天前';return(d.getMonth()+1)+'/'+d.getDate();})():'', open:()=>{self.setState({currentChatId:c.id,tab:'chat',chatDetailTab:'chat'});self.persist();self.scrollToBottom();}, longPress:(e)=>{e.preventDefault();const action=prompt('1=改名 2=置顶 3=删除','');if(action==='1'){const n=prompt('标题',c.title||'');if(n&&n.trim()){const ch={...s.chats};ch[c.id]={...ch[c.id],title:n.trim()};self.setState({chats:ch});self.persist();}}else if(action==='2'){const ch={...s.chats};ch[c.id]={...ch[c.id],pinned:true};self.setState({chats:ch});self.persist();self.show('已置顶');}else if(action==='3'){if(confirm('删除？'))self.deleteChat(c.id);}} }); if(recentChats.length>0)groups.push({label:'近期',chats:recentChats.map(mapChat)}); for(const[key,chats2] of Object.entries(monthMap).sort((a,b)=>b[0].localeCompare(a[0]))){groups.push({label:key,chats:chats2.map(mapChat)});} return groups; })(),
 // ===== Settings 页面 =====
 settingsSearchQuery: s.searchQuery || '',
 settingsSearchChange: (e) => { self.setState({ searchQuery: e.target.value }); self.searchChats(e.target.value); },
@@ -10504,7 +10501,6 @@ navRegex: () => self.setState({ tab: 'regex' }),
 navSettings: () => self.setState({ tab: 'settings' }),
 isChat: s.tab === 'chat',
 isHome: s.tab === 'home',
-isMore: s.tab === 'more',
 isMusicPage: s.tab === 'music',
 isFinancePage: s.tab === 'finance',
 isFinViewDashboard: s.tab === 'finance' && (s.finView || 'dashboard') === 'dashboard',
@@ -10521,7 +10517,6 @@ finTabDashLift: (s.finView || 'dashboard') === 'dashboard' ? 'translateY(-2px)' 
 finTabHistLift: s.finView === 'history' ? 'translateY(-2px)' : 'none',
 finTabWalletLift: s.finView === 'wallet' ? 'translateY(-2px)' : 'none',
 isThemePage: s.tab === 'theme',
-isSoulPage: false,
 isPeriodPage: s.tab === 'period',
 // ===== Period/Calendar Data =====
 periodCycleDay: (() => {
@@ -10709,7 +10704,7 @@ periodTabAnnivColor: '#8B7355',
 periodTabMoneyColor: '#8B7355',
 periodTabMoreColor: '#8B7355',
 periodTabSettingsColor: '#8B7355',
-periodTabMore: () => self.show('开发中'),
+periodTabMore: () => self.show('更多功能稍后'),
 // ===== 做爱日历 =====
 sexPasswordPromptOpen: s.sexPasswordPromptOpen || false,
 sexPasswordInput: s.sexPasswordInput || '',
@@ -11047,7 +11042,7 @@ todoEditSave: () => {
   self.show('待办已保存');
 },
 
-periodTabMoney: () => self.show('记账功能开发中'),
+periodTabMoney: () => self.setState({ tab: 'finance', finView: 'dashboard' }),
 periodTabSex: () => {
   const pw = prompt('♡', '');
   if (pw === 'sexy') {
@@ -11214,7 +11209,6 @@ saveSoulPage: () => {
     }
   } catch (e) {}
 },
-isWorldbookPage: s.tab === 'worldbook',
 isMemoryPage: s.tab === 'memory',
 
 // ===== Soul Memory v2 UI bindings =====
@@ -11918,9 +11912,7 @@ saveFontPreset: () => {
 navChatBg: s.tab === 'chat' ? '#ECEAE4' : 'transparent',
 navHomeBg: s.tab === 'home' ? '#ECEAE4' : 'transparent',
 navMemBg: s.tab === 'memory' ? '#ECEAE4' : 'transparent',
-navMoreBg: s.tab === 'more' ? '#ECEAE4' : 'transparent',
 navDiaryBg: s.tab === 'diary' ? '#ECEAE4' : 'transparent',
-navSoulBg: s.tab === 'soul' ? '#ECEAE4' : 'transparent',
 navPeriodBg: s.tab === 'period' ? '#ECEAE4' : 'transparent',
 navPeriodClass: s.tab === 'period' ? 'active' : '',
 navPeriodTodo: () => { self.setState({ tab: 'period', periodSubTab: 'todo' }); },
@@ -12402,7 +12394,7 @@ if (day.entries && day.entries.length > 0) {
     const tags = (e.tags||[]).map(t => tagDefs[t]||{icon:'✨',label:t,color:'#8B7355',bg:'#F5EDE4'});
     const comments = e.comments || [];
     return {
-      id: e.id, time: e.time||'--:--', author: e.author==='kel'?'Kel':'我',
+      id: e.id, time: e.time||'--:--', author: e.author==='kel'?(s.aiNickname||'Claude'):'我',
       authorColor: e.author==='kel'?'#5C8B6A':'#5C4033',
       text: e.text||'', isLocked: isLocked, lockRemain: lockRemain, unlockTime: unlockTime,
       hasTags: tags.length>0, tags: tags, commentCount: comments.length,
@@ -12413,7 +12405,7 @@ if (day.entries && day.entries.length > 0) {
 }
 if (!day.entries || day.entries.length === 0) {
   if (day.mine) entries.push({ id:'old-mine', time:'--:--', author:'我', authorColor:'#5C4033', text:day.mine, isLocked:false, lockRemain:'', unlockTime:'', hasTags:false, tags:[], commentCount:(day.comments||[]).length, dotBorder:'#F4A7B9', dotFill:'#FEF0F3', openDetail:()=>self.setState({diaryDetailOpen:true,diaryDetailId:'old-mine',diaryDetailCommentInput:''}) });
-  if (day.kel) entries.push({ id:'old-kel', time:'--:--', author:'Kel', authorColor:'#5C8B6A', text:day.kel, isLocked:false, lockRemain:'', unlockTime:'', hasTags:false, tags:[], commentCount:0, dotBorder:'#A8D5BA', dotFill:'#E8F5ED', openDetail:()=>self.setState({diaryDetailOpen:true,diaryDetailId:'old-kel',diaryDetailCommentInput:''}) });
+  if (day.kel) entries.push({ id:'old-kel', time:'--:--', author:(s.aiNickname||'Claude'), authorColor:'#5C8B6A', text:day.kel, isLocked:false, lockRemain:'', unlockTime:'', hasTags:false, tags:[], commentCount:0, dotBorder:'#A8D5BA', dotFill:'#E8F5ED', openDetail:()=>self.setState({diaryDetailOpen:true,diaryDetailId:'old-kel',diaryDetailCommentInput:''}) });
 }
 
   return entries;
@@ -12499,10 +12491,10 @@ diaryDetailTags: (() => {
     return found || def('✨',t,'#8B7355','#F5EDE4');
   }); 
 })(),
-diaryDetailAuthor: (() => { if (!s.diaryDetailId || !s.diarySelectedDate) return ''; if(s.diaryDetailId==='old-mine') return '我'; if(s.diaryDetailId==='old-kel') return 'Kel'; const day=s.diaries[s.diarySelectedDate]; if(!day||!day.entries) return ''; const e=day.entries.find(x=>x.id===s.diaryDetailId); return e ? (e.author==='kel'?'Kel':'我') : ''; })(),
+diaryDetailAuthor: (() => { if (!s.diaryDetailId || !s.diarySelectedDate) return ''; if(s.diaryDetailId==='old-mine') return '我'; if(s.diaryDetailId==='old-kel') return (s.aiNickname||'Claude'); const day=s.diaries[s.diarySelectedDate]; if(!day||!day.entries) return ''; const e=day.entries.find(x=>x.id===s.diaryDetailId); return e ? (e.author==='kel'?(s.aiNickname||'Claude'):'我') : ''; })(),
 diaryDetailAvatar: (() => { if (!s.diaryDetailId || !s.diarySelectedDate) return ''; if(s.diaryDetailId==='old-mine') return s.userAvatar; if(s.diaryDetailId==='old-kel') return s.aiAvatar; const day=s.diaries[s.diarySelectedDate]; if(!day||!day.entries) return ''; const e=day.entries.find(x=>x.id===s.diaryDetailId); return e ? (e.author==='kel'? s.aiAvatar : s.userAvatar) : ''; })(),
 diaryDetailText: (() => { if (!s.diaryDetailId || !s.diarySelectedDate) return ''; const day=s.diaries[s.diarySelectedDate]; if(!day) return ''; if(s.diaryDetailId==='old-mine') return day.mine||''; if(s.diaryDetailId==='old-kel') return day.kel||''; if(!day.entries) return ''; const e=day.entries.find(x=>x.id===s.diaryDetailId); return e ? e.text : ''; })(),
-diaryDetailComments: (() => { if (!s.diaryDetailId || !s.diarySelectedDate) return []; const day=s.diaries[s.diarySelectedDate]; if(!day) return []; let comments=[]; if(s.diaryDetailId==='old-mine'||s.diaryDetailId==='old-kel'){ comments=day.comments||[]; } else { if(!day.entries) return []; const e=day.entries.find(x=>x.id===s.diaryDetailId); if(!e) return []; comments=e.comments||[]; } return comments.map(c=>({ name:c.who==='kel'?'Kel':'我', avatar:c.who==='kel'?s.aiAvatar:s.userAvatar, time:c.time, text:c.text })); })(),
+diaryDetailComments: (() => { if (!s.diaryDetailId || !s.diarySelectedDate) return []; const day=s.diaries[s.diarySelectedDate]; if(!day) return []; let comments=[]; if(s.diaryDetailId==='old-mine'||s.diaryDetailId==='old-kel'){ comments=day.comments||[]; } else { if(!day.entries) return []; const e=day.entries.find(x=>x.id===s.diaryDetailId); if(!e) return []; comments=e.comments||[]; } return comments.map(c=>({ name:c.who==='kel'?(s.aiNickname||'Claude'):'我', avatar:c.who==='kel'?s.aiAvatar:s.userAvatar, time:c.time, text:c.text })); })(),
 diaryDetailCommentInput: s.diaryDetailCommentInput || '',
 diaryDetailCommentChange: (e) => self.setState({ diaryDetailCommentInput: e.target.value }),
 diaryDetailAddComment: () => self.diaryAddDetailComment(s.diaryDetailCommentInput),
@@ -12733,47 +12725,7 @@ ctxMultiSelect: () => {
     contextMenuIdx: -1
   });
 },
-reactionEmojis: REACTION_EMOJIS.map(emoji => ({
-  emoji,
-  pick: () => {
-    const idx = s.contextMenuIdx;
-    if (idx < 0) return;
-    self.setState({ contextMenuIdx: -1 });
-    const chats = { ...s.chats };
-    const c = { ...chats[s.currentChatId] };
-    const newMsgs = [...c.messages];
-    if (idx >= newMsgs.length) return;
-    const msg = { ...newMsgs[idx] };
-    const reactions = [...(msg.reactions || [])];
-    // 切换：如果已存在则移除，否则添加
-    const index = reactions.indexOf(emoji);
-    if (index >= 0) {
-      reactions.splice(index, 1);
-    } else {
-      reactions.push(emoji);
-    }
-    msg.reactions = reactions;
-    newMsgs[idx] = msg;
-    c.messages = newMsgs;
-    chats[s.currentChatId] = c;
-    self.setState({ chats });
-    self.persist();
-  }
-})),
-openReactionInput: () => {
-  const custom = prompt('输入自定义表情/文字');
-  if (custom && custom.trim()) {
-    const idx = s.contextMenuIdx;
-    if (idx < 0) return;
-    const chats = { ...s.chats }; const c = { ...chats[s.currentChatId] };
-    const newMsgs = [...c.messages];
-    const msg = { ...newMsgs[idx] };
-    msg.reactions = [...(msg.reactions || []), custom.trim()];
-    newMsgs[idx] = msg; c.messages = newMsgs; chats[s.currentChatId] = c;
-    self.setState({ chats, contextMenuIdx: -1 });
-    self.persist();
-  }
-},
+
 closeContextMenu: () => self.setState({ contextMenuIdx: -1 }),
 stopProp: (e) => e.stopPropagation(),
 ctxCopy: () => {
@@ -12788,7 +12740,7 @@ ctxQuote: () => {
   const m = msgs[idx];
   if (!m) return;
   const text = m.variants ? m.variants[m.variantIdx || 0] : m.text;
-  const sender = m.role === 'user' ? '我' : 'Kel';
+  const sender = m.role === 'user' ? (s.userNickname || 'User') : (s.aiNickname || 'Claude');
   self.setState({ quotedMsg: { role: m.role, text: text, sender: sender }, contextMenuIdx: -1 });
 },
 ctxEdit: () => {
@@ -13045,7 +12997,7 @@ setApiAnthropic: () => self.setState({ apiDraft: { ...(s.apiDraft || {}), apiTyp
 toggleApiAdvanced: () => self.setState(v => ({ apiAdvanced: !v.apiAdvanced })),
 newPersona: () => {
 const id = genId();
-const newP = { id, name: 'New Persona', content: '' };
+const newP = { id, name: 'New', content: '' };
 self.setState({ personas: [...s.personas, newP], activePersonaId: id, personaDraft: { ...newP } }); self.persist();
 },
 personaNameChange: (e) => self.setState({ personaDraft: { ...(s.personaDraft || {}), name: e.target.value } }),
@@ -13053,7 +13005,7 @@ personaContentChange: (e) => self.setState({ personaDraft: { ...(s.personaDraft 
 savePersona: () => {
 const draft = s.personaDraft || {};
 const personas = s.personas.map(p => p.id === s.activePersonaId ? { ...p, name: draft.name || p.name, content: draft.content !== undefined ? draft.content : p.content } : p);
-self.setState({ personas, sheet: null }); self.persist(); self.show('Persona saved');
+self.setState({ personas, sheet: null }); self.persist(); self.show('已保存');
 },
 deletePersona: () => {
 if (s.personas.length <= 1) { self.show('不能删除最后一个'); return; }
