@@ -214,3 +214,20 @@
 ### 下一步 Phase 2
 - 历史月视图、钱包封面、底栏三 Tab、自定义分类、发消息附加未同步流水
 
+---
+
+## 2026-07-19 记账 Finance Phase 2
+
+### 改了
+- `Kel-Home-main/index.html`
+  - 悬浮底栏三 Tab：仪表盘 / 历史 / 钱包（`finView`）
+  - 历史：月份左右切换、三列汇总、按天分组列表
+  - 钱包：总资产卡片 + 点按换封面（`settings.wallet_cover`）+ 分类列表/自定义增删
+  - 自定义分类 sheet（选图标 + 名称）；固定分类不可删
+  - AI 联动：`addUserMessage` 拼接未同步流水 → `markTransactionsSynced`
+  - `node --check` 通过；sc-if 144/144
+  - commit：本轮本地提交
+
+### 部署
+- 本地已完成；**待明确「部署到 kel-home.xyz」后再 scp**
+
