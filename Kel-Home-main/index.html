@@ -2856,10 +2856,9 @@ button:active {
 <sc-if value="{{ checklistSheetOpen }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;inset:0;z-index:680;">
 <div onClick="{{ closeChecklistSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.28);"></div>
-<div style="position:absolute;left:0;right:0;bottom:0;height:{{ checklistSheetHeight }};max-height:92%;background:var(--rc-paper, #F0EBE0);border-radius:18px 18px 0 0;box-shadow:0 -12px 40px rgba(42,38,32,.18);display:flex;flex-direction:column;overflow:hidden;">
-  <div style="flex:none;padding:10px 16px 6px;display:flex;align-items:center;justify-content:center;position:relative;">
-    <div style="width:40px;height:4px;border-radius:2px;background:rgba(60,50,40,.28);"></div>
-    <button onClick="{{ toggleChecklistSnap }}" style="position:absolute;right:12px;top:8px;border:none;background:transparent;color:#86806E;font-size:11px;font-family:inherit;cursor:pointer;padding:6px 8px;">{{ checklistSnapLabel }}</button>
+<div id="kel-checklist-sheet" style="position:absolute;left:0;right:0;bottom:0;height:{{ checklistSheetHeight }};max-height:92%;min-height:32vh;background:var(--rc-paper, #F0EBE0);border-radius:18px 18px 0 0;box-shadow:0 -12px 40px rgba(42,38,32,.18);display:flex;flex-direction:column;overflow:hidden;">
+  <div onTouchStart="{{ checklistDragStart }}" onMouseDown="{{ checklistDragStart }}" style="flex:none;padding:14px 16px 10px;display:flex;align-items:center;justify-content:center;cursor:ns-resize;touch-action:none;user-select:none;">
+    <div style="width:44px;height:5px;border-radius:3px;background:rgba(60,50,40,.30);"></div>
   </div>
   <div style="flex:none;padding:4px 20px 10px;text-align:center;border-bottom:1px dashed rgba(60,50,40,.28);">
     <div style="font-family:'Libre Baskerville','Georgia',serif;font-size:13px;letter-spacing:.18em;color:#2A2620;">{{ checklistAppName }}</div>
@@ -5065,12 +5064,42 @@ try { localStorage.setItem('kel-period-data', JSON.stringify(s.periodData || {})
 // 独立写入 periodData 防止主数据覆盖丢失
 try { localStorage.setItem('kel-period-data', JSON.stringify(s.periodData || {})); } catch(e) {}
 
+// localStorage = light cache only; IDB is source of truth. Don't spam toasts.
 try {
-const json = JSON.stringify(data);
-localStorage.setItem(STORAGE_KEY, json);
-} catch(e) {
-console.warn('[Kel] localStorage 写入失败，数据已存 IndexedDB', e.message);
-this.show('⚠️ 存储空间不足，数据仅存入后台');
+  const light = Object.assign({}, data);
+  light.userAvatar = '';
+  light.aiAvatar = '';
+  light.profileBgUrl = '';
+  light.soulBgUrl = '';
+  if (light.chats) {
+    const trimmed = {};
+    for (const [cid, chat] of Object.entries(light.chats)) {
+      const msgs = (chat.messages || []).slice(-30).map(function(mm) {
+        const c = Object.assign({}, mm);
+        delete c.image; delete c.imageMime; delete c.imageUrl; delete c.images;
+        if (c.file) delete c.file;
+        if (c.text && c.text.length > 2000) c.text = c.text.slice(0, 2000) + '...';
+        return c;
+      });
+      trimmed[cid] = Object.assign({}, chat, { messages: msgs });
+    }
+    light.chats = trimmed;
+  }
+  const json = JSON.stringify(light);
+  if (json.length < 4.5 * 1024 * 1024) localStorage.setItem(STORAGE_KEY, json);
+  else {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      version: 'ls-shell', currentChatId: light.currentChatId,
+      userNickname: light.userNickname, aiNickname: light.aiNickname,
+      homeTitleName: light.homeTitleName, savedAt: Date.now()
+    }));
+  }
+} catch (e) {
+  console.warn('[Kel] localStorage skip', e && e.message);
+  if (!this._lsWarnOnce) {
+    this._lsWarnOnce = true;
+    try { this.show('本地缓存已满，主数据在安全存储中'); } catch (err) {}
+  }
 }
 }
 
@@ -6722,10 +6751,10 @@ try { this.show('已保存'); } catch(e) {}
         if (d.soulPersonality || d.personas) {
           this.show('✓ Persona 已保存');
         } else {
-          this.show('⚠️ 数据未写入，可能空间不足');
+          /* muted storage toast */
         }
       } else {
-        this.show('⚠️ localStorage 为空，数据存入 IndexedDB');
+        /* muted storage toast */
       }
     } catch(e) {
       this.show('✓ 已保存（IndexedDB）');
@@ -7580,7 +7609,7 @@ async cloudBackupNow() {
       raw = JSON.stringify(bodyObj);
     }
     if (raw.length > MAX) {
-      throw new Error('备份仍超过约 ' + Math.round(raw.length/1024/1024) + 'MB，请先本地导出或清理大图后重试');
+      throw new Error('云端单次约限30MB。当前约' + Math.round(raw.length/1024/1024) + 'MB，请用导出到本地，或清理大图后再云备份');
     }
     const res = await fetch('/api/backup', {
       method: 'POST',
@@ -8149,7 +8178,7 @@ console.log('[Kel] 导入验证: ' + chatCount + ' chats saved');
 if (chatCount === 0) {
 // 写入失败，用 IndexedDB 兜底
 this._saveToIndexedDB(updates);
-this.show('⚠️ localStorage 可能已满，数据存入 IndexedDB');
+/* muted storage toast */
 }
 }
 }, 200);
@@ -9957,6 +9986,35 @@ navChatDetailUser: () => self.setState({ tab: 'chatlist', chatShellTab: 'user' }
 navChatDetailSettings: () => self.setState({ chatDetailTab: 'settings', chatMoreMenuOpen: false }),
 backFromChatSettings: () => self.setState({ chatDetailTab: 'chat' }),
 openChecklistSheet: () => self.setState({ checklistSheetOpen: true, chatMoreMenuOpen: false }),
+checklistDragStart: (e) => {
+  try {
+    var ev = (e.touches && e.touches[0]) ? e.touches[0] : e;
+    var startY = ev.clientY;
+    var startH = (self.state.checklistSnap || 0.55) * window.innerHeight;
+    var move = function(ev2) {
+      var p = (ev2.touches && ev2.touches[0]) ? ev2.touches[0] : ev2;
+      var dy = startY - p.clientY;
+      var h = startH + dy;
+      var minH = window.innerHeight * 0.32;
+      var maxH = window.innerHeight * 0.92;
+      if (h < minH) h = minH;
+      if (h > maxH) h = maxH;
+      self.setState({ checklistSnap: h / window.innerHeight });
+      if (ev2.cancelable) ev2.preventDefault();
+    };
+    var up = function() {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+      window.removeEventListener('touchmove', move);
+      window.removeEventListener('touchend', up);
+    };
+    window.addEventListener('mousemove', move, { passive: false });
+    window.addEventListener('mouseup', up);
+    window.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('touchend', up);
+  } catch (err) {}
+},
+
 closeChecklistSheet: () => self.setState({ checklistSheetOpen: false, checklistDraft: '', checklistDraftTime: '' }),
 checklistSheetOpen: !!s.checklistSheetOpen,
 checklistSnapLabel: (s.checklistSnap || 0.55) > 0.7 ? '半屏' : '加高',
@@ -11201,11 +11259,26 @@ memLayerOptions:
 avatarSize: s.avatarSize || 36,
 userNickname: s.userNickname || 'User',
 aiNickname: s.aiNickname || 'Claude',
-userNicknameChange: (e) => { self.setState({ userNickname: e.target.value }); self.persist(); self.show('已修改'); },
+userNicknameChange: (e) => {
+  var v = e.target.value;
+  var ai = self.state.aiNickname || 'Claude';
+  var prevU = self.state.userNickname || 'User';
+  var home = self.state.homeTitleName || '';
+  var patterns = [prevU + ' & ' + ai, ai + ' & ' + prevU, 'Claude & User', 'User & Claude', 'Kel & 江吟', 'Claude & 江吟'];
+  if (!home || patterns.indexOf(home) >= 0 || home.indexOf(prevU) >= 0) home = (v || 'User') + ' & ' + ai;
+  self.setState({ userNickname: v, homeTitleName: home });
+  self.persist();
+  self.show('已修改');
+},
 aiNicknameChange: (e) => {
-  const v = e.target.value;
-  const personas = (self.state.personas || []).map(p => (p && p.id === 'default') ? { ...p, name: v || 'Claude' } : p);
-  self.setState({ aiNickname: v, personas });
+  var v = e.target.value;
+  var user = self.state.userNickname || 'User';
+  var prevA = self.state.aiNickname || 'Claude';
+  var home = self.state.homeTitleName || '';
+  var patterns = [user + ' & ' + prevA, prevA + ' & ' + user, 'Claude & User', 'User & Claude', 'Kel & 江吟'];
+  if (!home || patterns.indexOf(home) >= 0 || home.indexOf(prevA) >= 0) home = user + ' & ' + (v || 'Claude');
+  var personas = (self.state.personas || []).map(function(p){ return (p && p.id === 'default') ? Object.assign({}, p, { name: v || 'Claude' }) : p; });
+  self.setState({ aiNickname: v, personas: personas, homeTitleName: home });
   self.persist();
   self.show('已修改');
 },
@@ -11951,6 +12024,75 @@ memGoFavorites: () => self.setState({ memView: 'favorites', favView: 'list', fav
 memGoInbox: () => self.setState({ memView: 'inbox', letterView: 'list', letterSelectedId: null }),
 isMemViewFavorites: s.memView === 'favorites',
 isMemViewInbox: s.memView === 'inbox',
+letterHasUnread: (s.letters || []).some(function(l){ return !l.is_read; }),
+letterHasAny: (s.letters || []).length > 0,
+letterEmpty: !(s.letters || []).length,
+letterHubCountLabel: ((s.letters || []).length) + '封',
+isLetterViewList: (s.letterView || 'list') === 'list',
+isLetterViewDetail: s.letterView === 'detail',
+letterPeekTitle: (function(){
+  var list = (s.letters || []).slice().sort(function(a,b){ return (b.timestamp||0)-(a.timestamp||0); });
+  var unread = list.filter(function(l){ return !l.is_read; })[0];
+  var top = unread || list[0];
+  return top ? (top.title || '一封信') : '';
+})(),
+letterListCards: (function(){
+  var list = (s.letters || []).slice().sort(function(a,b){ return (b.timestamp||0)-(a.timestamp||0); });
+  return list.map(function(l){
+    var dateLabel = '';
+    try {
+      var p = (l.date || '').split('-');
+      if (p.length === 3) dateLabel = parseInt(p[1],10) + '月' + parseInt(p[2],10) + '日';
+    } catch (e) {}
+    var preview = (l.content || '').replace(/\s+/g, ' ').slice(0, 48);
+    return {
+      title: l.title || '一封信',
+      preview: preview + ((l.content || '').length > 48 ? '…' : ''),
+      meta: (dateLabel + (l.time ? (' ' + l.time) : '')).trim(),
+      fromLabel: '来自 ' + (s.aiNickname || 'Claude'),
+      unread: !l.is_read,
+      open: function(){
+        self.setState({ letterView: 'detail', letterSelectedId: l.id });
+        if (!l.is_read) self.markLetterAsRead(l.id);
+      }
+    };
+  });
+})(),
+openLatestLetter: function(){
+  var list = (s.letters || []).slice().sort(function(a,b){ return (b.timestamp||0)-(a.timestamp||0); });
+  if (!list.length) { self.show('信箱是空的'); return; }
+  var unread = list.filter(function(l){ return !l.is_read; })[0];
+  var top = unread || list[0];
+  self.setState({ letterView: 'detail', letterSelectedId: top.id });
+  if (!top.is_read) self.markLetterAsRead(top.id);
+},
+markAllLettersRead: function(){ self.markAllLettersAsRead().then(function(){ self.show('已全部标为已读'); }); },
+letterBackList: function(){ self.setState({ letterView: 'list', letterSelectedId: null }); },
+letterDetailMeta: (function(){
+  var l = (s.letters || []).filter(function(x){ return x.id === s.letterSelectedId; })[0];
+  if (!l) return '';
+  var full = '';
+  try {
+    var d = new Date(l.timestamp || Date.now());
+    full = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日 ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  } catch (e) { full = (l.date || '') + ' ' + (l.time || ''); }
+  return '来自 ' + (s.aiNickname || 'Claude') + ' · ' + full;
+})(),
+letterDetailTitle: (function(){
+  var l = (s.letters || []).filter(function(x){ return x.id === s.letterSelectedId; })[0];
+  return (l && l.title) || '';
+})(),
+letterDetailContent: (function(){
+  var l = (s.letters || []).filter(function(x){ return x.id === s.letterSelectedId; })[0];
+  return (l && l.content) || '';
+})(),
+letterDeleteConfirm: function(){
+  var id = s.letterSelectedId;
+  if (!id) return;
+  if (!confirm('确定要删除这封信吗？')) return;
+  self.deleteLetter(id).then(function(){ self.show('已删除'); });
+},
+
 favFilterUser: () => self.setState({ favFilter: 'user', favView: 'list', favSelectedId: null }),
 favFilterAi: () => self.setState({ favFilter: 'ai', favView: 'list', favSelectedId: null }),
 favFilterUserBg: (s.favFilter || 'user') === 'user' ? '#1A1A1A' : '#F5F5F7',
@@ -12668,6 +12810,7 @@ petPosRight: (() => { const pos=JSON.parse(localStorage.getItem('kel-pet-pos')||
 petPosRightPercent: (() => { const pos=JSON.parse(localStorage.getItem('kel-pet-pos')||'{"bottom":90,"right":16}'); return Math.round((pos.right!==undefined?pos.right:16)/340*100)+'%'; })(),
 petPosRightChange: (e) => { const pos=JSON.parse(localStorage.getItem('kel-pet-pos')||'{"bottom":90,"right":16}'); pos.right=parseInt(e.target.value); localStorage.setItem('kel-pet-pos',JSON.stringify(pos)); self.setState({}); },
 openErrorLog: () => self.setState({ errorLogOpen: true, plus: false }),
+openErrorLogFromMore: () => self.setState({ errorLogOpen: true, chatMoreMenuOpen: false, plus: false }),
 closeErrorLog: () => self.setState({ errorLogOpen: false }),
 clearErrorLogs: () => { self.setState({ errorLogs: [] }); localStorage.removeItem('kel-error-logs'); self.show('日志已清空'); },
 musicPlayerOpen: s.musicPlayerOpen,
