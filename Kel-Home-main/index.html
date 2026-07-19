@@ -38,6 +38,18 @@ body { background:var(--bg-base, #d6d2c8); padding:env(safe-area-inset-top, 0) 0
 .tab-pill { padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:inherit; }
 .tab-pill.active { background:#68544B;color:#FFF; }
 .tab-pill.inactive { background:transparent;color:#9A958B; }
+.kel-body-page { image-rendering: pixelated; image-rendering: crisp-edges; }
+.kel-body-page, .kel-body-page button { font-family: "Courier New", monospace !important; }
+.kel-px-stage { position: relative; width: 160px; height: 320px; margin: 0 auto; }
+.kel-px-block { position: absolute; image-rendering: pixelated; }
+.kel-px-hot { position: absolute; pointer-events: auto; cursor: pointer; background: transparent; border: none; padding: 0; }
+.kel-body-mini { position: fixed; z-index: 920; width: 132px; background: #1a1512; border: 3px solid #68544B; box-shadow: 0 8px 24px rgba(0,0,0,.35); border-radius: 4px; overflow: hidden; touch-action: none; user-select: none; }
+.kel-body-mini-head { background: #68544B; color: #F5F3EE; font-size: 10px; padding: 4px 6px; display: flex; justify-content: space-between; align-items: center; cursor: move; font-family: "Courier New", monospace; }
+.kel-body-stat { font-size: 10px; color: #c4b8a8; line-height: 1.35; font-family: "Courier New", monospace; }
+.kel-body-btn { border: 2px solid #3a3228; background: #2a221c; color: #f0e6d8; font-size: 10px; padding: 6px 8px; cursor: pointer; border-radius: 2px; font-family: "Courier New", monospace; }
+.kel-body-btn.on { background: #68544B; border-color: #8b7355; color: #fff; }
+.kel-body-btn.hot { background: #8B3A3A; border-color: #C45C4A; }
+
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 @keyframes dots { 0%,100%{opacity:.25} 50%{opacity:1} }
