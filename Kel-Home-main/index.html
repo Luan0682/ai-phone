@@ -238,12 +238,24 @@ button:active {
 </div>
 </sc-if>
 
-<!-- header -->
+<!-- header: settings mode vs chat mode -->
+<sc-if value="{{ isChatDetailSettings }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;padding:14px 16px 10px;display:flex;align-items:center;gap:12px;">
+<button onClick="{{ backFromChatSettings }}" title="Back" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div style="font-family:'Newsreader','Noto Serif SC',serif;font-size:22px;font-weight:400;color:var(--text-primary, #1A1815);">Settings</div>
+</div>
+</sc-if>
+<sc-if value="{{ !isChatDetailSettings }}" hint-placeholder-val="{{ true }}">
 <div style="flex:none;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:9px;">
 <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
 <div onClick="{{ navChatShellList }}" style="font-family:'Newsreader','Noto Serif SC',serif;font-size:24px;font-weight:400;color:var(--text-primary, #1A1815);cursor:pointer;white-space:nowrap;">Chat</div>
 </div>
 <div style="display:flex;align-items:center;gap:8px;flex:none;position:relative;">
+<button onClick="{{ openChecklistSheet }}" title="Checklist" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;z-index:61;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" stroke="#68544B" stroke-width="1.7" stroke-linecap="round"/></svg>
+</button>
 <button onClick="{{ toggleChatMoreMenu }}" title="More" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;z-index:61;">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="6" r="1.2" fill="var(--text-secondary, #48453E)"/><circle cx="12" cy="12" r="1.2" fill="var(--text-secondary, #48453E)"/><circle cx="12" cy="18" r="1.2" fill="var(--text-secondary, #48453E)"/></svg>
 </button>
@@ -263,6 +275,7 @@ button:active {
 </sc-if>
 </div>
 </div>
+</sc-if>
 
 <!-- Chat messages + composer -->
 <sc-if value="{{ isChatDetailChat }}" hint-placeholder-val="{{ true }}">
@@ -513,16 +526,10 @@ button:active {
 </sc-if>
 </sc-if>
 
-<!-- Chat detail Settings -->
+<!-- Chat detail Settings body -->
 <sc-if value="{{ isChatDetailSettings }}" hint-placeholder-val="{{ false }}">
 <div style="flex:1;min-height:0;display:flex;flex-direction:column;background:var(--bg-main, #F5F3EE);">
-<div style="flex:none;padding:8px 16px 12px;display:flex;align-items:center;gap:12px;">
-<button onClick="{{ backFromChatSettings }}" title="Back" style="width:36px;height:36px;border-radius:50%;background:var(--bg-card, #FFF);border:none;box-shadow:0 0 0 1px rgba(43,38,30,.05),0 2px 6px rgba(43,38,30,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#3A362F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-<div style="font-size:16px;font-weight:600;color:var(--text-primary, #1A1815);">聊天设置</div>
-</div>
-<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:0 16px 28px;">
+<div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:4px 16px 28px;">
 <div style="background:var(--bg-card, #FFF);border:1px solid var(--border-card, #EDE9E0);border-radius:16px;padding:4px 16px;box-shadow:0 1px 3px rgba(43,38,30,.04);">
 
 <div style="padding:14px 0;border-bottom:1px solid #F5F3EE;">
@@ -2844,6 +2851,56 @@ button:active {
 </div>
 </sc-if>
 
+
+<!-- ========== Receipt Checklist Sheet (frontend-only) ========== -->
+<sc-if value="{{ checklistSheetOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:680;">
+<div onClick="{{ closeChecklistSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.28);"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:{{ checklistSheetHeight }};max-height:92%;background:var(--rc-paper, #F0EBE0);border-radius:18px 18px 0 0;box-shadow:0 -12px 40px rgba(42,38,32,.18);display:flex;flex-direction:column;overflow:hidden;">
+  <div style="flex:none;padding:10px 16px 6px;display:flex;align-items:center;justify-content:center;position:relative;">
+    <div style="width:40px;height:4px;border-radius:2px;background:rgba(60,50,40,.28);"></div>
+    <button onClick="{{ toggleChecklistSnap }}" style="position:absolute;right:12px;top:8px;border:none;background:transparent;color:#86806E;font-size:11px;font-family:inherit;cursor:pointer;padding:6px 8px;">{{ checklistSnapLabel }}</button>
+  </div>
+  <div style="flex:none;padding:4px 20px 10px;text-align:center;border-bottom:1px dashed rgba(60,50,40,.28);">
+    <div style="font-family:'Libre Baskerville','Georgia',serif;font-size:13px;letter-spacing:.18em;color:#2A2620;">{{ checklistAppName }}</div>
+    <div style="font-size:11px;color:#86806E;margin-top:4px;">{{ checklistClerkLine }}</div>
+    <div style="font-size:10px;color:#BAB4A4;margin-top:2px;">{{ checklistDateLine }}</div>
+  </div>
+  <div class="sa" style="flex:1;min-height:0;overflow-y:auto;padding:8px 14px 12px;">
+    <sc-for list="{{ checklistRenderList }}" as="ci" hint-placeholder-count="4">
+    <div style="display:flex;align-items:flex-start;gap:8px;padding:10px 6px;border-bottom:1px dotted rgba(60,50,40,.18);opacity:{{ ci.opacity }};">
+      <button onClick="{{ ci.toggle }}" style="border:none;background:transparent;font-family:monospace;font-size:14px;color:#2A2620;cursor:pointer;padding:0;line-height:1.4;flex:none;">{{ ci.check }}</button>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:14px;color:#2A2620;line-height:1.45;text-decoration:{{ ci.strike }};">{{ ci.body }}</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+          <span style="font-size:10px;color:#86806E;">{{ ci.by }}</span>
+          <sc-if value="{{ ci.hasBadge }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:10px;color:{{ ci.badgeColor }};font-family:monospace;">{{ ci.badge }}</span>
+          </sc-if>
+        </div>
+      </div>
+      <button onClick="{{ ci.del }}" style="border:none;background:transparent;color:#BAB4A4;font-size:16px;cursor:pointer;padding:0 4px;flex:none;">x</button>
+    </div>
+    </sc-for>
+    <sc-if value="{{ checklistEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="text-align:center;padding:28px 8px;color:#86806E;font-size:13px;">今天的小票还是空的</div>
+    </sc-if>
+  </div>
+  <div style="flex:none;padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);border-top:1px dashed rgba(60,50,40,.28);background:rgba(240,235,224,.95);">
+    <div style="display:flex;gap:8px;margin-bottom:8px;">
+      <input value="{{ checklistDraft }}" onInput="{{ checklistDraftChange }}" placeholder="写一项..." style="flex:1;border:1px solid rgba(60,50,40,.2);outline:none;background:#FBF7EF;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px;color:#2A2620;">
+      <input value="{{ checklistDraftTime }}" onInput="{{ checklistDraftTimeChange }}" placeholder="HH:MM" style="width:72px;border:1px solid rgba(60,50,40,.2);outline:none;background:#FBF7EF;border-radius:10px;padding:10px 8px;font-family:monospace;font-size:12px;color:#2A2620;text-align:center;">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onClick="{{ checklistAddOnce }}" style="flex:1;border:none;background:#2A2620;color:#F0EBE0;border-radius:12px;padding:11px;font-size:13px;font-family:inherit;cursor:pointer;">加一次性</button>
+      <button onClick="{{ checklistAddFixed }}" style="flex:1;border:1px solid #2A2620;background:transparent;color:#2A2620;border-radius:12px;padding:11px;font-size:13px;font-family:inherit;cursor:pointer;">加每日</button>
+    </div>
+    <div style="text-align:center;font-size:10px;color:#BAB4A4;margin-top:8px;">今天也辛苦了，{{ checklistUserName }}</div>
+  </div>
+</div>
+</div>
+</sc-if>
+
 <!-- Global Toast -->
 <sc-if value="{{ toastShow }}" hint-placeholder-val="{{ false }}">
 <div style="position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom, 0px) + 88px);transform:translateX(-50%);z-index:9999;pointer-events:none;max-width:86%;">
@@ -4060,6 +4117,10 @@ todoEditIn: '',
 todoEditIsFixed: true,
 accounts: saved.accounts || [],
 checklistItems: saved.checklistItems || JSON.parse(localStorage.getItem('kel-checklist-data') || '{}').checklistItems || [],
+checklistSheetOpen: false,
+checklistSnap: 0.55,
+checklistDraft: '',
+checklistDraftTime: '',
 };
 
 // 迁移：为所有消息补全 id
