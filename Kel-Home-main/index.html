@@ -5124,7 +5124,7 @@ const timestamp = getFixedTimestamp();
 let fullText = text || '';
 const quotedRef = this.state.quotedMsg ? this.state.quotedMsg : null;
 if (quotedRef) {
-  fullText = `> ${quotedRef.sender}：${quotedRef.text}\n\n${fullText}`;
+  // quote metadata only - text not embedded in bubble
   this.setState({ quotedMsg: null });
 }
 // Finance Phase2: append unsynced ledger lines to user message
@@ -7456,7 +7456,11 @@ if (m.file && m.file.isText && m.file.textContent) {
 content.push({ type: 'text', text: '[File: ' + m.file.fileName + ']\n' + m.file.textContent });
 }
 const t = m.variants ? (m.variants[m.variantIdx || 0] || m.text) : m.text;
-const tWithTs = (role === 'user' && m.timestamp && t) ? ('[' + m.timestamp + '] ' + t) : t;
+let apiText = t || '';
+if (m.quote && m.quote.text) {
+  apiText = '> ' + (m.quote.sender || '') + '：' + m.quote.text + '\n\n' + apiText;
+}
+const tWithTs = (role === 'user' && m.timestamp && apiText) ? ('[' + m.timestamp + '] ' + apiText) : apiText;
 if (tWithTs) content.push({ type: 'text', text: tWithTs });
 
 // Merge with previous if same role
@@ -9740,7 +9744,7 @@ self.deleteImageFromMessage(m.id);
 }
 },
 showNormal: !isMemoryNotice && s.editIdx !== i && !!rendered,
-hasQuote: !!(m.quote || (displayText.match(/^> .+/m) && !isUser)),
+hasQuote: !!m.quote,
 quoteText: m.quote ? (m.quote.sender + '：' + m.quote.text) : (displayText.match(/^> (.+)/m) ? displayText.match(/^> (.+)/m)[1].slice(0, 40) : ''),
 bubblePadding: !rendered ? '0' : ('var(--chat-bubble-pad-y, 5px) var(--chat-bubble-pad-x, 10px)'),
 bubbleDisplay: !rendered ? 'none' : 'block',
