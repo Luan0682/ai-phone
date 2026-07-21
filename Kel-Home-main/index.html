@@ -278,6 +278,14 @@ button:active {
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="#68544B" stroke-width="1.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
 <span style="font-size:13px;color:#1A1815;font-weight:500;">聊天设置</span>
 </button>
+<button onClick="{{ quickExportBackup }}" title="导出备份" style="width:100%;border:none;background:transparent;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;font-family:inherit;text-align:left;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2v12M19 9l-7 7-7-7M4 20h16" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span style="font-size:13px;color:#1A1815;font-weight:500;">导出备份</span>
+</button>
+<button onClick="{{ quickCloudBackup }}" title="云备份" style="width:100%;border:none;background:transparent;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;font-family:inherit;text-align:left;">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 13v6H4v-6M12 15v-8M7 8c-2.2 0-4-1.8-4-4 0-2.2 1.8-4 4-4 .2-2.2 2-4 4-4s4 1.8 4 4c2.2 0 4 1.8 4 4s-1.8 4-4 4h-8z" stroke="#68544B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span style="font-size:13px;color:#1A1815;font-weight:500;">云备份</span>
+</button>
 <button onClick="{{ openErrorLogFromMore }}" style="width:100%;border:none;background:transparent;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;font-family:inherit;text-align:left;">
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#68544B" stroke-width="1.5"/><path d="M12 8v5M12 16h.01" stroke="#68544B" stroke-width="1.5" stroke-linecap="round"/></svg>
 <span style="font-size:13px;color:#1A1815;font-weight:500;">错误日志</span>
@@ -3468,6 +3476,55 @@ button:active {
 <button onClick="{{ ip.pick }}" style="width:40px;height:40px;border-radius:12px;border:1px solid {{ ip.bd }};background:{{ ip.bg }};display:flex;align-items:center;justify-content:center;cursor:pointer;">{{ ip.iconHtml }}</button>
 </sc-for>
 </div>
+</div>
+</div>
+</sc-if>
+
+<!-- Cloud Backup Modal -->
+<sc-if value="{{ sheet === 'cloudBackup' }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;">
+<div onClick="{{ () => self.setState({ sheet: null }) }}" style="position:absolute;inset:0;background:rgba(0,0,0,.28);"></div>
+<div class="sa" style="position:relative;z-index:1;width:100%;max-width:420px;max-height:min(80vh,700px);overflow-y:auto;background:var(--bg-card,#FFF);border:1px solid var(--border-card,#EDE9E0);border-radius:18px;padding:20px;box-shadow:0 16px 48px rgba(43,38,30,.18);">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+<div style="font-size:16px;font-weight:600;color:#1A1815;">云备份和恢复</div>
+<button onClick="{{ () => self.setState({ sheet: null }) }}" style="width:32px;height:32px;border:none;background:#F2EFE8;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#48453E" stroke-width="1.8" stroke-linecap="round"/></svg>
+</button>
+</div>
+
+<div style="padding:12px;background:#F7F5F0;border-radius:12px;margin-bottom:18px;">
+<div style="font-size:13px;color:#3A362F;font-weight:500;margin-bottom:4px;">📥 本地导出（推荐）</div>
+<div style="font-size:11px;color:#9A958B;line-height:1.6;margin-bottom:10px;">将所有对话、记忆、收藏导出为JSON文件。可在任何地方保存或恢复。</div>
+<button onClick="{{ quickExportBackup }}" style="width:100%;border:none;background:#68544B;color:#FFF;border-radius:12px;padding:11px;font-size:13px;font-family:inherit;cursor:pointer;">导出完整备份</button>
+</div>
+
+<div style="height:1px;background:#ECE8DF;margin:18px 0;"></div>
+
+<div style="padding:12px;background:#F7F5F0;border-radius:12px;margin-bottom:18px;">
+<div style="font-size:13px;color:#3A362F;font-weight:500;margin-bottom:4px;">☁️ 云同步（配置）</div>
+<div style="font-size:11px;color:#9A958B;line-height:1.6;margin-bottom:10px;">配置自建云服务，定期自动备份。支持 WebDAV、S3、自定义API。</div>
+
+<div style="margin-bottom:12px;">
+<div style="font-size:11px;color:#B8B3A8;margin-bottom:4px;">备份服务类型</div>
+<div style="display:flex;gap:6px;">
+<button style="flex:1;padding:8px;border:1px solid #D1CCC2;background:#FFF;border-radius:8px;font-size:12px;font-family:inherit;cursor:pointer;color:#9A958B;opacity:.6;" disabled>WebDAV</button>
+<button style="flex:1;padding:8px;border:1px solid #D1CCC2;background:#FFF;border-radius:8px;font-size:12px;font-family:inherit;cursor:pointer;color:#9A958B;opacity:.6;" disabled>S3 兼容</button>
+<button style="flex:1;padding:8px;border:1px solid #D1CCC2;background:#FFF;border-radius:8px;font-size:12px;font-family:inherit;cursor:pointer;color:#9A958B;opacity:.6;" disabled>自定义</button>
+</div>
+<div style="font-size:10px;color:#9A958B;margin-top:6px;text-align:center;">功能敬请期待</div>
+</div>
+</div>
+
+<div style="height:1px;background:#ECE8DF;margin:18px 0;"></div>
+
+<div style="padding:12px;background:#F7F5F0;border-radius:12px;">
+<div style="font-size:13px;color:#3A362F;font-weight:500;margin-bottom:4px;">📦 本地恢复</div>
+<div style="font-size:11px;color:#9A958B;line-height:1.6;margin-bottom:10px;">从导出的JSON文件恢复数据。注意：恢复会覆盖当前数据。</div>
+<input type="file" accept=".json" id="kelBackupImport" style="display:none;" onChange="{{ importBackupFile }}">
+<button onClick="{{ () => document.getElementById('kelBackupImport').click() }}" style="width:100%;border:1px solid #68544B;background:transparent;color:#68544B;border-radius:12px;padding:11px;font-size:13px;font-family:inherit;cursor:pointer;">选择备份文件</button>
+</div>
+
+<div style="font-size:10px;color:#9A958B;margin-top:14px;line-height:1.6;text-align:center;">💡 建议每周至少导出一次完整备份。将备份文件保存到云盘（iCloud/OneDrive/Google Drive）以防数据丢失。</div>
 </div>
 </div>
 </sc-if>
@@ -13365,6 +13422,95 @@ openErrorLog: () => self.setState({ errorLogOpen: true, plus: false }),
 openErrorLogFromMore: () => self.setState({ errorLogOpen: true, chatMoreMenuOpen: false, plus: false }),
 closeErrorLog: () => self.setState({ errorLogOpen: false }),
 clearErrorLogs: () => { self.setState({ errorLogs: [] }); localStorage.removeItem('kel-error-logs'); self.show('日志已清空'); },
+quickExportBackup: async () => {
+  const s = self.state;
+  const backup = {
+    version: '2.0',
+    exportTime: new Date().toISOString(),
+    dataSize: {
+      chats: Object.keys(s.chats || {}).length + ' 个对话',
+      memories: (s.memories || []).length + ' 条记忆',
+      favorites: (s.favorites || []).length + ' 条收藏'
+    },
+    data: {
+      chats: s.chats,
+      memories: s.memories,
+      favorites: s.favorites,
+      settings: {
+        userNickname: s.userNickname,
+        aiNickname: s.aiNickname,
+        userGender: s.userGender,
+        userBirthday: s.userBirthday,
+        userSignature: s.userSignature,
+        avatarSize: s.avatarSize,
+        chatBubbleGap: s.chatBubbleGap,
+        chatBubblePad: s.chatBubblePad,
+        chatBubbleMaxW: s.chatBubbleMaxW,
+        chatLetterSpacing: s.chatLetterSpacing,
+        chatSidePad: s.chatSidePad,
+        petEnabled: s.petEnabled,
+        soundEnabled: s.soundEnabled,
+        keepAliveEnabled: s.keepAliveEnabled
+      }
+    }
+  };
+  const json = JSON.stringify(backup, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kel-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  localStorage.setItem('kel-last-backup-time', Date.now().toString());
+  self.setState({ chatMoreMenuOpen: false });
+  self.show('已导出完整备份（包含所有数据）');
+},
+quickCloudBackup: () => {
+  self.setState({ sheet: 'cloudBackup', chatMoreMenuOpen: false });
+},
+importBackupFile: (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const content = evt.target.result;
+      const backup = JSON.parse(content);
+      if (!backup.data) {
+        self.show('备份文件格式错误');
+        return;
+      }
+      const confirmRestore = confirm('确认恢复备份？这会覆盖当前所有数据。\n\n备份包含：\n' +
+        '• 对话: ' + Object.keys(backup.data.chats || {}).length + ' 个\n' +
+        '• 记忆: ' + (backup.data.memories || []).length + ' 条\n' +
+        '• 收藏: ' + (backup.data.favorites || []).length + ' 条');
+
+      if (!confirmRestore) return;
+
+      // 恢复数据
+      const patch = {};
+      if (backup.data.chats) patch.chats = backup.data.chats;
+      if (backup.data.memories) patch.memories = backup.data.memories;
+      if (backup.data.favorites) patch.favorites = backup.data.favorites;
+      if (backup.data.settings) {
+        Object.assign(patch, backup.data.settings);
+      }
+
+      self.setState(patch);
+      self.persist();
+      self.setState({ sheet: null });
+      self.show('✓ 备份恢复成功！请刷新页面以完全加载');
+      setTimeout(() => location.reload(), 1000);
+    } catch (err) {
+      self.show('恢复失败: ' + (err.message || '文件格式错误'));
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+},
 musicPlayerOpen: s.musicPlayerOpen,
 closeMusicPlayer: () => self.setState({ musicPlayerOpen: false }),
 musicCurrentDisplay: s.musicPlaying ? (s.musicCurrentName || '播放中') : '未播放',
