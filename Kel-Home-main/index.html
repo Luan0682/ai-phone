@@ -3577,10 +3577,15 @@ try {
   const periodRaw = localStorage.getItem('kel-period-data');
   if (periodRaw) { try { periodData = JSON.parse(periodRaw); } catch(e) {} }
 } catch(e) {}
+let result = {};
 try {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (raw) {
     const data = JSON.parse(raw);
+    // 始终保存所有数据字段，即使没有chats
+    if (data) {
+      result = data;
+    }
     if (data.chats) {
       for (const chatId of Object.keys(data.chats)) {
         const chat = data.chats[chatId];
@@ -3598,19 +3603,15 @@ try {
       }
     }
     if (periodData && (!data.periodData || !data.periodData.history || data.periodData.history.length === 0)) {
-      data.periodData = periodData;
+      result.periodData = periodData;
     } else if (periodData && periodData.history && periodData.history.length > (data.periodData?.history?.length || 0)) {
-      data.periodData = periodData;
-    }
-    if (data.chats && Object.keys(data.chats).length > 0) {
-      return data;
+      result.periodData = periodData;
     }
   }
 } catch(e) {
   console.error('[Kel] loadData 解析失败', e);
 }
-const result = {};
-if (periodData) { result.periodData = periodData; }
+if (periodData && !result.periodData) { result.periodData = periodData; }
 return result;
 }
 
@@ -4572,13 +4573,18 @@ const idbTime = result.data._savedAt || 0;
 const lsChats = lsData.chats ? Object.keys(lsData.chats).length : 0;
 const idbChats = idbData.chats ? Object.keys(idbData.chats).length : 0;
 
-// 用消息总数更多的那个版本
+// 改进同步策略：优先用时间戳，其次比较消息数量
+const idbTime = result.data._savedAt || 0;
+const lsTime = lsData._savedAt || 0;
 const idbMsgCount = Object.values(idbData.chats || {}).reduce((sum, c) => sum + (c.messages ? c.messages.length : 0), 0);
 const lsMsgCount = Object.values(lsData.chats || {}).reduce((sum, c) => sum + (c.messages ? c.messages.length : 0), 0);
-if (idbMsgCount >= lsMsgCount) {
-console.log('[Kel] 使用 IndexedDB 数据 (msgs:', idbMsgCount, 'vs ls:', lsMsgCount, ')');
-// IndexedDB 的 _savedAt 比 localStorage 更新 = IndexedDB 是真正的最新数据
-// 始终用 IndexedDB 的数据（因为 persist() 总是先写 IndexedDB）
+
+// 判断使用哪个数据源：1) 用更新的时间戳 2) 如果时间戳相同，用消息更多的
+const useIdb = idbTime > lsTime || (idbTime === lsTime && idbMsgCount >= lsMsgCount);
+
+if (useIdb) {
+console.log('[Kel] 使用 IndexedDB 数据 (time:', idbTime, 'msgs:', idbMsgCount, ')');
+// 使用 IndexedDB 的数据
 this.setState({
   chats: idbData.chats || this.state.chats,
   memories: idbData.memories || this.state.memories,
@@ -4613,6 +4619,44 @@ this.setState({
   memoryCount: idbData.memoryCount || this.state.memoryCount,
   keepAliveEnabled: idbData.keepAliveEnabled !== undefined ? idbData.keepAliveEnabled : this.state.keepAliveEnabled,
 });
+} else {
+  // 使用 localStorage 的数据（更新，或消息更多）
+  console.log('[Kel] 使用 localStorage 数据 (time:', lsTime, 'msgs:', lsMsgCount, ')');
+  this.setState({
+    chats: lsData.chats || this.state.chats,
+    memories: lsData.memories || this.state.memories,
+    favorites: lsData.favorites || this.state.favorites,
+    currentChatId: lsData.currentChatId || this.state.currentChatId,
+    diaries: lsData.diaries || this.state.diaries,
+    pledges: lsData.pledges || this.state.pledges,
+    anniversaries: lsData.anniversaries || this.state.anniversaries,
+    personas: lsData.personas || this.state.personas,
+    activePersonaId: lsData.activePersonaId || this.state.activePersonaId,
+    apiPresets: lsData.apiPresets || this.state.apiPresets,
+    activePresetId: lsData.activePresetId || this.state.activePresetId,
+    styles: lsData.styles || this.state.styles,
+    activeStyleId: lsData.activeStyleId || this.state.activeStyleId,
+    prompts: lsData.prompts || this.state.prompts,
+    customCss: lsData.customCss || this.state.customCss,
+    customFont: lsData.customFont || this.state.customFont,
+    localFontName: lsData.localFontName || this.state.localFontName,
+    msgFontSize: lsData.msgFontSize || this.state.msgFontSize,
+    activeThemeId: lsData.activeThemeId || this.state.activeThemeId,
+    customTheme: lsData.customTheme || this.state.customTheme,
+    regexRules: lsData.regexRules || this.state.regexRules,
+    fontPresets: lsData.fontPresets || this.state.fontPresets,
+    avatarSize: lsData.avatarSize || this.state.avatarSize,
+    chatBubbleGap: lsData.chatBubbleGap != null ? lsData.chatBubbleGap : this.state.chatBubbleGap,
+    chatBubblePad: lsData.chatBubblePad != null ? lsData.chatBubblePad : this.state.chatBubblePad,
+    chatBubbleMaxW: lsData.chatBubbleMaxW != null ? lsData.chatBubbleMaxW : this.state.chatBubbleMaxW,
+    chatLetterSpacing: lsData.chatLetterSpacing != null ? lsData.chatLetterSpacing : this.state.chatLetterSpacing,
+    chatSidePad: lsData.chatSidePad != null ? lsData.chatSidePad : this.state.chatSidePad,
+    petEnabled: lsData.petEnabled !== undefined ? lsData.petEnabled : this.state.petEnabled,
+    petSizeIdx: lsData.petSizeIdx !== undefined ? lsData.petSizeIdx : this.state.petSizeIdx,
+    soundEnabled: lsData.soundEnabled !== undefined ? lsData.soundEnabled : this.state.soundEnabled,
+    memoryCount: lsData.memoryCount || this.state.memoryCount,
+    keepAliveEnabled: lsData.keepAliveEnabled !== undefined ? lsData.keepAliveEnabled : this.state.keepAliveEnabled,
+  });
 }
 }
 } catch(e) { console.warn('[Kel] IndexedDB 主数据读取失败', e); }
@@ -5421,13 +5465,29 @@ try {
     light.chats = trimmed;
   }
   const json = JSON.stringify(light);
-  if (json.length < 4.5 * 1024 * 1024) localStorage.setItem(STORAGE_KEY, json);
-  else {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      version: 'ls-shell', currentChatId: light.currentChatId,
-      userNickname: light.userNickname, aiNickname: light.aiNickname,
-      homeTitleName: light.homeTitleName, savedAt: Date.now()
-    }));
+  if (json.length < 4.5 * 1024 * 1024) {
+    localStorage.setItem(STORAGE_KEY, json);
+  } else {
+    // 超大时：保留memories/favorites和所有设置，只truncate chats
+    const safe = Object.assign({}, light);
+    if (safe.chats) {
+      const minimalChats = {};
+      for (const [cid, chat] of Object.entries(safe.chats)) {
+        // 每个对话只保留最后5条消息（极限压缩）
+        minimalChats[cid] = {
+          ...chat,
+          messages: (chat.messages || []).slice(-5).map(m => ({
+            id: m.id,
+            role: m.role,
+            text: (m.text || '').slice(0, 500)
+          }))
+        };
+      }
+      safe.chats = minimalChats;
+    }
+    // memories和favorites保持完整，所有设置保持完整
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(safe));
+    console.log('[Kel] localStorage超大(>4.5MB)，已保存memories/favorites/settings，chats压缩到最小');
   }
 } catch (e) {
   console.warn('[Kel] localStorage skip', e && e.message);
