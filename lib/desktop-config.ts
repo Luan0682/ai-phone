@@ -19,8 +19,7 @@ export type IconId =
   | "settings"
   | "theme"
   | "resources"
-  | "characters"
-  | "worldbuilder";
+  | "characters";
 
 export type DesktopIconId = IconId | CustomAppIconId;
 
@@ -43,8 +42,8 @@ export const PAGE_2_DEFAULT: IconId[] = [
   "mapmode"
 ];
 
-// 第三页默认图标（居中放置，位置见 createDefaultDesktopIconLayout）
-export const PAGE_3_DEFAULT: IconId[] = ["worldbuilder"];
+// 第三页默认图标
+export const PAGE_3_DEFAULT: IconId[] = [];
 
 export const DOCK_DEFAULT: IconId[] = ["settings", "theme", "resources", "characters"];
 
@@ -73,12 +72,5 @@ export const ICONS: Record<IconId, IconMeta> = {
     tone: "var(--c-icon-lilac)",
     placeholder: false,
     path: "/characters"
-  },
-  worldbuilder: {
-    id: "worldbuilder",
-    label: "筑境",
-    tone: "var(--c-icon-amber)",
-    placeholder: false,
-    path: "/world-builder"
   },
 };
