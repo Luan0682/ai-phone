@@ -768,9 +768,19 @@ const ChatTextInputBar = memo(forwardRef<ChatTextInputHandle, {
                 <button onClick={onTogglePlusMenu} disabled={inputLocked} className="ui-bare-btn text-[var(--c-text)]" style={inputLocked ? { opacity: 0.35 } : undefined}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
                 </button>
+                <div style={{ flex: 1 }}></div>
                 <button
                     onClick={handleSubmit}
-                    disabled=
+                    disabled={!isGenerating && (inputLocked || !inputText.trim())}
+                    className="ui-bare-btn text-[var(--c-text)]"
+                    aria-label={isGenerating ? "停止" : "发送"}
+                >
+                    {isGenerating ? (
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+                    ) : (
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+                    )}
+                </button>
             </div>
 
             {showPlusMenu && (
